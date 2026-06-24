@@ -1,0 +1,132 @@
+[gd_scene format=3 uid="uid://ciboju1pan8px"]
+
+[ext_resource type="Script" uid="uid://dode0gn21i8om" path="res://scenes/plaer/player.gd" id="1_7iw1h"]
+[ext_resource type="Texture2D" uid="uid://dav2lbwh11kyy" path="res://textures/atlas.png" id="1_drj57"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yf5fn"]
+albedo_texture = ExtResource("1_drj57")
+uv1_scale = Vector3(0.745, 0.745, 0.745)
+uv1_offset = Vector3(0.135, -0.28, 0)
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_g4v7s"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
+radius = 0.14648438
+height = 1.4328613
+
+[sub_resource type="SphereMesh" id="SphereMesh_g4v7s"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_57qmd"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_yf5fn"]
+radius = 0.085
+height = 0.17
+
+[sub_resource type="Animation" id="Animation_drj57"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.5, -0.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_7iw1h"]
+resource_name = "new_animation"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666669, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -0.5, -0.5), Vector3(0, -0.5, -0.5), Vector3(0, -0.5, -0.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.23333335, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.93396574, 0, 0), Vector3(0.9389431, 0, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_drmwf"]
+_data = {
+&"RESET": SubResource("Animation_drj57"),
+&"new_animation": SubResource("Animation_7iw1h")
+}
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7iw1h"]
+properties/0/path = NodePath(".:_is_pipi")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Player" type="CharacterBody3D" unique_id=1718470725]
+script = ExtResource("1_7iw1h")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=806519623]
+current = true
+
+[node name="VoxelViewer" type="VoxelViewer" parent="Camera3D" unique_id=6844309]
+view_distance = 256
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=153980565]
+material_override = SubResource("StandardMaterial3D_yf5fn")
+mesh = SubResource("BoxMesh_g4v7s")
+
+[node name="314314" type="Node3D" parent="." unique_id=17290271]
+transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, -0.5, -0.5)
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="314314" unique_id=136177700]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0, -0.26007086, -0.45045596)
+mesh = SubResource("CapsuleMesh_g4v7s")
+
+[node name="balls" type="MeshInstance3D" parent="314314" unique_id=919666418]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17590958, -0.14659137, 0)
+mesh = SubResource("SphereMesh_g4v7s")
+
+[node name="balls2" type="MeshInstance3D" parent="314314" unique_id=1888930461]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17981863, -0.14659137, 0)
+mesh = SubResource("SphereMesh_g4v7s")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="314314" unique_id=1786121116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6102642, -1.0739908)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_57qmd")
+draw_pass_1 = SubResource("SphereMesh_yf5fn")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="314314" unique_id=1827814119]
+libraries/ = SubResource("AnimationLibrary_drmwf")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=961485851]
+replication_config = SubResource("SceneReplicationConfig_7iw1h")

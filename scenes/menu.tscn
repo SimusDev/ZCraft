@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dbjbmfnind72j"]
+
+[node name="Control" type="Control" unique_id=816657171]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="." unique_id=162275475]
+layout_mode = 0
+offset_left = 147.0
+offset_top = 105.0
+offset_right = 405.0
+offset_bottom = 191.0
+
+[node name="Button2" type="Button" parent="." unique_id=1720904178]
+layout_mode = 0
+offset_left = 147.0
+offset_top = 272.0
+offset_right = 405.0
+offset_bottom = 358.0

@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://c4sqqx1h0gmtc"]
+
+[ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
+[ext_resource type="Script" uid="uid://gglvapckatoo" path="res://scenes/world/game_manager.gd" id="2_1oml7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
+sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
+sky_horizon_color = Color(0.66313845, 0.623602, 0.7775695, 1)
+sky_curve = 0.15528975
+ground_bottom_color = Color(0.00062933034, 0.0006562498, 0.0011319412, 1)
+ground_horizon_color = Color(0.6653405, 0.62894696, 0.7809732, 1)
+ground_curve = 0.17753106
+
+[sub_resource type="Sky" id="Sky_yf5fn"]
+sky_material = SubResource("ProceduralSkyMaterial_57qmd")
+
+[sub_resource type="Environment" id="Environment_g4v7s"]
+background_mode = 2
+sky = SubResource("Sky_yf5fn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_400s5"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="Curve" id="Curve_qjesc"]
+_data = [Vector2(0, 0.5182482), 0.0, 0.0, 0, 0, Vector2(0.56446993, 0.67153287), 0.0, 0.0, 0, 0, Vector2(1, 0.5766424), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qjesc"]
+
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_0duuj"]
+noise = SubResource("FastNoiseLite_qjesc")
+curve = SubResource("Curve_qjesc")
+channel = 0
+
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_o0dc1"]
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_mmgww"]
+
+[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_i08rc"]
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_o0dc1"), SubResource("VoxelBlockyModelCube_mmgww")])
+
+[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_d0ueh"]
+library = SubResource("VoxelBlockyLibrary_i08rc")
+
+[node name="World" type="Node3D" unique_id=5532753]
+script = ExtResource("1_5qbjp")
+
+[node name="Env" type="Node3D" parent="." unique_id=1072300610]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env" unique_id=1395414315]
+environment = SubResource("Environment_g4v7s")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env" unique_id=2077239613]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 0, 0)
+shadow_enabled = true
+
+[node name="VoxelTerrain" type="VoxelTerrain" parent="." unique_id=1722060212]
+material_override = SubResource("StandardMaterial3D_400s5")
+generator = SubResource("VoxelGeneratorNoise2D_0duuj")
+mesher = SubResource("VoxelMesherBlocky_d0ueh")
+
+[node name="Players" type="Node3D" parent="." unique_id=972499555]
+
+[node name="GameManager" type="Node3D" parent="." unique_id=1079376164]
+script = ExtResource("2_1oml7")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=140929887]
+_spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
+spawn_path = NodePath("../Players")
