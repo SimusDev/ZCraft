@@ -4,13 +4,14 @@
 [ext_resource type="Script" uid="uid://l16fx8qfsh38" path="res://scripts/network/NetPacketProcessor.gd" id="2_i00mm"]
 [ext_resource type="Script" uid="uid://cipvv7e5l3bsi" path="res://scripts/network/NetConnection.gd" id="3_3iq7r"]
 
-[node name="NetworkManager" type="Node" unique_id=1793143406]
+[node name="NetworkManager" type="Node" unique_id=1793143406 node_paths=PackedStringArray("connection")]
 script = ExtResource("1_wb1um")
+connection = NodePath("NetConnection")
 
 [node name="NetPacketProcessor" type="Node" parent="." unique_id=1308474000]
 script = ExtResource("2_i00mm")
 metadata/_custom_type_script = "uid://l16fx8qfsh38"
 
-[node name="NetConnection" type="Node" parent="." unique_id=55162664]
+[node name="NetConnection" type="Node" parent="." unique_id=1079184099]
 script = ExtResource("3_3iq7r")
 metadata/_custom_type_script = "uid://cipvv7e5l3bsi"
