@@ -8,11 +8,17 @@ enum HEADER {
 
 signal on_received_threaded(peer: int, header: HEADER, bytes: PackedByteArray)
 
+static var _instance: NetPacketProcessor
+
 var _buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 var _buffer_threaded: StreamPeerBuffer = StreamPeerBuffer.new()
 
 func _ready() -> void:
+	_instance = self
 	NetworkManager.API.peer_packet.connect(_recieve_raw)
+
+static func get_instance() -> NetPacketProcessor:
+	return _instance
 
 func send(header: HEADER, bytes: PackedByteArray,
 peer: int,
