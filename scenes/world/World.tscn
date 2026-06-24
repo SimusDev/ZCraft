@@ -67,9 +67,5 @@ script = ExtResource("2_1oml7")
 player_scene = ExtResource("3_6eebf")
 players_node = NodePath("../Players")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=140929887]
-_spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
-spawn_path = NodePath("../Players")
-
 [node name="spawn" type="Node3D" parent="." unique_id=1092012360]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 86.63866, 0)
