@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
 [ext_resource type="Script" uid="uid://gglvapckatoo" path="res://scenes/world/game_manager.gd" id="2_1oml7"]
+[ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="3_6eebf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
 sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
@@ -61,9 +62,14 @@ mesher = SubResource("VoxelMesherBlocky_d0ueh")
 
 [node name="Players" type="Node3D" parent="." unique_id=972499555]
 
-[node name="GameManager" type="Node3D" parent="." unique_id=1079376164]
+[node name="GameManager" type="Node3D" parent="." unique_id=1079376164 node_paths=PackedStringArray("players_node")]
 script = ExtResource("2_1oml7")
+player_scene = ExtResource("3_6eebf")
+players_node = NodePath("../Players")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=140929887]
 _spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
 spawn_path = NodePath("../Players")
+
+[node name="spawn" type="Node3D" parent="." unique_id=1092012360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 86.63866, 0)

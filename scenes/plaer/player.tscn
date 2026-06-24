@@ -89,6 +89,15 @@ _data = {
 properties/0/path = NodePath(".:_is_pipi")
 properties/0/spawn = true
 properties/0/replication_mode = 2
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:scale")
+properties/3/spawn = true
+properties/3/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" unique_id=1718470725]
 script = ExtResource("1_7iw1h")

@@ -1,12 +1,19 @@
 [gd_scene format=3 uid="uid://dbjbmfnind72j"]
 
+[ext_resource type="Script" uid="uid://ybre2d6e6ieu" path="res://scenes/menu.gd" id="1_yqeox"]
+
 [node name="Control" type="Control" unique_id=816657171]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 53.0
+offset_top = -1.0
+offset_right = 53.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_yqeox")
 
 [node name="Button" type="Button" parent="." unique_id=162275475]
 layout_mode = 0
@@ -14,6 +21,7 @@ offset_left = 147.0
 offset_top = 105.0
 offset_right = 405.0
 offset_bottom = 191.0
+text = "conect"
 
 [node name="Button2" type="Button" parent="." unique_id=1720904178]
 layout_mode = 0
@@ -21,3 +29,25 @@ offset_left = 147.0
 offset_top = 272.0
 offset_right = 405.0
 offset_bottom = 358.0
+text = "creat eserver "
+
+[node name="LineEditsex" type="LineEdit" parent="." unique_id=1268929386]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 304.0
+offset_right = 826.0
+offset_bottom = 362.0
+text = "localhost"
+placeholder_text = "seesesesesesse"
+
+[node name="LineEditsex2" type="LineEdit" parent="." unique_id=2089165751]
+layout_mode = 0
+offset_left = 447.0
+offset_top = 386.0
+offset_right = 833.0
+offset_bottom = 444.0
+text = "5678"
+placeholder_text = "pros"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]

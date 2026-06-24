@@ -8,17 +8,24 @@ extends CharacterBody3D
 		_is_pipi = val
 		$"314314".visible = val
 		
+		$"314314/GPUParticles3D".emitting = val
+		
 		if val:
+			$"314314/AnimationPlayer".stop()
 			$"314314/AnimationPlayer".play("new_animation")
 
 func _ready() -> void:
 	var enabled = is_multiplayer_authority()
 	set_process(enabled)
+	set_physics_process(enabled)
 	set_process_input(enabled)
 
 	if enabled:
+		$Camera3D.make_current()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
+	else:
+		# Для чужих игроков отключаем камеру
+		$Camera3D.current = false
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"pipi"):
 		_is_pipi = !_is_pipi
