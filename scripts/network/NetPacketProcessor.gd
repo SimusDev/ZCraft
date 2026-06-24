@@ -6,7 +6,7 @@ enum HEADER {
 	COMMUNICATOR_MESSAGE,
 }
 
-signal on_received_threaded(peer: int, header: HEADER, bytes: PackedByteArray)
+signal on_received(peer: int, header: HEADER, bytes: PackedByteArray)
 
 static var _instance: NetPacketProcessor
 
@@ -35,11 +35,11 @@ channel: int = 0) -> void:
 		)
 
 func _recieve_raw(peer: int, bytes: PackedByteArray) -> void:
-	WorkerThreadPool.add_task(_proccess_threaded.bind(peer, bytes), true)
+	_proccess_threaded(peer, bytes)
 
 func _proccess_threaded(peer: int, bytes: PackedByteArray) -> void:
 	_buffer_threaded.seek(0)
 	_buffer_threaded.data_array = bytes
 	var header: HEADER = _buffer.get_u8()
 	var data: PackedByteArray = _buffer.get_data(_buffer.get_available_bytes())
-	on_received_threaded.emit(peer, header, bytes)
+	on_received.emit(peer, header, data)
