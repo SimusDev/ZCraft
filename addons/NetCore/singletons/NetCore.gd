@@ -25,13 +25,12 @@ var _buffer_threaded: StreamPeerBuffer = StreamPeerBuffer.new()
 var _buffer_threaded_receive: StreamPeerBuffer = StreamPeerBuffer.new()
 var _buffer_threaded_immediate: StreamPeerBuffer = StreamPeerBuffer.new()
 
-var _buffer_batch: NetCoreBuffer = NetCoreBuffer.new()
-var _buffer_unbatch: NetCoreBuffer = NetCoreBuffer.new()
-
-var _pending_immediate: Array[Dictionary] = []
 var _pending_batches: Array[Dictionary] = []
+var _pending_batches_mutex: Mutex = Mutex.new()
 
+var _processing_batches: Dictionary[String, Dictionary] = {}
 var _processed_batches: Array[Dictionary] = []
+var _processing_batches_mutex: Mutex = Mutex.new()
 
 var compression_enabled: bool = true
 var compression_threshold_deflate: int = 256
@@ -41,11 +40,9 @@ var batching_enabled: bool = true
 var batch_flush_tickrate: float = 60.0
 var _batch_flush_time: float = 0.0
 
-var _received_packets: Array[Dictionary] = []
+var _is_batch_flush_processing: bool = false
 
-var _mutex_immediate_packets: Mutex = Mutex.new()
-var _mutex_batch_packets: Mutex = Mutex.new()
-var _mutex_batch_task: Mutex = Mutex.new()
+var _received_packets: Array[Dictionary] = []
 
 enum PacketKey {
 	Bytes,
@@ -135,27 +132,25 @@ func _process_received_packet(packet: Dictionary[PacketKey, Variant]) -> void:
 	
 
 func _batch_packets(data: Array[PackedByteArray]) -> PackedByteArray:
-	_buffer_batch.clear()
-	_buffer_batch.write_int(data.size())
+	var buffer: NetCoreBuffer = NetCoreBuffer.new()
+	buffer.write_int(data.size())
 	
 	for packet: PackedByteArray in data:
-		_buffer_batch.write_bytes(packet)
+		buffer.write_bytes(packet)
 	
-	return _buffer_batch.get_data()
+	return buffer.get_data()
 
 func _unbatch_packets(data: PackedByteArray) -> Array[PackedByteArray]:
-	_buffer_unbatch.set_data(data)
-	_buffer_unbatch.seek(0)
+	var buffer: NetCoreBuffer = NetCoreBuffer.new()
+	buffer.set_data(data)
 	
 	var result: Array[PackedByteArray] = []
-	var size: int = _buffer_unbatch.read_int()
+	var size: int = buffer.read_int()
 	
 	for i in size:
-		result.append(_buffer_unbatch.read_bytes())
+		result.append(buffer.read_bytes())
 	
 	return result
-
-var _processing_batches: Dictionary[String, Dictionary] = {}
 
 func _flush_batch(data: Dictionary[BatchKey, Variant]) -> void:
 	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
@@ -175,8 +170,9 @@ func _flush_batch(data: Dictionary[BatchKey, Variant]) -> void:
 		data[BatchKey.Mode],
 		data[BatchKey.Channel]
 	)
+	
+	
 	_send_packet.call_deferred(api_packet)
-
 
 func _flush_batch_task(index: int, pending_batches: Array[Dictionary]) -> void:
 	var packet: Dictionary[PacketKey, Variant] = pending_batches[index]
@@ -187,12 +183,11 @@ func _flush_batch_task(index: int, pending_batches: Array[Dictionary]) -> void:
 	
 	var key: String = "%d_%d_%d" % [peer, mode, channel]
 	
-	_mutex_batch_task.lock()
+	_processing_batches_mutex.lock()
 	var batch_data: Dictionary[BatchKey, Variant] = _processing_batches.get_or_add(
 		key,
 		{} as Dictionary[BatchKey, Variant]
 	)
-	
 	
 	batch_data[BatchKey.Peer] = peer
 	batch_data[BatchKey.Mode] = mode
@@ -201,27 +196,32 @@ func _flush_batch_task(index: int, pending_batches: Array[Dictionary]) -> void:
 	var bytes_array: Array[PackedByteArray] = batch_data.get_or_add(BatchKey.BytesArray, [] as Array[PackedByteArray])
 	var total_bytes: int = batch_data.get_or_add(BatchKey.TotalBytes, 0)
 	
-	_mutex_batch_task.unlock()
+	_processing_batches_mutex.unlock()
 	
 	if total_bytes >= MAX_PACKET_SIZE:
+		_processing_batches_mutex.lock()
 		_flush_batch(batch_data)
+		_processing_batches.erase(key)
+		_processing_batches_mutex.unlock()
+		_pending_batches_mutex.lock()
 		_pending_batches.erase(batch_data)
+		_pending_batches_mutex.unlock()
+		return
 	
+	_processing_batches_mutex.lock()
 	bytes_array.append(bytes)
-	total_bytes += bytes.size()
-	
-	batch_data.set(BatchKey.TotalBytes, total_bytes)
+	batch_data[BatchKey.TotalBytes] += bytes.size()
+	_processing_batches_mutex.unlock()
 
 func _flush_batches() -> void:
-	WorkerThreadPool.add_task(_flush_batches_threaded, true)
+	if !_pending_batches.is_empty():
+		WorkerThreadPool.add_task(_flush_batches_threaded, true)
 
 func _flush_batches_threaded() -> void:
-	_mutex_batch_packets.lock()
-	
+	_pending_batches_mutex.lock()
 	var pending_batches: Array[Dictionary] = _pending_batches
 	_pending_batches = []
-	
-	_mutex_batch_packets.unlock()
+	_pending_batches_mutex.unlock()
 	
 	WorkerThreadPool.add_group_task(
 		_flush_batch_task.bind(pending_batches),
@@ -230,20 +230,21 @@ func _flush_batches_threaded() -> void:
 		true
 	)
 	
+	_processing_batches_mutex.lock()
 	for processing in _processing_batches:
 		_flush_batch(_processing_batches[processing])
 	
 	_processing_batches.clear()
+	_processing_batches_mutex.unlock()
 
 func _queue_batch_packet(packet: Dictionary[PacketKey, Variant]) -> void:
-	_mutex_batch_packets.lock()
+	_pending_batches_mutex.lock()
 	_pending_batches.append(packet)
-	_mutex_batch_packets.unlock()
+	_pending_batches_mutex.unlock()
 
 func _try_decompress(bytes: PackedByteArray) -> PackedByteArray:
 	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 	buffer.data_array = bytes
-	buffer.seek(0)
 	
 	var header: COMPRESS_HEADER = buffer.get_u8()
 	var raw_size: int = 0
@@ -265,8 +266,6 @@ func _try_decompress(bytes: PackedByteArray) -> PackedByteArray:
 func _try_compress(bytes: PackedByteArray) -> PackedByteArray:
 	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 	var raw_size: int = bytes.size()
-	buffer.clear()
-	buffer.seek(0)
 	
 	if compression_enabled:
 		if raw_size >= compression_threshold_zstd:
