@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://c4sqqx1h0gmtc"]
 
 [ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
-[ext_resource type="Script" uid="uid://gglvapckatoo" path="res://scenes/world/game_manager.gd" id="2_1oml7"]
-[ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="3_6eebf"]
+[ext_resource type="Texture2D" uid="uid://dgwjpc7ldm22v" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055.webp" id="2_gbddb"]
+[ext_resource type="Texture2D" uid="uid://c6x2iiuplujlj" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_ambient.png" id="3_qxiha"]
+[ext_resource type="Texture2D" uid="uid://dl0i78w1kq82h" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_normal.png" id="4_i1jm3"]
+[ext_resource type="Script" uid="uid://b0fjpddhg1okx" path="res://scenes/world/multiplayer_spawner.gd" id="5_qxiha"]
+[ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="6_252at"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
 sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
@@ -18,33 +21,31 @@ sky_material = SubResource("ProceduralSkyMaterial_57qmd")
 [sub_resource type="Environment" id="Environment_g4v7s"]
 background_mode = 2
 sky = SubResource("Sky_yf5fn")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 0.7
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+volumetric_fog_density = 0.01
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_400s5"]
-vertex_color_use_as_albedo = true
-
-[sub_resource type="Curve" id="Curve_qjesc"]
-_data = [Vector2(0, 0.5182482), 0.0, 0.0, 0, 0, Vector2(0.56446993, 0.67153287), 0.0, 0.0, 0, 0, Vector2(1, 0.5766424), 0.0, 0.0, 0, 0]
-point_count = 3
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qjesc"]
-
-[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_0duuj"]
-noise = SubResource("FastNoiseLite_qjesc")
-curve = SubResource("Curve_qjesc")
-channel = 0
-
-[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_o0dc1"]
-
-[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_mmgww"]
-
-[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_i08rc"]
-models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_o0dc1"), SubResource("VoxelBlockyModelCube_mmgww")])
-
-[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_d0ueh"]
-library = SubResource("VoxelBlockyLibrary_i08rc")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4v7s"]
+albedo_texture = ExtResource("2_gbddb")
+normal_enabled = true
+normal_texture = ExtResource("4_i1jm3")
+ao_enabled = true
+ao_texture = ExtResource("3_qxiha")
+uv1_triplanar = true
 
 [node name="World" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389]
+_spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
+spawn_path = NodePath("../Players")
+script = ExtResource("5_qxiha")
+player_prefab = ExtResource("6_252at")
 
 [node name="Env" type="Node3D" parent="." unique_id=1072300610]
 
@@ -55,17 +56,32 @@ environment = SubResource("Environment_g4v7s")
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 0, 0)
 shadow_enabled = true
 
-[node name="VoxelTerrain" type="VoxelTerrain" parent="." unique_id=1722060212]
-material_override = SubResource("StandardMaterial3D_400s5")
-generator = SubResource("VoxelGeneratorNoise2D_0duuj")
-mesher = SubResource("VoxelMesherBlocky_d0ueh")
+[node name="Terrain" type="Node3D" parent="." unique_id=698458386]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Terrain" unique_id=652597666]
+material_override = SubResource("StandardMaterial3D_g4v7s")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Terrain" unique_id=252891406]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 0)
+material_override = SubResource("StandardMaterial3D_g4v7s")
+
+[node name="SpawnPoints" type="Node3D" parent="." unique_id=1092012360]
+
+[node name="1" type="Marker3D" parent="SpawnPoints" unique_id=454666330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.660085, 2.4879029)
+
+[node name="2" type="Marker3D" parent="SpawnPoints" unique_id=1786948003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.660085, -2.5217931)
+
+[node name="3" type="Marker3D" parent="SpawnPoints" unique_id=526531344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, -0.035954)
+
+[node name="4" type="Marker3D" parent="SpawnPoints" unique_id=1155460434]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, -2.5923917)
+
+[node name="5" type="Marker3D" parent="SpawnPoints" unique_id=1484456867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, 2.104356)
 
 [node name="Players" type="Node3D" parent="." unique_id=972499555]
-
-[node name="GameManager" type="Node3D" parent="." unique_id=1079376164 node_paths=PackedStringArray("players_node")]
-script = ExtResource("2_1oml7")
-player_scene = ExtResource("3_6eebf")
-players_node = NodePath("../Players")
-
-[node name="spawn" type="Node3D" parent="." unique_id=1092012360]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 86.63866, 0)

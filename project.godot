@@ -11,24 +11,30 @@ config_version=5
 [application]
 
 config/name="ZCraft"
-run/main_scene="uid://dbjbmfnind72j"
+run/main_scene="uid://b7mijap51eoyi"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
+NetworkManager="*uid://bciqak7k4xrtd"
 NetCore="*uid://cqrs1vm2rngo1"
 NetGame="*uid://4ag688ghqvyu"
-NetworkManager="*uid://bciqak7k4xrtd"
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/NetCore/plugin.cfg", "res://addons/NetGame/plugin.cfg")
+enabled=PackedStringArray("res://addons/NetCore/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/NetGame/plugin.cfg")
+
+[gui]
+
+theme/custom_font="uid://io3kp1y047p2"
 
 [input]
 

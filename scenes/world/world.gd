@@ -1,7 +1,10 @@
 extends Node3D
 
 func _ready() -> void:
+	var ss = Node.new()
 	if multiplayer.is_server():
-		var ss = Node3D.new()
 		ss.name = "SERVER"
-		add_child(ss)
+	else:
+		ss.name = "CLIENT"
+	
+	add_child(ss)
