@@ -41,11 +41,12 @@ uv1_triplanar = true
 [node name="World" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389]
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389 node_paths=PackedStringArray("spawn_points")]
 _spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
 spawn_path = NodePath("../Players")
 script = ExtResource("5_qxiha")
 player_prefab = ExtResource("6_252at")
+spawn_points = [NodePath("../SpawnPoints/1"), NodePath("../SpawnPoints/2"), NodePath("../SpawnPoints/3"), NodePath("../SpawnPoints/4"), NodePath("../SpawnPoints/5")]
 
 [node name="Env" type="Node3D" parent="." unique_id=1072300610]
 
@@ -68,6 +69,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 0)
 material_override = SubResource("StandardMaterial3D_g4v7s")
 
 [node name="SpawnPoints" type="Node3D" parent="." unique_id=1092012360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.9660697, 0)
 
 [node name="1" type="Marker3D" parent="SpawnPoints" unique_id=454666330]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.660085, 2.4879029)
