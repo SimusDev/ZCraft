@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://bnfm6xke2bupb"]
+
+[ext_resource type="Script" uid="uid://bug83hfucl67d" path="res://addons/NetCore/benchmark/multithread_test.gd" id="1_qk3dr"]
+[ext_resource type="Texture2D" uid="uid://crs8s8c3647a2" path="res://icon.svg" id="2_pe2ly"]
+
+[sub_resource type="Animation" id="Animation_o1dys"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(148, 77)]
+}
+
+[sub_resource type="Animation" id="Animation_r3a5n"]
+resource_name = "new_animation"
+length = 3.0000000000000004
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(148, 77), Vector2(500, 77)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7n3y7"]
+_data = {
+&"RESET": SubResource("Animation_o1dys"),
+&"new_animation": SubResource("Animation_r3a5n")
+}
+
+[node name="multithread_test" type="Node" unique_id=886418600]
+script = ExtResource("1_qk3dr")
+
+[node name="Button" type="Button" parent="." unique_id=561766422]
+anchors_preset = -1
+anchor_left = 0.26900002
+anchor_top = 0.425
+anchor_right = 0.731
+anchor_bottom = 0.57500005
+offset_left = 0.111968994
+offset_top = 0.1000061
+offset_right = -0.11199951
+offset_bottom = -0.10003662
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=285779961]
+position = Vector2(148, 77)
+texture = ExtResource("2_pe2ly")
+
+[node name="Timer" type="Timer" parent="." unique_id=1022648824]
+wait_time = 0.001
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1488123329]
+libraries/ = SubResource("AnimationLibrary_7n3y7")
+autoplay = &"new_animation"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

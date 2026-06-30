@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://dl4bks4f4n2k7"]
+
+[ext_resource type="Script" uid="uid://xigt6q14fiyj" path="res://addons/NetCore/benchmark/test.gd" id="1_qfx26"]
+
+[node name="Test" type="Node" unique_id=1096615838]
+script = ExtResource("1_qfx26")
+
+[node name="MainScreen" type="Control" parent="." unique_id=2019641619]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchor_left = 0.17
+anchor_top = 0.15400001
+anchor_right = 0.83000004
+anchor_bottom = 0.846
+offset_left = 0.53500366
+offset_top = 0.20799255
+offset_right = -0.5350342
+offset_bottom = -0.20800781
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainScreen" unique_id=1953750528]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Server" type="Button" parent="MainScreen/VBoxContainer" unique_id=2083603268]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Server"
+
+[node name="Client" type="Button" parent="MainScreen/VBoxContainer" unique_id=1192648066]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Client"
+
+[node name="ConnectedScreen" type="Control" parent="." unique_id=963211375]
+unique_name_in_owner = true
+layout_mode = 3
+anchor_left = 0.17
+anchor_top = 0.15400001
+anchor_right = 0.83000004
+anchor_bottom = 0.846
+offset_left = 0.53500366
+offset_top = 0.20799255
+offset_right = -0.5350342
+offset_bottom = -0.20800781
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ConnectedScreen" unique_id=486748951]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="CompressionEnabled" type="CheckBox" parent="ConnectedScreen/VBoxContainer" unique_id=2129530425]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Compression Enabled"
+
+[node name="BatchingEnabled" type="CheckBox" parent="ConnectedScreen/VBoxContainer" unique_id=1363706609]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Batching Enabled"
+
+[node name="SendEveryFrame" type="CheckBox" parent="ConnectedScreen/VBoxContainer" unique_id=1993966370]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Send Every Frame"
+
+[node name="SendIntervalLabel" type="Label" parent="ConnectedScreen/VBoxContainer" unique_id=631103293]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Send Interval: "
+
+[node name="HSlider" type="HSlider" parent="ConnectedScreen/VBoxContainer" unique_id=671876390]
+layout_mode = 2
+step = 0.05
+value = 1.0
+
+[node name="PacketCountLabel" type="Label" parent="ConnectedScreen/VBoxContainer" unique_id=604941104]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Packet Count:"
+
+[node name="HSliderPacketCount" type="HSlider" parent="ConnectedScreen/VBoxContainer" unique_id=654099238]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1000.0
+value = 20.0
+rounded = true
+
+[node name="PacketStringLabel" type="Label" parent="ConnectedScreen/VBoxContainer" unique_id=176611799]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Packet String:"
+
+[node name="PacketStringLine" type="LineEdit" parent="ConnectedScreen/VBoxContainer" unique_id=831400601]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hello World!"
+
+[node name="CloseConnection" type="Button" parent="ConnectedScreen/VBoxContainer" unique_id=1872103676]
+layout_mode = 2
+text = "Close Connection"
+
+[node name="Timers" type="Node" parent="." unique_id=1348075303]
+
+[node name="SendIntervalTimer" type="Timer" parent="Timers" unique_id=972995492]
+unique_name_in_owner = true
+
+[connection signal="pressed" from="MainScreen/VBoxContainer/Server" to="." method="_on_server_pressed"]
+[connection signal="pressed" from="MainScreen/VBoxContainer/Client" to="." method="_on_client_pressed"]
+[connection signal="toggled" from="ConnectedScreen/VBoxContainer/CompressionEnabled" to="." method="_on_compression_enabled_toggled"]
+[connection signal="toggled" from="ConnectedScreen/VBoxContainer/BatchingEnabled" to="." method="_on_batching_enabled_toggled"]
+[connection signal="value_changed" from="ConnectedScreen/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="ConnectedScreen/VBoxContainer/HSliderPacketCount" to="." method="_on_h_slider_packet_count_value_changed"]
+[connection signal="text_changed" from="ConnectedScreen/VBoxContainer/PacketStringLine" to="." method="_on_packet_string_line_text_changed"]
+[connection signal="pressed" from="ConnectedScreen/VBoxContainer/CloseConnection" to="." method="_on_close_connection_pressed"]
+[connection signal="timeout" from="Timers/SendIntervalTimer" to="." method="_on_send_interval_timer_timeout"]

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://4ag688ghqvyu"]
+
+[ext_resource type="Script" uid="uid://cpfxm1blv0pya" path="res://addons/NetGame/singletons/NetGame.gd" id="1_iawbp"]
+[ext_resource type="Script" uid="uid://coxatxpswe4h4" path="res://addons/NetGame/singletons/NetGameCommunicator.gd" id="2_kbdqv"]
+[ext_resource type="Script" uid="uid://7mpdweh3f428" path="res://addons/NetGame/singletons/NetGameGarbageCollector.gd" id="3_0oux7"]
+
+[node name="NetGame" type="Node" unique_id=861785005 node_paths=PackedStringArray("game_garbage_collector")]
+script = ExtResource("1_iawbp")
+game_garbage_collector = NodePath("NetGameGarbageCollector")
+
+[node name="Tick" type="Timer" parent="." unique_id=1230367425]
+wait_time = 0.1
+autostart = true
+
+[node name="NetGameCommunicator" type="Node" parent="." unique_id=109013625]
+script = ExtResource("2_kbdqv")
+metadata/_custom_type_script = "uid://coxatxpswe4h4"
+
+[node name="NetGameGarbageCollector" type="Node" parent="." unique_id=712532451]
+script = ExtResource("3_0oux7")
+metadata/_custom_type_script = "uid://7mpdweh3f428"
+
+[connection signal="timeout" from="Tick" to="." method="_on_tick_timeout"]

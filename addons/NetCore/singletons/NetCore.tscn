@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cqrs1vm2rngo1"]
+
+[ext_resource type="Script" uid="uid://c1fgjqn6eigd1" path="res://addons/NetCore/singletons/NetCore.gd" id="1_8r13h"]
+
+[node name="NetCore" type="Node" unique_id=536188799]
+script = ExtResource("1_8r13h")

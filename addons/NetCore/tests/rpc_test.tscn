@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cyjn8r2o3wk0d"]
+
+[ext_resource type="Script" uid="uid://clvkb11wqreey" path="res://addons/NetCore/tests/rpc_test.gd" id="1_digc1"]
+
+[node name="RpcTest" type="Node" unique_id=961849414]
+script = ExtResource("1_digc1")
+
+[node name="Button" type="Button" parent="." unique_id=971733461]
+offset_left = 141.0
+offset_top = 130.0
+offset_right = 751.0
+offset_bottom = 193.0
+text = "SEND"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
