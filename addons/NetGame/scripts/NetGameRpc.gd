@@ -96,8 +96,6 @@ func _flush_rpc_threaded() -> void:
 		true
 	)
 	
-	print(unprocessed.size())
-	
 	WorkerThreadPool.wait_for_group_task_completion(task)
 	
 
