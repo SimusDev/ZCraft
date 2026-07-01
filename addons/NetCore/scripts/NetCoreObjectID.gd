@@ -54,10 +54,7 @@ func set_network_id(value: int) -> NetCoreObjectID:
 	return self
 
 static func find_in(object: Object) -> NetCoreObjectID:
-	if !object.has_meta(META):
-		return null
-	
-	var founded: NetCoreObjectID = object.get_meta(META, null)
+	var founded: NetCoreObjectID = NetGame.get_object_meta(object, META, null)
 	if is_instance_valid(founded) and founded.get_owner() == object:
 		return founded
 	return null
@@ -71,6 +68,6 @@ static func get_or_create(object: Object) -> NetCoreObjectID:
 	return id
 
 static func assign(object: Object, id: NetCoreObjectID) -> void:
-	object.set_meta(META, id)
+	NetGame.set_object_meta(object, META, id)
 	id._owner = weakref(object)
 	id._initialize()

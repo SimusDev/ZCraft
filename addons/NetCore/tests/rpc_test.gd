@@ -6,8 +6,11 @@ func _ready() -> void:
 	NetGame.on_packet_received.connect(
 		_on_packet_received
 	)
+	
+	NetGameRpcRegistry.new([_test_rpc])
 
 func _on_button_pressed() -> void:
+	NetGameRpc.invoke(_test_rpc)
 	return
 	
 	for i in 10:
@@ -23,7 +26,8 @@ func _on_packet_received(type: NetGame.PacketType, bytes: PackedByteArray, peer:
 
 func _test_rpc() -> void:
 	pass
+	#NetGameRpc.invoke(_test_rpc)
 
 func _process(delta: float) -> void:
-	for i in 15000:
+	for i in 20000:
 		NetGameRpc.invoke(_test_rpc)

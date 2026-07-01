@@ -61,6 +61,8 @@ var _processed_batches_mutex: Mutex = Mutex.new()
 var _received_api_packets: Array[Dictionary] = []
 var _received_api_packets_mutex: Mutex = Mutex.new()
 
+var _object_meta_mutex: Mutex = Mutex.new()
+
 func _ready() -> void:
 	profiler._ready()
 

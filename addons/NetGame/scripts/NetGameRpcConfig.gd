@@ -11,16 +11,9 @@ enum Permission
 	All,
 }
 
-enum SendTo {
+enum Type {
 	All,
-	Server,
+	Async,
+	OnServer,
 	Target
 }
-
-func validate(peer: int, object_authority: int = NetGame.SERVER_ID) -> bool:
-	match permission:
-		Permission.Server:
-			return peer == NetGame.SERVER_ID
-		Permission.Authority:
-			return peer == object_authority
-	return false

@@ -20,8 +20,50 @@ var _main_thread_buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 static var is_server: bool = false
 static var unique_id: int = SERVER_ID
 
+var _metadata_store: Dictionary[int, Dictionary] = {}
+var _metadata_store_mutex: Mutex = Mutex.new()
+
+func get_or_add_object_meta(object: Object, meta: StringName, default: Variant = null) -> Variant:
+	_metadata_store_mutex.lock()
+	if is_instance_valid(object):
+		var meta_dict: Dictionary[StringName, Variant] = _metadata_store.get_or_add(
+			object.get_instance_id(), {} as Dictionary[StringName, Variant])
+		_metadata_store_mutex.unlock()
+		return meta_dict.get_or_add(meta, default)
+	_metadata_store_mutex.unlock()
+	return default
+
+func get_object_meta(object: Object, meta: StringName, default: Variant = null) -> Variant:
+	_metadata_store_mutex.lock()
+	if is_instance_valid(object):
+		var meta_dict: Dictionary[StringName, Variant] = _metadata_store.get_or_add(
+			object.get_instance_id(), {} as Dictionary[StringName, Variant])
+		_metadata_store_mutex.unlock()
+		return meta_dict.get(meta, default)
+	_metadata_store_mutex.unlock()
+	return default
+
+func set_object_meta(object: Object, meta: StringName, value: Variant) -> void:
+	_metadata_store_mutex.lock()
+	if is_instance_valid(object):
+		var meta_dict: Dictionary[StringName, Variant] = _metadata_store.get_or_add(
+			object.get_instance_id(), {} as Dictionary[StringName, Variant])
+		meta_dict.set(meta, value)
+	_metadata_store_mutex.unlock()
+
+func _collect_metadata_garbage() -> void:
+	for instance_id: int in _metadata_store:
+		_metadata_store_mutex.lock()
+		if !is_instance_id_valid(instance_id):
+			_metadata_store.erase(instance_id)
+		_metadata_store_mutex.unlock()
+
+func _on_garbage_collector_try_collect() -> void:
+	if !_metadata_store.is_empty():
+		WorkerThreadPool.add_task(_collect_metadata_garbage)
+
 func _ready() -> void:
-	pass
+	game_garbage_collector.on_try_collect.connect(_on_garbage_collector_try_collect)
 
 func setup(api: SceneMultiplayer = null) -> void:
 	if !is_instance_valid(api):
