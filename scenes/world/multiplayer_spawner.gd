@@ -22,12 +22,11 @@ func _spawn_player(id: int) -> void:
 		
 		player.tree_entered.connect(
 			func():
-				var tp: Vector3
 				if !spawn_points.is_empty():
-					tp = spawn_points.pick_random().global_position
+					player.global_position = spawn_points.pick_random().global_position
 				else:
-					tp = spawn_node.global_position
-				player.global_position = tp
+					player.global_position = spawn_node.global_position
+				
 				player.set_multiplayer_authority(id)
 		)
 		

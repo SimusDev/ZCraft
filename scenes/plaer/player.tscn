@@ -5,13 +5,6 @@
 [ext_resource type="Script" uid="uid://cvr38qvwqfimy" path="res://scripts/PlayerHead.gd" id="5_646ly"]
 [ext_resource type="Script" uid="uid://cuw2yfx1ivjp2" path="res://scripts/state_machine/StateMachineMovementState.gd" id="5_h4xmw"]
 
-[sub_resource type="GDScript" id="GDScript_i1jm3"]
-script/source = "extends CharacterBody3D
-
-#func _enter_tree() -> void:
-	#set_multiplayer_authority(int(name))
-"
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7iw1h"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -30,7 +23,6 @@ properties/2/replication_mode = 2
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g4v7s"]
 
 [node name="Player" type="CharacterBody3D" unique_id=1718470725]
-script = SubResource("GDScript_i1jm3")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=961485851]
 replication_config = SubResource("SceneReplicationConfig_7iw1h")
