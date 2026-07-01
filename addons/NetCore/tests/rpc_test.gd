@@ -1,19 +1,29 @@
 extends Node
 
+var test: NetCoreElementBatcher = NetCoreElementBatcher.new()
+
 func _ready() -> void:
-	pass
+	NetGame.on_packet_received.connect(
+		_on_packet_received
+	)
 
 func _on_button_pressed() -> void:
-	for i in 20:
-		NetGame.send_packet(
-			NetGame.PacketType.RpcRequest,
-			var_to_bytes("hello_world!")
-		)
+	return
+	
+	for i in 10:
+		NetGame.send_packet(NetGame.PacketType.RpcRequest,var_to_bytes("hello_world!"),1)
+		NetGame.send_packet(NetGame.PacketType.RpcRequest,var_to_bytes("pidaras!"),1)
+		NetGame.send_packet(NetGame.PacketType.RpcRequest,var_to_bytes("sus!"),1)
+		NetGame.send_packet(NetGame.PacketType.RpcRequest,var_to_bytes("sas!"),1)
 
-#func _process(delta: float) -> void:
-	#for i in 1000:
-		#_receive_rpc.invoke("hello world!")
-#
-#var _receive_rpc := NetGameRpc.new(_receive)
-#func _receive(message: String) -> void:
-	#pass
+
+
+func _on_packet_received(type: NetGame.PacketType, bytes: PackedByteArray, peer: int) -> void:
+	print(bytes_to_var(bytes))
+
+func _test_rpc() -> void:
+	pass
+
+func _process(delta: float) -> void:
+	for i in 15000:
+		NetGameRpc.invoke(_test_rpc)

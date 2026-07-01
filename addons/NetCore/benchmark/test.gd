@@ -10,7 +10,7 @@ func _ready() -> void:
 	NetCore.setup()
 	
 	NetCore.compression_enabled = %CompressionEnabled.button_pressed
-	NetCore.batching_enabled = $%BatchingEnabled.button_pressed
+	#NetCore.batching_enabled = $%BatchingEnabled.button_pressed
 	
 	$MainScreen.show()
 	$ConnectedScreen.hide()

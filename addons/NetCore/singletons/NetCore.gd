@@ -1,48 +1,11 @@
 extends Node
-#class_name OptimizedSend
+# V2
 
-enum BATCH_HEADER {
-	UNBATCHED,
-	BATCHED,
-}
-
-enum COMPRESS_HEADER {
+enum CompressionHeader {
 	NONE,
 	DEFLATE,
 	ZSTD,
 }
-
-const COMPRESSION_DELFATE: int = FileAccess.COMPRESSION_DEFLATE
-const COMPRESSION_ZSTD: int = FileAccess.COMPRESSION_ZSTD
-
-const MAX_PACKET_SIZE: int = 1350
-
-signal multiplayer_peer_packet(id: int, bytes: PackedByteArray)
-
-var API: SceneMultiplayer
-
-var _buffer_threaded: StreamPeerBuffer = StreamPeerBuffer.new()
-var _buffer_threaded_receive: StreamPeerBuffer = StreamPeerBuffer.new()
-var _buffer_threaded_immediate: StreamPeerBuffer = StreamPeerBuffer.new()
-
-var _pending_batches: Array[Dictionary] = []
-var _pending_batches_mutex: Mutex = Mutex.new()
-
-var _processing_batches: Dictionary[String, Dictionary] = {}
-var _processed_batches: Array[Dictionary] = []
-var _processing_batches_mutex: Mutex = Mutex.new()
-
-var compression_enabled: bool = true
-var compression_threshold_deflate: int = 256
-var compression_threshold_zstd: int = 1024
-
-var batching_enabled: bool = true
-var batch_flush_tickrate: float = 60.0
-var _batch_flush_time: float = 0.0
-
-var _is_batch_flush_processing: bool = false
-
-var _received_packets: Array[Dictionary] = []
 
 enum PacketKey {
 	Bytes,
@@ -57,79 +20,201 @@ enum BatchKey {
 	Peer,
 	Mode,
 	Channel,
+	ID,
 }
 
+enum ReceivedPacketKey {
+	PacketArray,
+	Peer,
+}
 
-func setup(api: SceneMultiplayer = null) -> void:
-	if !is_instance_valid(api):
-		api = SceneMultiplayer.new()
-	
-	API = api
-	
-	get_tree().set_multiplayer(API)
-	API.peer_packet.connect(_on_api_peer_packet)
+var _packet_sequence_id: int = 0
 
-func _on_api_peer_packet(id: int, bytes: PackedByteArray) -> void:
-	var packet: Dictionary[PacketKey, Variant] = {}
-	packet[PacketKey.Bytes] = bytes
-	packet[PacketKey.Peer] = id
-	
-	_received_packets.append(packet)
+const COMPRESSION_DELFATE: int = FileAccess.COMPRESSION_DEFLATE
+const COMPRESSION_ZSTD: int = FileAccess.COMPRESSION_ZSTD
 
-func _create_packet(bytes: PackedByteArray, peer: int, 
-mode: MultiplayerPeer.TransferMode,
-channel: int
-) -> Dictionary[PacketKey, Variant]:
-	return {
-		PacketKey.Bytes: bytes,
-		PacketKey.Peer: peer,
-		PacketKey.Mode: mode,
-		PacketKey.Channel: channel,
-	}
+const MAX_PACKET_SIZE: int = 1350
 
-func _send_packet(packet: Dictionary[PacketKey, Variant]) -> void:
-	var peer: int = packet[PacketKey.Peer]
-	var bytes: PackedByteArray = packet[PacketKey.Bytes]
+var compression_enabled: bool = true
+var compression_threshold_deflate: int = 256
+var compression_threshold_zstd: int = 1024
+
+var batch_flush_tickrate: float = 60.0
+var _batch_flush_time: float = 0.0
+
+signal multiplayer_peer_packet(id: int, bytes: PackedByteArray)
+
+var API: SceneMultiplayer
+var profiler: NetCoreProfiler = NetCoreProfiler.new()
+
+#var _pending_packets_e: NetCoreElementBatcher = NetCoreElementBatcher.new()
+var _pending_packets: Array[Dictionary] = []
+var _pending_packets_mutex: Mutex = Mutex.new()
+
+var _packet_batches: Dictionary[String, Dictionary] = {}
+var _packet_batches_mutex: Mutex = Mutex.new()
+var _packet_batch_collect_mutex: Mutex = Mutex.new()
+
+var _processed_batches: Array[Dictionary] = []
+var _processed_batches_mutex: Mutex = Mutex.new()
+
+var _received_api_packets: Array[Dictionary] = []
+var _received_api_packets_mutex: Mutex = Mutex.new()
+
+func _ready() -> void:
+	profiler._ready()
+
+func _process(delta: float) -> void:
+	_batch_flush_time += delta
+	if _batch_flush_time >= 1.0 / batch_flush_tickrate:
+		_flush_main_thread()
+		_batch_flush_time = 0
+
+func _flush_main_thread() -> void:
+	if !_pending_packets.is_empty():
+		var task: int = WorkerThreadPool.add_task(_collect_packets_into_batches_threaded, true)
+		WorkerThreadPool.wait_for_task_completion(task)
+	if !_received_api_packets.is_empty():
+		var task: int = WorkerThreadPool.add_task(_process_all_received_packets_threaded, true)
+		WorkerThreadPool.wait_for_task_completion(task)
+
+func _collect_packets_into_batches_threaded() -> void:
+	_pending_packets_mutex.lock()
+	var pending: Array[Dictionary] = _pending_packets
+	_pending_packets = []
+	_pending_packets_mutex.unlock()
 	
-	if peer == multiplayer.get_unique_id():
+	var total: int = pending.size()
+	
+	if total == 0:
+		return
+	
+	var task_batch: int = WorkerThreadPool.add_task(_collect_packets_into_batch.bind(pending),
+	true)
+	
+	WorkerThreadPool.wait_for_task_completion(task_batch)
+	
+	var task_process: int = WorkerThreadPool.add_task(_process_packet_batches_threaded, true)
+	WorkerThreadPool.wait_for_task_completion(task_process)
+	
+	_processed_batches_mutex.lock()
+	var processed: Array[Dictionary] = _processed_batches
+	_processed_batches = []
+	_processed_batches_mutex.unlock()
+	
+	var single_batch_result: Array[Dictionary] = []
+	single_batch_result.resize(processed.size())
+	
+	var task_single_batch: int = WorkerThreadPool.add_group_task(
+		_process_single_batch.bind(processed, single_batch_result),
+		processed.size(),
+		-1,
+		true
+	)
+	
+	WorkerThreadPool.wait_for_group_task_completion(task_single_batch)
+	
+	for result: Dictionary[PacketKey, Variant] in single_batch_result:
+		_send_bytes_main_thread.call_deferred(
+			result[PacketKey.Bytes],
+			result[PacketKey.Peer],
+			result[PacketKey.Mode],
+			result[PacketKey.Channel]
+		)
+
+func _send_bytes_main_thread(bytes: PackedByteArray, peer: int, mode: MultiplayerPeer.TransferMode, channel: int) -> void:
+	if multiplayer.get_unique_id() == peer:
 		_on_api_peer_packet(peer, bytes)
 		return
 	
-	API.send_bytes(
-		bytes, 
-		peer, 
-		packet[PacketKey.Mode], 
-		packet[PacketKey.Channel])
+	API.send_bytes(bytes, peer, mode, channel)
 
-func _process(delta: float) -> void:
+func _process_single_batch(index: int, processed: Array[Dictionary], result: Array[Dictionary]) -> void:
+	var batch: Dictionary[BatchKey, Variant] = processed[index]
+	profiler._test_add.call_deferred(batch[BatchKey.BytesArray].size())
+	var bytes: PackedByteArray = _batch_packets(batch[BatchKey.BytesArray])
+	bytes = _try_compress(bytes)
 	
-	_batch_flush_time += delta
-	if _batch_flush_time >= 1.0 / batch_flush_tickrate:
-		_flush_batches()
-		_batch_flush_time = 0
+	var batch_result: Dictionary[PacketKey, Variant] = {
+		PacketKey.Peer: batch[BatchKey.Peer],
+		PacketKey.Mode: batch[BatchKey.Mode],
+		PacketKey.Channel: batch[BatchKey.Channel],
+		PacketKey.Bytes: bytes
+	}
 	
-	for received_packet: Dictionary[PacketKey, Variant] in _received_packets:
-		_process_received_packet(received_packet)
-	
-	_received_packets.clear()
+	result[index] = batch_result
 
-func _process_received_packet(packet: Dictionary[PacketKey, Variant]) -> void:
-	var peer: int = packet[PacketKey.Peer]
-	var bytes: PackedByteArray = _try_decompress(packet[PacketKey.Bytes])
+func _process_packet_batches_threaded() -> void:
+	_packet_batches_mutex.lock()
 	
-	_buffer_threaded_receive.data_array = bytes
-	_buffer_threaded_receive.seek(0)
-	
-	var batch_header: BATCH_HEADER = _buffer_threaded_receive.get_u8()
-	var data: PackedByteArray = _buffer_threaded_receive.get_data(_buffer_threaded_receive.get_available_bytes())[1]
-	if batch_header == BATCH_HEADER.UNBATCHED:
-		multiplayer_peer_packet.emit.call_deferred(peer, data)
+	if _packet_batches.is_empty():
+		_packet_batches_mutex.unlock()
 		return
 	
-	var packets: Array[PackedByteArray] = _unbatch_packets(data)
-	for i in packets:
-		multiplayer_peer_packet.emit.call_deferred(peer, i)
+	for key: String in _packet_batches:
+		var batch: Dictionary[BatchKey, Variant] = _packet_batches[key]
+		_packet_batches.erase(key)
+		_processed_batches_mutex.lock()
+		_processed_batches.append(batch)
+		_processed_batches_mutex.unlock()
 	
+	_processed_batches_mutex.lock()
+	
+	var idx: int = 0
+	for processed: Dictionary[BatchKey, Variant] in _processed_batches:
+		processed[BatchKey.ID] = idx
+		idx += 1
+	
+	_processed_batches_mutex.unlock()
+	
+	_packet_batches_mutex.unlock()
+
+func _collect_packets_into_batch(packets: Array[Dictionary]) -> void:
+	for packet: Dictionary[PacketKey, Variant] in packets:
+		var bytes: PackedByteArray = packet[PacketKey.Bytes]
+		var peer: int = packet[PacketKey.Peer]
+		var mode: MultiplayerPeer.TransferMode = packet[PacketKey.Mode]
+		var channel: int = packet[PacketKey.Channel]
+		
+		var key: String = "%d_%d_%d" % [peer, mode, channel]
+		
+		if _packet_batches_mutex:
+			_packet_batches_mutex.lock()
+		
+		var data: Dictionary[BatchKey, Variant] = _packet_batches.get_or_add(
+			key, {} as Dictionary[BatchKey, Variant]
+		)
+		
+		var raw_packets: Array[PackedByteArray] = data.get_or_add(
+			BatchKey.BytesArray, [] as Array[PackedByteArray]
+		)
+		
+		var total_bytes: int = data.get_or_add(
+			BatchKey.TotalBytes, 0
+		)
+		
+
+		
+		data[BatchKey.Peer] = peer
+		data[BatchKey.Mode] = mode
+		data[BatchKey.Channel] = channel
+		
+		raw_packets.append(bytes)
+		
+		data[BatchKey.TotalBytes] += bytes.size()
+		
+		if total_bytes >= MAX_PACKET_SIZE:
+			_processed_batches_mutex.lock()
+			_processed_batches.append(data)
+			_processed_batches_mutex.unlock()
+			
+			_packet_batches.erase(key)
+			
+			_packet_batches_mutex.unlock()
+			
+			continue
+		
+		_packet_batches_mutex.unlock()
 
 func _batch_packets(data: Array[PackedByteArray]) -> PackedByteArray:
 	var buffer: NetCoreBuffer = NetCoreBuffer.new()
@@ -152,112 +237,22 @@ func _unbatch_packets(data: PackedByteArray) -> Array[PackedByteArray]:
 	
 	return result
 
-func _flush_batch(data: Dictionary[BatchKey, Variant]) -> void:
-	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
-	var packets: Array[PackedByteArray] = data[BatchKey.BytesArray]
-	var batched: PackedByteArray = _batch_packets(packets)
-	
-	buffer.clear()
-	buffer.seek(0)
-	buffer.put_u8(BATCH_HEADER.BATCHED)
-	buffer.put_data(batched)
-	
-	var compressed: PackedByteArray = _try_compress(buffer.data_array)
-	
-	var api_packet: Dictionary[PacketKey, Variant] = _create_packet(
-		compressed,
-		data[BatchKey.Peer],
-		data[BatchKey.Mode],
-		data[BatchKey.Channel]
-	)
-	
-	
-	_send_packet.call_deferred(api_packet)
-
-func _flush_batch_task(index: int, pending_batches: Array[Dictionary]) -> void:
-	var packet: Dictionary[PacketKey, Variant] = pending_batches[index]
-	var bytes: PackedByteArray = packet[PacketKey.Bytes]
-	var peer: int = packet[PacketKey.Peer]
-	var mode: MultiplayerPeer.TransferMode = packet[PacketKey.Mode]
-	var channel: int = packet[PacketKey.Channel]
-	
-	var key: String = "%d_%d_%d" % [peer, mode, channel]
-	
-	_processing_batches_mutex.lock()
-	var batch_data: Dictionary[BatchKey, Variant] = _processing_batches.get_or_add(
-		key,
-		{} as Dictionary[BatchKey, Variant]
-	)
-	
-	batch_data[BatchKey.Peer] = peer
-	batch_data[BatchKey.Mode] = mode
-	batch_data[BatchKey.Channel] = channel
-	
-	var bytes_array: Array[PackedByteArray] = batch_data.get_or_add(BatchKey.BytesArray, [] as Array[PackedByteArray])
-	var total_bytes: int = batch_data.get_or_add(BatchKey.TotalBytes, 0)
-	
-	_processing_batches_mutex.unlock()
-	
-	if total_bytes >= MAX_PACKET_SIZE:
-		_processing_batches_mutex.lock()
-		_flush_batch(batch_data)
-		_processing_batches.erase(key)
-		_processing_batches_mutex.unlock()
-		_pending_batches_mutex.lock()
-		_pending_batches.erase(batch_data)
-		_pending_batches_mutex.unlock()
-		return
-	
-	_processing_batches_mutex.lock()
-	bytes_array.append(bytes)
-	batch_data[BatchKey.TotalBytes] += bytes.size()
-	_processing_batches_mutex.unlock()
-
-func _flush_batches() -> void:
-	if !_pending_batches.is_empty():
-		WorkerThreadPool.add_task(_flush_batches_threaded, true)
-
-func _flush_batches_threaded() -> void:
-	_pending_batches_mutex.lock()
-	var pending_batches: Array[Dictionary] = _pending_batches
-	_pending_batches = []
-	_pending_batches_mutex.unlock()
-	
-	WorkerThreadPool.add_group_task(
-		_flush_batch_task.bind(pending_batches),
-		pending_batches.size(),
-		-1,
-		true
-	)
-	
-	_processing_batches_mutex.lock()
-	for processing in _processing_batches:
-		_flush_batch(_processing_batches[processing])
-	
-	_processing_batches.clear()
-	_processing_batches_mutex.unlock()
-
-func _queue_batch_packet(packet: Dictionary[PacketKey, Variant]) -> void:
-	_pending_batches_mutex.lock()
-	_pending_batches.append(packet)
-	_pending_batches_mutex.unlock()
-
 func _try_decompress(bytes: PackedByteArray) -> PackedByteArray:
 	var buffer: StreamPeerBuffer = StreamPeerBuffer.new()
 	buffer.data_array = bytes
 	
-	var header: COMPRESS_HEADER = buffer.get_u8()
+	var header: CompressionHeader = buffer.get_u8()
 	var raw_size: int = 0
-	if header == COMPRESS_HEADER.NONE:
+	if header == CompressionHeader.NONE:
 		return bytes.slice(1)
 	
 	raw_size = buffer.get_u32()
 	
 	var compressed: PackedByteArray = buffer.get_data(buffer.get_available_bytes())[1]
 	
-	if header == COMPRESS_HEADER.DEFLATE:
+	if header == CompressionHeader.DEFLATE:
 		return compressed.decompress(raw_size, COMPRESSION_DELFATE)
-	elif header == COMPRESS_HEADER.ZSTD:
+	elif header == CompressionHeader.ZSTD:
 		return compressed.decompress(raw_size, COMPRESSION_ZSTD)
 	
 	return compressed
@@ -269,34 +264,101 @@ func _try_compress(bytes: PackedByteArray) -> PackedByteArray:
 	
 	if compression_enabled:
 		if raw_size >= compression_threshold_zstd:
-			buffer.put_u8(COMPRESS_HEADER.ZSTD)
+			buffer.put_u8(CompressionHeader.ZSTD)
 			buffer.put_u32(raw_size)
 			buffer.put_data(bytes.compress(COMPRESSION_ZSTD))
 			return buffer.data_array
 		
 		if raw_size >= compression_threshold_deflate:
-			buffer.put_u8(COMPRESS_HEADER.DEFLATE)
+			buffer.put_u8(CompressionHeader.DEFLATE)
 			buffer.put_u32(raw_size)
 			buffer.put_data(bytes.compress(COMPRESSION_DELFATE))
 			return buffer.data_array
 	
-	buffer.put_u8(COMPRESS_HEADER.NONE)
+	buffer.put_u8(CompressionHeader.NONE)
 	buffer.put_data(bytes)
 	return buffer.data_array
 
+
 func multiplayer_send_bytes(bytes: PackedByteArray, peer: int = 0, 
 mode: MultiplayerPeer.TransferMode = MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, 
-channel: int = 0, immediate: bool = false) -> void:
-	var packet: Dictionary[PacketKey, Variant] = _create_packet(
-			bytes,
-			peer,
-			mode,
-			channel
-		)
+channel: int = 0) -> void:
+	var packet: Dictionary[PacketKey, Variant] = {
+		PacketKey.Bytes: bytes,
+		PacketKey.Peer: peer,
+		PacketKey.Mode: mode,
+		PacketKey.Channel: channel,
+	}
 	
-	#if bytes.size() >= MAX_PACKET_SIZE or !batching_enabled or immediate:
-		#_queue_immediate_packet(packet)
-		#return
+	if _packet_sequence_id >= 4294967295:
+		_packet_sequence_id = 0
+	_packet_sequence_id += 1
 	
-	_queue_batch_packet(packet)
+	_pending_packets_mutex.lock()
+	
+	_pending_packets.append(packet)
+	_pending_packets_mutex.unlock()
+
+func setup(api: SceneMultiplayer = null) -> void:
+	if !is_instance_valid(api):
+		api = SceneMultiplayer.new()
+	
+	API = api
+	
+	get_tree().set_multiplayer(API)
+	API.peer_packet.connect(_on_api_peer_packet)
+
+func _on_api_peer_packet(id: int, bytes: PackedByteArray) -> void:
+	var packet: Dictionary[PacketKey, Variant] = {}
+	packet[PacketKey.Bytes] = bytes
+	packet[PacketKey.Peer] = id
+	
+	_received_api_packets_mutex.lock()
+	_received_api_packets.append(packet)
+	_received_api_packets_mutex.unlock()
+
+func _process_all_received_packets_threaded() -> void:
+	_received_api_packets_mutex.lock()
+	var packets: Array[Dictionary] = _received_api_packets
+	_received_api_packets = []
+	_received_api_packets_mutex.unlock()
+	
+	if packets.is_empty():
+		return
+	
+	var result: Array[Dictionary] = []
+	result.resize(packets.size())
+	
+	var task: int = WorkerThreadPool.add_group_task(
+		_process_received_packet_task.bind(packets, result),
+		packets.size(),
+		-1,
+		true
+	)
+	
+	WorkerThreadPool.wait_for_group_task_completion(task)
+	
+	for received: Dictionary[ReceivedPacketKey, Variant] in result:
+		var raw: Array[PackedByteArray] = received[ReceivedPacketKey.PacketArray]
+		var pid: int = received[ReceivedPacketKey.Peer]
+		for raw_packet: PackedByteArray in raw:
+			multiplayer_peer_packet.emit.call_deferred(pid, raw_packet)
+	
+
+func _process_received_packet_task(index: int, packets: Array[Dictionary], result: Array[Dictionary]) -> void:
+	var packet: Dictionary[PacketKey, Variant] = packets[index]
+	var bytes: PackedByteArray = packet[PacketKey.Bytes]
+	var peer: int = packet[PacketKey.Peer]
+	
+	bytes = _try_decompress(bytes)
+	var raw: Array[PackedByteArray] = _unbatch_packets(bytes)
+	
+	var received_result: Dictionary[ReceivedPacketKey, Variant] = {
+		ReceivedPacketKey.PacketArray: raw,
+		ReceivedPacketKey.Peer: peer,
+	}
+	
+	result[index] = received_result
+	
+	
 	

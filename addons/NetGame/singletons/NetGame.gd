@@ -3,7 +3,6 @@ extends Node
 signal on_connected_to_server()
 signal on_disconnected_from_server()
 
-@export var game_communicator: NetGameCommunicator
 @export var game_garbage_collector: NetGameGarbageCollector
 
 signal on_packet_received(type: PacketType, bytes: PackedByteArray, peer: int)
@@ -41,13 +40,13 @@ func _on_multiplayer_peer_packet(peer: int, bytes: PackedByteArray) -> void:
 
 func send_packet(type: PacketType, bytes: PackedByteArray, peer: int = 0, 
 mode: MultiplayerPeer.TransferMode = MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE, 
-channel: int = 0, immediate: bool = false) -> void:
+channel: int = 0) -> void:
 	
 	_main_thread_buffer.clear()
 	_main_thread_buffer.seek(0)
 	_main_thread_buffer.put_u8(type)
 	_main_thread_buffer.put_data(bytes)
-	NetCore.multiplayer_send_bytes(_main_thread_buffer.data_array, peer, mode, channel, immediate)
+	NetCore.multiplayer_send_bytes(_main_thread_buffer.data_array, peer, mode, channel)
 
 func _on_tick_timeout() -> void:
 	is_server = multiplayer.is_server()

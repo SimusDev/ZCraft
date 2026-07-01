@@ -1,19 +1,13 @@
 extends RefCounted
 class_name NetCoreAllocatedArray
 
-# ========== ДАННЫЕ ==========
-
 var _data: Array = []
 var _size: int = 0
-
-# ========== КОНСТРУКТОР ==========
 
 func _init(initial_capacity: int = 0) -> void:
 	if initial_capacity > 0:
 		_data.resize(initial_capacity)
 	_size = 0
-
-# ========== ОСНОВНЫЕ МЕТОДЫ ==========
 
 func append(value: Variant) -> void:
 	if _size >= _data.size():
@@ -36,8 +30,6 @@ func resize(new_size: int) -> void:
 	if new_size > _data.size():
 		_data.resize(new_size)
 	_size = new_size
-
-# ========== ДОПОЛНИТЕЛЬНЫЕ ПОЛЕЗНЫЕ МЕТОДЫ ==========
 
 func get_value(index: int) -> Variant:
 	if index < 0 or index >= _size:
@@ -72,6 +64,12 @@ func reserve(capacity: int) -> void:
 func shrink() -> void:
 	if _size < _data.size():
 		_data.resize(_size)
+
+func swap_and_clear() -> Array:
+	var old = _data
+	_data = []
+	_size = 0
+	return old
 
 func append_array(arr: Array) -> void:
 	var count: int = arr.size()
