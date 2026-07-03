@@ -3,7 +3,6 @@ class_name NetGameConfigBase
 
 @export var transfer_mode: MultiplayerPeer.TransferMode = MultiplayerPeer.TransferMode.TRANSFER_MODE_RELIABLE
 @export var channel: int = 0
-@export var immediate: bool = false
 
 var buffer: NetGameBuffer = NetGameBuffer.new()
 
@@ -13,10 +12,6 @@ func flag_buffer(buffer: NetGameBuffer) -> NetGameConfigBase:
 
 func flag_channel(channel: int) -> NetGameConfigBase:
 	self.channel = channel
-	return self
-
-func flag_immediate(immediate: int) -> NetGameConfigBase:
-	self.immediate = immediate
 	return self
 
 func flag_transfer_mode_reliable() -> NetGameConfigBase:

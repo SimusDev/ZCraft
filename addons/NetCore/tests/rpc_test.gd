@@ -31,4 +31,4 @@ func _test_rpc() -> void:
 
 func _process(delta: float) -> void:
 	for i in 700:
-		NetGameRpc.invoke(_test_rpc, Vector3(), Vector3(), Vector3())
+		NetGameRpc.invoke(_test_rpc, 555, 133, 333)

@@ -107,6 +107,7 @@ func _process_rpc_batch_task(index: int, unprocessed: Dictionary[int, Array]) ->
 	var rpcs: Array = unprocessed[index]
 	
 	var buffer: NetGameBuffer = NetGameBuffer.new()
+	var packet_buffer: NetGameBuffer = NetGameBuffer.new()
 	
 	var cached_callable_id: Dictionary[Callable, int] = {}
 	var cached_configs: Dictionary[int, NetGameRpcConfig] = {}
@@ -130,8 +131,25 @@ func _process_rpc_batch_task(index: int, unprocessed: Dictionary[int, Array]) ->
 			push_error.call_deferred("Failed to find config %s, %s, %s" % [callable_id, callable.get_object(), callable])
 			continue
 		
+		var net_id: NetCoreObjectID = NetCoreObjectID.get_or_create(object)
+		
 		var serialized_args: PackedByteArray = serialize_args(buffer, rpc_info[RpcInfoKey.Args])
 		
+		var validation: bool = _validate_config(config, NetGame.unique_id, NetGame.get_object_authority(object))
+		if !validation:
+			return
+		
+		packet_buffer.clear()
+		packet_buffer.write_int(net_id.get_network_id())
+		packet_buffer.write_bytes(serialized_args)
+		NetGame.send_packet.call_deferred(NetGame.PacketType.RpcRequest, packet_buffer.get_data())
+
+func _validate_config(config: NetGameRpcConfig, from_peer: int, authority: int) -> bool:
+	if config.permission == config.Permission.Server:
+		return from_peer == 1
+	elif config.permission == config.Permission.Authority:
+		return from_peer == authority
+	return true
 
 func serialize_args(buffer: NetGameBuffer, array: Array) -> PackedByteArray:
 	buffer.write_int(array.size())
