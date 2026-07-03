@@ -29,6 +29,10 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[dotnet]
+
+project/assembly_name="ZCraft"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/NetCore/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/NetGame/plugin.cfg")

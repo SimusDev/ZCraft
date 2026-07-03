@@ -14,6 +14,7 @@ func swap_and_clear() -> Dictionary[int, Array]:
 	var local: Dictionary[int, Array] = _data
 	_data = {}
 	_position = 0
+	_index = 0
 	return local
 
 func _init(batch_count: int = 256) -> void:

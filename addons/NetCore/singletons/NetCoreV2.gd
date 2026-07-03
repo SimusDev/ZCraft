@@ -349,12 +349,18 @@ func _process_all_received_packets_threaded() -> void:
 
 func _process_received_packet_task(index: int, packets: Array[Dictionary], result: Array[Dictionary]) -> void:
 	var packet: Dictionary[PacketKey, Variant] = packets[index]
-	var bytes: PackedByteArray = _try_decompress(packet[PacketKey.Bytes])
+	var bytes: PackedByteArray = packet[PacketKey.Bytes]
+	var peer: int = packet[PacketKey.Peer]
+	
+	bytes = _try_decompress(bytes)
 	var raw: Array[PackedByteArray] = _unbatch_packets(bytes)
 	
 	var received_result: Dictionary[ReceivedPacketKey, Variant] = {
 		ReceivedPacketKey.PacketArray: raw,
-		ReceivedPacketKey.Peer: packet[PacketKey.Peer],
+		ReceivedPacketKey.Peer: peer,
 	}
 	
 	result[index] = received_result
+	
+	
+	

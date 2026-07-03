@@ -10,8 +10,10 @@ func _ready() -> void:
 	NetGameRpcRegistry.new([_test_rpc])
 
 func _on_button_pressed() -> void:
-	NetGameRpc.invoke(_test_rpc)
-	return
+	#for i in 100:
+		#NetGameRpc.invoke(_test_rpc)
+	#
+	#return
 	
 	for i in 10:
 		NetGame.send_packet(NetGame.PacketType.RpcRequest,var_to_bytes("hello_world!"),1)
@@ -26,8 +28,7 @@ func _on_packet_received(type: NetGame.PacketType, bytes: PackedByteArray, peer:
 
 func _test_rpc() -> void:
 	pass
-	#NetGameRpc.invoke(_test_rpc)
 
 func _process(delta: float) -> void:
-	for i in 20000:
-		NetGameRpc.invoke(_test_rpc)
+	for i in 700:
+		NetGameRpc.invoke(_test_rpc, Vector3(), Vector3(), Vector3())
