@@ -14,21 +14,25 @@ func _ready():
 	
 	camera.make_current()
 	
-	#SimusDev.ui.interface_opened_or_closed.connect(_on_interface_opened_or_closed)
+	InterfaceStack.on_active_changed.connect(
+		_interface_stack_changed
+	)
 	
 	_set_capture_mode()
 
+func _interface_stack_changed() -> void:
+	_set_capture_mode()
 
 func _set_capture_mode() -> void:
-	#if SimusDev.ui.has_active_interface():
-		#Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	#else:
+	if InterfaceStack.has_active():
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-#
-#func _on_interface_opened_or_closed(_node: Node, _status: bool) -> void:
-	#_set_capture_mode()
 
 func _unhandled_input(event):
+	if InterfaceStack.has_active():
+		return
+	
 	if event is InputEventMouseMotion:
 		var relative:Vector2 = event.relative * (sensitivity * SENSITIVITY_NORMALIZE_VALUE)
 		

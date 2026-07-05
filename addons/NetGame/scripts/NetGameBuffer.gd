@@ -16,6 +16,8 @@ enum DataType {
 	INT_32,
 	INT_64,
 	STRING,
+	ARRAY,
+	ARRAY_COMPLEX,
 }
 
 var _auto_write_functions: Dictionary[int, Callable] = {
@@ -176,3 +178,19 @@ func write_string(string: String) -> NetGameBuffer:
 func read_string() -> String:
 	var type: DataType = _read_type()
 	return _base.get_string()
+
+func write_array(array: Array) -> NetGameBuffer:
+	_write_type(DataType.ARRAY)
+	_base.put_var(array)
+	return self
+
+func read_array(array: Array) -> Array:
+	var type: DataType = _read_type()
+	return _base.get_var() as Array
+
+func write_array_complex(array: Array) -> NetGameBuffer:
+	_write_type(DataType.ARRAY_COMPLEX)
+	return self
+
+func read_array_complex(array: Array) -> Array:
+	return []

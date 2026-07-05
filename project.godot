@@ -12,15 +12,18 @@ config_version=5
 
 config/name="ZCraft"
 run/main_scene="uid://b7mijap51eoyi"
-config/features=PackedStringArray("4.7", "Forward Plus")
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
+Panku="*uid://cyftuo4syatlv"
+InterfaceStack="*uid://cidx3lachl84n"
 NetworkManager="*uid://bciqak7k4xrtd"
 NetCore="*uid://cqrs1vm2rngo1"
 NetGame="*uid://4ag688ghqvyu"
 NetGameRpc="*uid://dujh4xyfbonri"
+GDNet="*uid://dbr3vod01qpcy"
 
 [display]
 
@@ -35,7 +38,7 @@ project/assembly_name="ZCraft"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/NetCore/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/NetGame/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCore/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/NetGame/plugin.cfg", "res://addons/panku_console/plugin.cfg")
 
 [gui]
 
@@ -112,6 +115,7 @@ crouch={
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

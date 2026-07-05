@@ -33,10 +33,11 @@ func _ready() -> void:
 	set_process_input(enabled)
 	
 	#SimusDev.ui.interface_opened_or_closed.connect(_update_input_status)
+	InterfaceStack.on_active_changed.connect(_update_input_status)
+	_update_input_status()
 
-func _update_input_status(_node:Node, _status:bool) -> void:
-	#input_enabled = !SimusDev.ui.has_active_interface()
-	pass
+func _update_input_status() -> void:
+	input_enabled = !InterfaceStack.has_active()
 
 func _bind_character() -> void:
 	if !custom_character:

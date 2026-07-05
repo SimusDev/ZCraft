@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://bciqak7k4xrtd"]
 
 [ext_resource type="Script" uid="uid://begl2is6eo0ms" path="res://scripts/network/NetworkManager.gd" id="1_wb1um"]
+[ext_resource type="Script" uid="uid://b7insak4nr6f" path="res://addons/GDNet/scripts/GDNetOptimizedSend.cs" id="2_i00mm"]
 
 [node name="NetworkManager" type="Node" unique_id=1793143406]
 script = ExtResource("1_wb1um")
+
+[node name="GDNetOptimizedSend" type="Node" parent="." unique_id=714269479]
+script = ExtResource("2_i00mm")
+metadata/_custom_type_script = "uid://b7insak4nr6f"
