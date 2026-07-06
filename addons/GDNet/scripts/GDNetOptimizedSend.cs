@@ -1,26 +1,22 @@
+using GDNetUtils;
 using Godot;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 [GlobalClass]
 public partial class GDNetOptimizedSend : Node
 {
 	private SceneMultiplayer _api;
 
-	private Mutex _pendingPacketMutex = new();
+	private ChunkedList<QueuedPacket> _pendingChunkedPacketsQueue = new(256);
 	private ConcurrentQueue<QueuedPacket> _pendingPacketsQueue = new();
 	private ConcurrentQueue<ReceivedPacket> _pendingReceivedPacketsQueue = new();
 
 	private ConcurrentQueue<BatchData> _pendingBatchesToCompress = new();
-
-	private GDNetBuffer _mainThreadBuffer = new();
 
 	public const int MTU = 1350;
 
@@ -106,67 +102,69 @@ public partial class GDNetOptimizedSend : Node
 		CompressPendingBatches();
 	}
 
-	private void CollectAndBatchPendingPackets()
-	{
-		var packets = new List<QueuedPacket>();
-		while (_pendingPacketsQueue.TryDequeue(out var packet))
-		{
-			packets.Add(packet);
-		}
+    private void CollectAndBatchPendingPackets()
+    {
+        var packets = new List<QueuedPacket>();
+        while (_pendingPacketsQueue.TryDequeue(out var packet))
+        {
+            packets.Add(packet);
+        }
 
+        if (packets.Count == 0) return;
 
-		if (packets.Count == 0) return;
+        const int chunkSize = 200;
+        int chunkCount = (packets.Count + chunkSize - 1) / chunkSize;
+        var results = new List<KeyValuePair<BatchKey, BatchData>>[chunkCount];
+        for (int i = 0; i < chunkCount; i++)
+        {
+            results[i] = new List<KeyValuePair<BatchKey, BatchData>>();
+        }
 
-		const int chunkSize = 200;
-		var chunks = new List<List<QueuedPacket>>();
-		for (int i = 0; i < packets.Count; i += chunkSize)
-		{
-			chunks.Add(packets.GetRange(i, Math.Min(chunkSize, packets.Count - i)));
-		}
+        Parallel.For(0, chunkCount, (chunkIndex) =>
+        {
+            int start = chunkIndex * chunkSize;
+            int end = Math.Min(start + chunkSize, packets.Count);
+            var localBatches = new Dictionary<BatchKey, BatchData>();
 
-		var results = new ConcurrentBag<KeyValuePair<BatchKey, BatchData>>();
+            for (int i = start; i < end; i++)
+            {
+                var packet = packets[i];
+                var key = new BatchKey(packet.TargetPeer, packet.Mode, packet.Channel);
 
-		Parallel.ForEach(chunks, (chunk) =>
-		{
-			var localBatches = new Dictionary<BatchKey, BatchData>();
+                if (!localBatches.TryGetValue(key, out var data))
+                {
+                    data = new BatchData(key.TargetPeer, key.Mode, key.Channel);
+                    localBatches[key] = data;
+                }
 
-			foreach (var packet in chunk)
-			{
-				var key = new BatchKey(packet.TargetPeer, packet.Mode, packet.Channel);
+                data.Buffer.WriteBytes(packet.Data);
 
-				if (!localBatches.TryGetValue(key, out var data))
-				{
-					data = new BatchData(key.TargetPeer, key.Mode, key.Channel);
-					localBatches[key] = data;
-				}
+                if (data.Buffer.Size >= MTU)
+                {
+                    lock (results[chunkIndex]) { results[chunkIndex].Add(new(key, data)); }
+                    localBatches[key] = new BatchData(key.TargetPeer, key.Mode, key.Channel);
+                }
+            }
 
-				data.Buffer.WriteBytes(packet.Data);
+            foreach (var kvp in localBatches)
+            {
+                if (kvp.Value.Buffer.Size > 0)
+                {
+                    lock (results[chunkIndex]) { results[chunkIndex].Add(kvp); }
+                }
+            }
+        });
 
-				if (data.Buffer.Size >= MTU)
-				{
-					results.Add(new KeyValuePair<BatchKey, BatchData>(key, data));
-					localBatches[key] = new BatchData(key.TargetPeer, key.Mode, key.Channel);
-				}
-			}
+        for (int i = 0; i < chunkCount; i++)
+        {
+            foreach (var result in results[i])
+            {
+                _pendingBatchesToCompress.Enqueue(result.Value);
+            }
+        }
+    }
 
-			foreach (var kvp in localBatches)
-			{
-				if (kvp.Value.Buffer.Size > 0)
-				{
-					results.Add(kvp);
-				}
-			}
-		});
-
-		
-		foreach (var result in results)
-		{
-			_pendingBatchesToCompress.Enqueue(result.Value);
-		}
-
-	}
-
-	private void CompressPendingBatches()
+    private void CompressPendingBatches()
 	{
 		var datas = new List<BatchData>();
 		while (_pendingBatchesToCompress.TryDequeue(out var data))

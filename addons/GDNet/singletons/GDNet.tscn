@@ -2,20 +2,33 @@
 
 [ext_resource type="Script" uid="uid://sf3isukdocat" path="res://addons/GDNet/singletons/GDNet.cs" id="1_ylald"]
 [ext_resource type="Script" uid="uid://cma1mr3yn6omi" path="res://addons/GDNet/scripts/GDNetRpcProcessor.cs" id="2_ngjsr"]
+[ext_resource type="Script" uid="uid://ctj2phqbs16uj" path="res://addons/GDNet/scripts/GDNetGarbageCollector.cs" id="2_y52bk"]
 [ext_resource type="Script" uid="uid://b7insak4nr6f" path="res://addons/GDNet/scripts/GDNetOptimizedSend.cs" id="3_j1wno"]
+[ext_resource type="Script" uid="uid://iiyffevswk8u" path="res://addons/GDNet/scripts/GDNetMeta.cs" id="5_671xw"]
 
-[node name="GDNet" type="Node" unique_id=340429195 node_paths=PackedStringArray("_tickTimer", "_optimizedSend")]
+[node name="GDNet" type="Node" unique_id=340429195 node_paths=PackedStringArray("_tickTimer", "_garbageCollector", "_meta", "_optimizedSend", "_rpcProcessor")]
 script = ExtResource("1_ylald")
-_tickTimer = NodePath("Timer")
+_tickTimer = NodePath("NetTick")
+_garbageCollector = NodePath("GDNetGarbageCollector")
+_meta = NodePath("GDNetMeta")
 _optimizedSend = NodePath("GDNetOptimizedSend")
+_rpcProcessor = NodePath("GDNetRpcProcessor")
+
+[node name="NetTick" type="Timer" parent="." unique_id=2007884027]
+wait_time = 0.05
+
+[node name="GDNetGarbageCollector" type="Node" parent="." unique_id=465705674]
+script = ExtResource("2_y52bk")
+metadata/_custom_type_script = "uid://ctj2phqbs16uj"
 
 [node name="GDNetOptimizedSend" type="Node" parent="." unique_id=189268541]
 script = ExtResource("3_j1wno")
 metadata/_custom_type_script = "uid://b7insak4nr6f"
 
-[node name="Timer" type="Timer" parent="." unique_id=2007884027]
-wait_time = 0.05
-
 [node name="GDNetRpcProcessor" type="Node" parent="." unique_id=1806956576]
 script = ExtResource("2_ngjsr")
 metadata/_custom_type_script = "uid://cma1mr3yn6omi"
+
+[node name="GDNetMeta" type="Node" parent="." unique_id=1700031025]
+script = ExtResource("5_671xw")
+metadata/_custom_type_script = "uid://iiyffevswk8u"
