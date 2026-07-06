@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cvr38qvwqfimy" path="res://scripts/PlayerHead.gd" id="5_646ly"]
 [ext_resource type="Texture2D" uid="uid://cljdd52sbh7mm" path="res://textures/sas.png" id="5_cxel1"]
 [ext_resource type="Script" uid="uid://cuw2yfx1ivjp2" path="res://scripts/state_machine/StateMachineMovementState.gd" id="5_h4xmw"]
+[ext_resource type="AudioStream" uid="uid://et7rtgop5ajb" path="res://audio/osas.mp3" id="6_646ly"]
 
 [sub_resource type="GDScript" id="GDScript_i1jm3"]
 script/source = "extends CharacterBody3D
@@ -38,6 +39,14 @@ height = 3.338379
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_surgt"]
 albedo_color = Color(0.83137256, 0.7411765, 0.6862745, 1)
 
+[sub_resource type="GDScript" id="GDScript_h4xmw"]
+script/source = "extends CSGMesh3D
+
+func _ready() -> void:
+	if is_multiplayer_authority():
+		hide()
+"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fnvcv"]
 albedo_texture = ExtResource("5_cxel1")
 uv1_scale = Vector3(1.67, 0.675, 1.67)
@@ -69,8 +78,22 @@ script/source = "extends Node3D
 
 @export var ap: AnimationPlayer
 
+var shkala: float = 0.0
+
+
 func _ready() -> void:
 	state_machine.state_enter.connect(_se)
+
+func _process(delta: float) -> void:
+	if state_machine.current_state_is(\"Crouched\"):
+		shkala += 1.0 * delta
+	else:
+		shkala -= 0.5 * delta
+	
+	if shkala > 2.0:
+		shkala = 0.0
+		$pisas/GPUParticles3D.emitting = true
+		$AudioStreamPlayer3D.play()
 
 func _se(s):
 	if s == \"Idle\":
@@ -124,7 +147,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("../PlayerHead/head:position")
+tracks/2/path = NodePath("../PlayerHead/neck/head:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -362,7 +385,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("../PlayerHead/head:position")
+tracks/2/path = NodePath("../PlayerHead/neck/head:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -517,6 +540,19 @@ radius = 0.103027344
 radius = 0.185
 height = 0.32
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sgold"]
+direction = Vector3(0, 0, -1)
+spread = 0.025
+initial_velocity_min = 6.33
+initial_velocity_max = 6.33
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ku30d"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_hk5hr"]
+material = SubResource("StandardMaterial3D_ku30d")
+radius = 0.365
+height = 0.361
+
 [node name="Player" type="CharacterBody3D" unique_id=1718470725]
 script = SubResource("GDScript_i1jm3")
 
@@ -578,20 +614,24 @@ metadata/_custom_type_script = "uid://cvr38qvwqfimy"
 [node name="Camera3D" type="Camera3D" parent="PlayerHead" unique_id=451711032]
 fov = 90.0
 
-[node name="head" type="CSGMesh3D" parent="PlayerHead" unique_id=1251216475]
-transform = Transform3D(0.99514556, 0, 0, 0, 0.99514556, 0, 0, 0, 0.99514556, 0, 0.50000006, 0)
+[node name="neck" type="Node3D" parent="PlayerHead" unique_id=11654118]
+transform = Transform3D(0.99514556, 0, 0, 0, 0.99514556, 0, 0, 0, 0.99514556, 0, -0.5, -0.08423048)
+
+[node name="head" type="CSGMesh3D" parent="PlayerHead/neck" unique_id=1251216475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50000006, 0)
 mesh = SubResource("SphereMesh_h4xmw")
 material = SubResource("StandardMaterial3D_surgt")
+script = SubResource("GDScript_h4xmw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerHead/head" unique_id=1507519912]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerHead/neck/head" unique_id=1507519912]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27938935, 0.08095944, -0.42605114)
 mesh = SubResource("SphereMesh_sx3cy")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="PlayerHead/head" unique_id=1696186287]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="PlayerHead/neck/head" unique_id=1696186287]
 transform = Transform3D(0.7422382, 0, 1.0305253, 0, 1.27, 0, -1.0305253, 0, 0.7422382, -0.22304974, 0.08095944, -0.42605114)
 mesh = SubResource("SphereMesh_2mcqg")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="PlayerHead/head" unique_id=1252716898]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="PlayerHead/neck/head" unique_id=1252716898]
 transform = Transform3D(1, 0, 0, 0, 0.95295346, 0.30311683, 0, -0.30311683, 0.95295346, 0, -0.16398132, -0.080185585)
 mesh = SubResource("TorusMesh_sx3cy")
 
@@ -624,9 +664,6 @@ transform = Transform3D(0.99912363, 0, 0, 0, 0.706487, 0.70648724, 0, -0.7064871
 mesh = SubResource("CapsuleMesh_llf81")
 material = SubResource("StandardMaterial3D_surgt")
 
-[node name="neck" type="Node3D" parent="pacan" unique_id=11654118]
-transform = Transform3D(0.99514556, 0, 0, 0, 0.99514556, 0, 0, 0, 0.99514556, 0, 0.692961, 0)
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="pacan" unique_id=842835494]
 libraries/ = SubResource("AnimationLibrary_h4xmw")
 
@@ -644,3 +681,15 @@ mesh = SubResource("SphereMesh_fnvcv")
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="pacan/pisas" unique_id=1219693662]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15680975, 0, 0)
 mesh = SubResource("SphereMesh_fnvcv")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="pacan/pisas" unique_id=1048522708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.0667067)
+emitting = false
+lifetime = 0.6900000000000001
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_sgold")
+draw_pass_1 = SubResource("SphereMesh_hk5hr")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="pacan" unique_id=818339502]
+stream = ExtResource("6_646ly")
+volume_db = -16.76
