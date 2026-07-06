@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dl0i78w1kq82h" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_normal.png" id="4_i1jm3"]
 [ext_resource type="Script" uid="uid://b0fjpddhg1okx" path="res://scripts/ZMultiplayerSpawner.gd" id="5_qxiha"]
 [ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="6_252at"]
+[ext_resource type="Texture2D" uid="uid://djurwv7ikdbtj" path="res://textures/images (3).jpg" id="8_qh0kd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
 sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
@@ -92,3 +93,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, -2.5923
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, 2.104356)
 
 [node name="Players" type="Node3D" parent="." unique_id=972499555]
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=1082553985]
+transform = Transform3D(0.395, 0, 0, 0, -0.0101883765, 0.39486858, 0, -0.39486858, -0.0101883765, 0, 0.58419657, 0)
+texture = ExtResource("8_qh0kd")
