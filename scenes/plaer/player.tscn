@@ -74,12 +74,18 @@ func _ready() -> void:
 
 func _se(s):
 	if s == \"Idle\":
+		$pisas.hide()
 		ap.play(\"idle\")
-	elif s == \"Walking\" or s == \"Crouched\" or s == \"CrouchedWalking\" or s == \"Running\":
+	elif s == \"Walking\" or s == \"CrouchedWalking\" or s == \"Running\":
+		$pisas.hide()
 		ap.play(\"walk\")
 	elif s == \"Floating\":
+		$pisas.hide()
 		ap.play(\"floating\")
 	
+	elif s == \"Crouched\":
+		$pisas.show()
+		ap.play(\"pipisas\")
 "
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
@@ -366,6 +372,34 @@ tracks/2/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0, 0.016, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_2mcqg"]
+resource_name = "pipisas"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("right_arm:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.51148325),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.261, -0.154, -0.781), Vector3(0.26066977, -0.15359472, -2.116442)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("right_arm:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.51148325),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.97912973, 0.24085544, 0), Vector3(0.55152404, 0.13264503, -0.23736478)]
+}
+
 [sub_resource type="Animation" id="Animation_646ly"]
 resource_name = "walk"
 length = 0.5034
@@ -472,8 +506,16 @@ _data = {
 &"RESET": SubResource("Animation_h4xmw"),
 &"floating": SubResource("Animation_cxel1"),
 &"idle": SubResource("Animation_llf81"),
+&"pipisas": SubResource("Animation_2mcqg"),
 &"walk": SubResource("Animation_646ly")
 }
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sx3cy"]
+radius = 0.103027344
+
+[sub_resource type="SphereMesh" id="SphereMesh_fnvcv"]
+radius = 0.185
+height = 0.32
 
 [node name="Player" type="CharacterBody3D" unique_id=1718470725]
 script = SubResource("GDScript_i1jm3")
@@ -578,7 +620,7 @@ mesh = SubResource("CapsuleMesh_llf81")
 material = SubResource("StandardMaterial3D_surgt")
 
 [node name="right_arm" type="CSGMesh3D" parent="pacan" unique_id=199083843]
-transform = Transform3D(0.99912375, 0, 0, 0, 0.7064871, 0.7064873, 0, -0.70648724, 0.7064872, 0.69513565, 0.043690458, 0.2)
+transform = Transform3D(0.99912363, 0, 0, 0, 0.706487, 0.70648724, 0, -0.7064871, 0.7064871, 0.69513565, 0.043690458, 0.2)
 mesh = SubResource("CapsuleMesh_llf81")
 material = SubResource("StandardMaterial3D_surgt")
 
@@ -587,3 +629,18 @@ transform = Transform3D(0.99514556, 0, 0, 0, 0.99514556, 0, 0, 0, 0.99514556, 0,
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="pacan" unique_id=842835494]
 libraries/ = SubResource("AnimationLibrary_h4xmw")
+
+[node name="pisas" type="Node3D" parent="pacan" unique_id=1296190625]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.52290064, -0.40185905)
+
+[node name="pisa" type="MeshInstance3D" parent="pacan/pisas" unique_id=247055946]
+transform = Transform3D(1, 0, 0, 0, -0.03208088, -0.9994853, 0, 0.9994853, -0.03208088, 0, 0.11620006, -1.0264349)
+mesh = SubResource("CapsuleMesh_sx3cy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="pacan/pisas" unique_id=655364502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19466323, 0, 0)
+mesh = SubResource("SphereMesh_fnvcv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="pacan/pisas" unique_id=1219693662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15680975, 0, 0)
+mesh = SubResource("SphereMesh_fnvcv")
