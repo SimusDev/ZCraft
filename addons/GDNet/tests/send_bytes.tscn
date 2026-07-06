@@ -10,6 +10,20 @@ script = ExtResource("1_c7v1x")
 script = ExtResource("1_vx3mr")
 metadata/_custom_type_script = "uid://b7insak4nr6f"
 
+[node name="Server" type="Button" parent="." unique_id=1131354662]
+offset_left = 481.0
+offset_top = 29.0
+offset_right = 1127.0
+offset_bottom = 74.0
+text = "Server"
+
+[node name="Client" type="Button" parent="." unique_id=217032024]
+offset_left = 481.0
+offset_top = 79.0
+offset_right = 1127.0
+offset_bottom = 124.0
+text = "Client"
+
 [node name="Button" type="Button" parent="." unique_id=1236039403]
 offset_left = 80.0
 offset_top = 123.0
@@ -19,11 +33,8 @@ text = "SEND"
 
 [node name="Timer" type="Timer" parent="." unique_id=1728078611]
 wait_time = 0.031
-autostart = true
 
-[node name="Button" type="Button" parent="Timer" unique_id=1131354662]
-offset_right = 646.0
-offset_bottom = 45.0
-
+[connection signal="pressed" from="Server" to="." method="_on_server_pressed"]
+[connection signal="pressed" from="Client" to="." method="_on_client_pressed"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

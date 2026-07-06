@@ -1,10 +1,21 @@
 [gd_scene format=3 uid="uid://dbr3vod01qpcy"]
 
 [ext_resource type="Script" uid="uid://sf3isukdocat" path="res://addons/GDNet/singletons/GDNet.cs" id="1_ylald"]
+[ext_resource type="Script" uid="uid://cma1mr3yn6omi" path="res://addons/GDNet/scripts/GDNetRpcProcessor.cs" id="2_ngjsr"]
+[ext_resource type="Script" uid="uid://b7insak4nr6f" path="res://addons/GDNet/scripts/GDNetOptimizedSend.cs" id="3_j1wno"]
 
-[node name="GDNet" type="Node" unique_id=340429195 node_paths=PackedStringArray("_tickTimer")]
+[node name="GDNet" type="Node" unique_id=340429195 node_paths=PackedStringArray("_tickTimer", "_optimizedSend")]
 script = ExtResource("1_ylald")
 _tickTimer = NodePath("Timer")
+_optimizedSend = NodePath("GDNetOptimizedSend")
+
+[node name="GDNetOptimizedSend" type="Node" parent="." unique_id=189268541]
+script = ExtResource("3_j1wno")
+metadata/_custom_type_script = "uid://b7insak4nr6f"
 
 [node name="Timer" type="Timer" parent="." unique_id=2007884027]
 wait_time = 0.05
+
+[node name="GDNetRpcProcessor" type="Node" parent="." unique_id=1806956576]
+script = ExtResource("2_ngjsr")
+metadata/_custom_type_script = "uid://cma1mr3yn6omi"

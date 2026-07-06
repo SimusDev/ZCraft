@@ -1,10 +1,9 @@
 using Godot;
 using System;
 
-[GlobalClass]
+
 public partial class GDNetRpc : RefCounted
 {
-
 	public static Godot.Collections.Dictionary<string, Variant> DefaultConfig = new(){
 
 		["permission"] = "authority",
@@ -12,18 +11,6 @@ public partial class GDNetRpc : RefCounted
 		["channel"] = 0,
 
 	};
-
-	private static bool Validate(long peer, long authority, Godot.Collections.Dictionary<string, Variant> config)
-	{
-		string permission = config["permission"].AsString();
-
-		return permission switch
-		{
-			"authority" => peer == authority,
-			"server" => peer == 1,
-			_ => true
-		};
-	}
 
 	public static GDNetRpc Config(Callable callable, Godot.Collections.Dictionary<string, Variant> config)
 	{
