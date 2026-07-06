@@ -16,8 +16,7 @@ public partial class GDNetOptimizedSend : Node
 
 	private Mutex _pendingPacketMutex = new();
 	private ConcurrentQueue<QueuedPacket> _pendingPacketsQueue = new();
-
-	private ConcurrentDictionary<BatchKey, BatchData> _pendingBatches = new();
+	private ConcurrentQueue<ReceivedPacket> _pendingReceivedPacketsQueue = new();
 
 	private ConcurrentQueue<BatchData> _pendingBatchesToCompress = new();
 
@@ -45,19 +44,70 @@ public partial class GDNetOptimizedSend : Node
 
 	private void OnApiPeerPacket(long id, byte[] packet)
 	{
-		byte[] decompressed = TryDecompressBytes(packet);
-		GD.Print(decompressed);
+		_pendingReceivedPacketsQueue.Enqueue(
+			new ReceivedPacket(id, packet)
+			);
+
 	}
 
-	public void ProcessAll()
+	private void ProcessReceivedPackets()
 	{
+        var packets = new List<ReceivedPacket>();
+        while (_pendingReceivedPacketsQueue.TryDequeue(out var packet))
+        {
+            packets.Add(packet);
+        }
+
+        if (packets.Count == 0) return;
+
+        var decompressed = new byte[packets.Count][];
+        var unbatchResults = new List<byte[]>[packets.Count];
+
+        Parallel.For(0, packets.Count, (i) =>
+        {
+            decompressed[i] = TryDecompressBytes(packets[i].Data);
+        });
+
+        Parallel.For(0, packets.Count, (i) =>
+        {
+			byte[] rawBytes = decompressed[i];
+            unbatchResults[i] = TryUnbatchRawPackets(rawBytes);
+        });
+
+        for (int i = 0; i < packets.Count; i++)
+        {
+            var unbatch = unbatchResults[i];
+            if (unbatch == null || unbatch.Count == 0) continue;
+
+            foreach (var packetData in unbatch)
+            {
+				EmitSignal(SignalName.MultiplayerPeerPacket, packets[i].SenderId, packetData);
+            }
+        }
+    }
+
+	private List<byte[]> TryUnbatchRawPackets(byte[] bytes)
+	{
+		GDNetBuffer buffer = new();
+		buffer.SetBytes(bytes);
+		List<byte[]> result = new();
+		while(buffer.AvailableBytes > 0)
+		{
+            result.Add(buffer.ReadBytes());
+		}
+
+		return result;
+	}
+
+    public void ProcessAll()
+	{
+		ProcessReceivedPackets();
 		CollectAndBatchPendingPackets();
 		CompressPendingBatches();
 	}
 
 	private void CollectAndBatchPendingPackets()
 	{
-		// 1. Забираем все пакеты из очереди
 		var packets = new List<QueuedPacket>();
 		while (_pendingPacketsQueue.TryDequeue(out var packet))
 		{
@@ -67,7 +117,6 @@ public partial class GDNetOptimizedSend : Node
 
 		if (packets.Count == 0) return;
 
-		// 2. Разбиваем на чанки (по 200 пакетов)
 		const int chunkSize = 200;
 		var chunks = new List<List<QueuedPacket>>();
 		for (int i = 0; i < packets.Count; i += chunkSize)
@@ -75,12 +124,10 @@ public partial class GDNetOptimizedSend : Node
 			chunks.Add(packets.GetRange(i, Math.Min(chunkSize, packets.Count - i)));
 		}
 
-		// 3. Параллельная обработка чанков
 		var results = new ConcurrentBag<KeyValuePair<BatchKey, BatchData>>();
 
 		Parallel.ForEach(chunks, (chunk) =>
 		{
-			// Локальный словарь для этого чанка
 			var localBatches = new Dictionary<BatchKey, BatchData>();
 
 			foreach (var packet in chunk)
@@ -95,17 +142,13 @@ public partial class GDNetOptimizedSend : Node
 
 				data.Buffer.WriteBytes(packet.Data);
 
-				// Если батч переполнен — отправляем в очередь на сжатие
 				if (data.Buffer.Size >= MTU)
 				{
-					// Сохраняем результат
 					results.Add(new KeyValuePair<BatchKey, BatchData>(key, data));
-					// Создаём новый буфер для этого ключа
 					localBatches[key] = new BatchData(key.TargetPeer, key.Mode, key.Channel);
 				}
 			}
 
-			// Сохраняем оставшиеся батчи
 			foreach (var kvp in localBatches)
 			{
 				if (kvp.Value.Buffer.Size > 0)
@@ -125,7 +168,6 @@ public partial class GDNetOptimizedSend : Node
 
 	private void CompressPendingBatches()
 	{
-		// 1. Забираем все батчи из очереди
 		var datas = new List<BatchData>();
 		while (_pendingBatchesToCompress.TryDequeue(out var data))
 		{
@@ -134,23 +176,19 @@ public partial class GDNetOptimizedSend : Node
 
 		if (datas.Count == 0) return;
 
-		// 2. Создаём массив для хранения сжатых данных с индексами
 		var compressedData = new (int Index, BatchData Data)[datas.Count];
 
-		// 3. Параллельно сжимаем, сохраняя индекс
 		Parallel.For(0, datas.Count, (i) =>
 		{
-			var pData = datas[i];
-			var compressed = TryCompressBytes(pData.Buffer.GetBytes());
+			BatchData pData = datas[i];
+			byte[] compressed = TryCompressBytes(pData.Buffer.GetBytes());
 			pData.Buffer.SetBytes(compressed);
 			compressedData[i] = (i, pData);
 		});
 
-		// 4. Восстанавливаем порядок по индексу и отправляем
 		for (int i = 0; i < compressedData.Length; i++)
 		{
 			var data = compressedData[i].Data;
-			// Отправляем данные в правильном порядке
 			SendBytesInternal(data.Buffer.GetBytes(), (int)data.TargetPeer, data.Mode, data.Channel);
 		}
 	}
@@ -159,13 +197,15 @@ public partial class GDNetOptimizedSend : Node
 	{
 		int length = bytes.Length;
 
-		if (length < CompressionThresholdDeflate)
-		{
-			return bytes;
-		}
-
 		using var stream = new MemoryStream();
 		using var writer = new BinaryWriter(stream);
+
+		if (length < CompressionThresholdDeflate)
+		{
+			writer.Write((byte)CompressHeader.None);
+			writer.Write(bytes);
+			return stream.ToArray();
+		}
 
 		if (length >= CompressionThresholdZstd)
 		{
@@ -187,7 +227,7 @@ public partial class GDNetOptimizedSend : Node
 
 	private byte[] TryDecompressBytes(byte[] bytes)
 	{
-		using var stream = new MemoryStream();
+		using var stream = new MemoryStream(bytes);
 		using var reader = new BinaryReader(stream);
 
 		var header = (CompressHeader)reader.ReadByte();
@@ -213,8 +253,6 @@ public partial class GDNetOptimizedSend : Node
 		}
 	}
 
-
-
 	private struct QueuedPacket
 	{
 		public QueuedPacket(byte[] data, int targetPeer, MultiplayerPeer.TransferModeEnum mode, int channel)
@@ -233,6 +271,12 @@ public partial class GDNetOptimizedSend : Node
 
 	private struct ReceivedPacket
 	{
+		public ReceivedPacket(long senderId, byte[] data)
+		{
+			SenderId = senderId;
+			Data = data;
+		}
+
 		public long SenderId;
 		public byte[] Data;
 	}

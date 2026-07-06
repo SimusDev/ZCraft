@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c4sqqx1h0gmtc"]
 
 [ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
+[ext_resource type="Script" uid="uid://4kp5fct8fw7p" path="res://scripts/world/Z_WorldTicker.gd" id="2_252at"]
 [ext_resource type="Texture2D" uid="uid://dgwjpc7ldm22v" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055.webp" id="2_gbddb"]
 [ext_resource type="Texture2D" uid="uid://c6x2iiuplujlj" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_ambient.png" id="3_qxiha"]
 [ext_resource type="Texture2D" uid="uid://dl0i78w1kq82h" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_normal.png" id="4_i1jm3"]
@@ -41,7 +42,11 @@ uv1_triplanar = true
 [node name="World" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
 
-[node name="ZMultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389 node_paths=PackedStringArray("spawn_points")]
+[node name="Z_WorldTicker" type="Node3D" parent="." unique_id=596288572]
+script = ExtResource("2_252at")
+metadata/_custom_type_script = "uid://4kp5fct8fw7p"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389 node_paths=PackedStringArray("spawn_points")]
 _spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
 spawn_path = NodePath("../Players")
 script = ExtResource("5_qxiha")

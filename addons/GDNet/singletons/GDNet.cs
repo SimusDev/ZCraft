@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Concurrent;
 
 public partial class GDNet : Node
 {
@@ -17,12 +16,16 @@ public partial class GDNet : Node
 
 	[Export] private Timer _tickTimer;
 
+	public event Action<PacketType, byte[], long> OnNetworkPacket;
+
 	private MultiplayerPeer.ConnectionStatus _connectionStatus = MultiplayerPeer.ConnectionStatus.Disconnected;
 	public bool IsConnectedToServer = false;
 	public bool IsServer = true;
 	public int UniqueID = ServerID;
 
-	public enum PacketHeader
+	[Export] private GDNetOptimizedSend _optimizedSend;
+
+	public enum PacketType
 	{
 		RpcRequest,
 		RpcReceive,
@@ -60,7 +63,11 @@ public partial class GDNet : Node
 
 	private void ConnectionStatusChanged()
 	{
-		switch(_connectionStatus)
+		IsServer = Multiplayer.IsServer();
+		IsConnectedToServer = _connectionStatus == MultiplayerPeer.ConnectionStatus.Connected;
+		UniqueID = Multiplayer.GetUniqueId();
+
+        switch (_connectionStatus)
 		{
 			case MultiplayerPeer.ConnectionStatus.Disconnected:
 				EmitSignal(SignalName.OnNetworkDisconnected);
@@ -77,24 +84,33 @@ public partial class GDNet : Node
 	public void Setup(SceneMultiplayer api)
 	{
 		GetTree().SetMultiplayer(api);
-		api.PeerPacket += OnApiPeerPacket;
-
+		_optimizedSend.Setup(api);
+		_optimizedSend.MultiplayerPeerPacket += OnOptimizedPeerPacket;
 	}
+    public void Setup()
+    {
+        Setup(new());
+    }
 
-	private void OnApiPeerPacket(long id, byte[] packet)
+    private void OnOptimizedPeerPacket(long id, byte[] bytes)
+    {
+		_buffer.DataArray = bytes;
+		_buffer.Seek(0);
+		
+		var type = (PacketType)_buffer.GetU8();
+		OnNetworkPacket?.Invoke(type, (byte[])_buffer.GetData(_buffer.GetAvailableBytes())[1], id);
+    }
+
+	public void SendPacket(PacketType type, byte[] bytes, int peer, MultiplayerPeer.TransferModeEnum mode, int channel)
 	{
+		_buffer.Clear();
+		_buffer.Seek(0);
+		_buffer.PutU8((byte)type);
+		_buffer.PutData(bytes);
+		_optimizedSend.MultiplayerSendBytes(_buffer.DataArray, peer, mode, channel);
 
 	}
 
-	public void Setup()
-	{
-		Setup(new());
-	}
-
-	public void RPCConfig(GodotObject @object, Godot.Collections.Dictionary<string, Variant> config)
-	{
-
-	}
 
 
 }
