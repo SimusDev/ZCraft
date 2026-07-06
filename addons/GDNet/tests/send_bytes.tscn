@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cekd8wko33ess"]
+
+[ext_resource type="Script" uid="uid://s4y2f0yfhknx" path="res://addons/GDNet/tests/send_bytes.gd" id="1_c7v1x"]
+[ext_resource type="Script" uid="uid://b7insak4nr6f" path="res://addons/GDNet/scripts/GDNetOptimizedSend.cs" id="1_vx3mr"]
+
+[node name="SendBytes" type="Node" unique_id=655833036]
+script = ExtResource("1_c7v1x")
+
+[node name="GDNetOptimizedSend" type="Node" parent="." unique_id=1689072976]
+script = ExtResource("1_vx3mr")
+metadata/_custom_type_script = "uid://b7insak4nr6f"
+
+[node name="Button" type="Button" parent="." unique_id=1236039403]
+offset_left = 80.0
+offset_top = 123.0
+offset_right = 384.0
+offset_bottom = 178.0
+text = "SEND"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

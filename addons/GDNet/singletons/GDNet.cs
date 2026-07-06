@@ -45,6 +45,11 @@ public partial class GDNet : Node
 		if (peer == null)
 			return;
 
+		if (peer is OfflineMultiplayerPeer)
+		{
+			return;
+		}
+
 		if (peer.GetConnectionStatus() != _connectionStatus)
 		{
 			_connectionStatus = peer.GetConnectionStatus();
@@ -55,8 +60,6 @@ public partial class GDNet : Node
 
 	private void ConnectionStatusChanged()
 	{
-		GD.Print(_connectionStatus.ToString());
-
 		switch(_connectionStatus)
 		{
 			case MultiplayerPeer.ConnectionStatus.Disconnected:

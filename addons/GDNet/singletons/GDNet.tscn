@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://sf3isukdocat" path="res://addons/GDNet/singletons/GDNet.cs" id="1_ylald"]
 
-[node name="GDNet" type="Node" unique_id=340429195]
+[node name="GDNet" type="Node" unique_id=340429195 node_paths=PackedStringArray("_tickTimer")]
 script = ExtResource("1_ylald")
+_tickTimer = NodePath("Timer")
 
 [node name="Timer" type="Timer" parent="." unique_id=2007884027]
 wait_time = 0.05

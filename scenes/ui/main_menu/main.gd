@@ -2,10 +2,18 @@ extends Control
 
 @onready var container: VBoxContainer = $VBoxContainer
 
+
+
 func _ready() -> void:
+	GDNet.OnNetworkReady.connect(
+		_network_ready
+	)
 	for c in container.get_children():
 		if c is BaseButton:
 			c.pressed.connect(_on_button_pressed.bind(c.name))
+
+func _network_ready() -> void:
+	get_tree().change_scene_to_file.call_deferred("res://scenes/world/World.tscn")
 
 func _on_button_pressed(btn_name: StringName) -> void:
 	match btn_name:
@@ -25,7 +33,6 @@ func _on_button_pressed(btn_name: StringName) -> void:
 			var error = current_peer.create_server(port, 32)
 			if error == OK:
 				multiplayer.multiplayer_peer = current_peer
-				get_tree().change_scene_to_file("res://scenes/world/World.tscn")
 			
 		"ButtonConnect":
 			var ip: String = "localhost"
