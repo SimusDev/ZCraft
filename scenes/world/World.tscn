@@ -8,6 +8,17 @@
 [ext_resource type="Script" uid="uid://b0fjpddhg1okx" path="res://scripts/ZMultiplayerSpawner.gd" id="5_qxiha"]
 [ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="6_252at"]
 [ext_resource type="Texture2D" uid="uid://djurwv7ikdbtj" path="res://textures/images (3).jpg" id="8_qh0kd"]
+[ext_resource type="Texture2D" uid="uid://cibhmbq2qtn8u" path="res://test/Jenny Belle.png" id="9_i08rc"]
+[ext_resource type="ArrayMesh" uid="uid://f1ypapojpvo4" path="res://test/model_0.obj" id="10_o0dc1"]
+[ext_resource type="ArrayMesh" uid="uid://b0clw11vdjhd0" path="res://test/model_1.obj" id="11_mmgww"]
+[ext_resource type="ArrayMesh" uid="uid://pihcuqjmwha7" path="res://test/model_2.obj" id="12_jy5j1"]
+[ext_resource type="ArrayMesh" uid="uid://cnkufjeyjfrnt" path="res://test/model_3.obj" id="13_umbuh"]
+[ext_resource type="ArrayMesh" uid="uid://cy0sieluqbi74" path="res://test/model_4.obj" id="14_juaju"]
+[ext_resource type="ArrayMesh" uid="uid://vwoqdrx6q83g" path="res://test/model_5.obj" id="15_lplgh"]
+[ext_resource type="ArrayMesh" uid="uid://cu2haitjm3f8t" path="res://test/model_6.obj" id="16_d6tky"]
+[ext_resource type="ArrayMesh" uid="uid://bxqopptk52jw1" path="res://test/model_7.obj" id="17_6mhxi"]
+[ext_resource type="ArrayMesh" uid="uid://bi3pe3lr22o52" path="res://test/model_8.obj" id="18_xclow"]
+[ext_resource type="ArrayMesh" uid="uid://dh5jsgrtip0nb" path="res://test/model_9.obj" id="19_hon07"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
 sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
@@ -39,6 +50,21 @@ normal_texture = ExtResource("4_i1jm3")
 ao_enabled = true
 ao_texture = ExtResource("3_qxiha")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dobjl"]
+albedo_texture = ExtResource("9_i08rc")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iehkj"]
+albedo_texture = ExtResource("9_i08rc")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iqxvy"]
+albedo_texture = ExtResource("9_i08rc")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pi2y4"]
+albedo_texture = ExtResource("9_i08rc")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xokg7"]
+albedo_texture = ExtResource("9_i08rc")
 
 [node name="World" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
@@ -97,3 +123,48 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, 2.10435
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=1082553985]
 transform = Transform3D(0.395, 0, 0, 0, -0.0101883765, 0.39486858, 0, -0.39486858, -0.0101883765, 0, 0.58419657, 0)
 texture = ExtResource("8_qh0kd")
+
+[node name="Model0" type="MeshInstance3D" parent="." unique_id=1107915356]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+material_override = SubResource("StandardMaterial3D_dobjl")
+mesh = ExtResource("10_o0dc1")
+
+[node name="Model1" type="MeshInstance3D" parent="." unique_id=337603079]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+material_override = SubResource("StandardMaterial3D_iehkj")
+mesh = ExtResource("11_mmgww")
+
+[node name="Model2" type="MeshInstance3D" parent="." unique_id=607687524]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+material_override = SubResource("StandardMaterial3D_iqxvy")
+mesh = ExtResource("12_jy5j1")
+
+[node name="Model3" type="MeshInstance3D" parent="." unique_id=574122366]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+material_override = SubResource("StandardMaterial3D_pi2y4")
+mesh = ExtResource("13_umbuh")
+
+[node name="Model4" type="MeshInstance3D" parent="." unique_id=1402953027]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+material_override = SubResource("StandardMaterial3D_xokg7")
+mesh = ExtResource("14_juaju")
+
+[node name="Model5" type="MeshInstance3D" parent="." unique_id=1628901114]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+mesh = ExtResource("15_lplgh")
+
+[node name="Model6" type="MeshInstance3D" parent="." unique_id=940998232]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+mesh = ExtResource("16_d6tky")
+
+[node name="Model7" type="MeshInstance3D" parent="." unique_id=836429523]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+mesh = ExtResource("17_6mhxi")
+
+[node name="Model8" type="MeshInstance3D" parent="." unique_id=757787004]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+mesh = ExtResource("18_xclow")
+
+[node name="Model9" type="MeshInstance3D" parent="." unique_id=294512162]
+transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
+mesh = ExtResource("19_hon07")

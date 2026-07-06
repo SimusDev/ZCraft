@@ -88,7 +88,8 @@ func _process(delta: float) -> void:
 	if state_machine.current_state_is(\"Crouched\"):
 		shkala += 1.0 * delta
 	else:
-		shkala -= 0.5 * delta
+		if shkala >= 0.5:
+			shkala -= 0.5 * delta
 	
 	if shkala > 2.0:
 		shkala = 0.0
@@ -392,7 +393,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.96666664),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 0.016, 0)]
+"values": [Vector3(0, 0.49, 0), Vector3(0, 0.526, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_2mcqg"]
