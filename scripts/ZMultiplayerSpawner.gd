@@ -1,4 +1,4 @@
-extends MultiplayerSpawner
+class_name ZMultiplayerSpawner extends MultiplayerSpawner
 
 @export var player_prefab: PackedScene
 @export var spawn_points: Array[Node3D]
