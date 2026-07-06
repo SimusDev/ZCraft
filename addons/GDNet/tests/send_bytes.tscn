@@ -17,4 +17,13 @@ offset_right = 384.0
 offset_bottom = 178.0
 text = "SEND"
 
+[node name="Timer" type="Timer" parent="." unique_id=1728078611]
+wait_time = 0.031
+autostart = true
+
+[node name="Button" type="Button" parent="Timer" unique_id=1131354662]
+offset_right = 646.0
+offset_bottom = 45.0
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
