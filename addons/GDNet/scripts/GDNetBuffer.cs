@@ -656,10 +656,10 @@ public partial class GDNetBuffer : RefCounted
         WriteType(DataType.Custom);
         WriteResource((Resource)obj.GetScript());
 
-        var buffer = new GDNetBuffer();
-        obj.Call(CustomSerializeMethod, buffer);
+        byte[] bytes = new byte[0];
+        obj.Call(CustomSerializeMethod, bytes);
 
-        WriteBytes(buffer.GetBytes());
+        WriteBytes(bytes);
         return this;
     }
 
@@ -670,10 +670,7 @@ public partial class GDNetBuffer : RefCounted
         Resource script = ReadResource();
         byte[] bytes = ReadBytes();
 
-        var buffer = new GDNetBuffer();
-        buffer.SetBytes(bytes);
-
-        return (GodotObject)script.Call(CustomDeserializeMethod, buffer);
+        return (GodotObject)script.Call(CustomDeserializeMethod, bytes);
     }
 
     #endregion

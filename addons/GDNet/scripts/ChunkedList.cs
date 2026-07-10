@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace GDNetUtils
 {
     public class ChunkedList<T> : IEnumerable<T>
     {
-        private readonly List<T[]> _chunks = new();
+        private List<T[]> _chunks = new();
         private readonly int _chunkSize;
         private int _count;
 
@@ -39,6 +39,7 @@ namespace GDNetUtils
                 Add(item);
             }
         }
+
         public int Count => _count;
         public int ChunkCount => _chunks.Count;
         public int ChunkSize => _chunkSize;
@@ -47,7 +48,6 @@ namespace GDNetUtils
         {
             if (index < 0 || index >= _chunks.Count)
                 throw new IndexOutOfRangeException($"Chunk index {index} out of range");
-
             return _chunks[index];
         }
 
@@ -55,24 +55,37 @@ namespace GDNetUtils
         {
             return _chunks;
         }
-        public void ProcessInParallel(Action<T[]> processChunk)
+
+        public List<T[]> TakeOwnership()
         {
-            var chunks = GetAllChunks();
-            System.Threading.Tasks.Parallel.ForEach(chunks, processChunk);
+            var chunks = _chunks;
+            _chunks = new List<T[]>();
+            _count = 0;
+            return chunks;
         }
-        public void ProcessInParallel(Action<int, T[]> processChunk)
+
+        public void ProcessInParallelAndClear(Action<T[]> processChunk)
         {
-            var chunks = GetAllChunks();
-            System.Threading.Tasks.Parallel.For(0, chunks.Count, (i) =>
+            var chunks = TakeOwnership();
+            if (chunks.Count == 0) return;
+            Parallel.ForEach(chunks, processChunk);
+        }
+
+        public void ProcessInParallelAndClear(Action<int, T[]> processChunk)
+        {
+            var chunks = TakeOwnership();
+            if (chunks.Count == 0) return;
+            Parallel.For(0, chunks.Count, (i) =>
             {
                 processChunk(i, chunks[i]);
             });
         }
 
-        public void ProcessElementsInParallel(Action<T> processElement)
+        public void ProcessElementsInParallelAndClear(Action<T> processElement)
         {
-            var chunks = GetAllChunks();
-            System.Threading.Tasks.Parallel.ForEach(chunks, (chunk) =>
+            var chunks = TakeOwnership();
+            if (chunks.Count == 0) return;
+            Parallel.ForEach(chunks, (chunk) =>
             {
                 for (int i = 0; i < chunk.Length; i++)
                 {

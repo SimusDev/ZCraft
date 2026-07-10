@@ -1,9 +1,30 @@
 using Godot;
+using Godot.NativeInterop;
 using System;
+using System.IO;
 
 public partial class GDNetRpcProcessor : Node
 {
-	static GDNetRpcProcessor Instance;
+	public static GDNetRpcProcessor Instance;
+
+    private readonly MemoryStream _stream = new();
+    private readonly BinaryWriter _writer;
+    private readonly BinaryReader _reader;
+
+	private GDNetBuffer _buffer = new();
+
+    public GDNetRpcProcessor()
+    {
+        _writer = new BinaryWriter(_stream);
+        _reader = new BinaryReader(_stream);
+    }
+
+    public enum RpcType: byte
+	{
+		All,
+		Target,
+		Async,
+	}
 
 	public static bool Validate(long peer, long authority, Godot.Collections.Dictionary<string, Variant> config)
 	{
@@ -16,6 +37,34 @@ public partial class GDNetRpcProcessor : Node
 			_ => true
 		};
 	}
+
+	public byte[] SerializeArgs(Godot.Collections.Array args)
+	{
+		_buffer.Clear();
+		_buffer.WriteInt(args.Count);
+		foreach (var arg in args)
+		{
+			_buffer.Write(arg);
+		}
+		return _buffer.GetBytes();
+	}
+
+	public Godot.Collections.Array DeserializeArgs(byte[] bytes)
+	{
+		_buffer.SetBytes(bytes);
+		_buffer.Seek(0);
+		long size = _buffer.ReadInt();
+
+		Godot.Collections.Array result = new();
+
+		for (int i = 0; i < size; i++)
+		{
+			result.Add(_buffer.Read());
+		}
+
+		return result;
+	}
+
 
     public override void _EnterTree()
     {
@@ -31,28 +80,59 @@ public partial class GDNetRpcProcessor : Node
     {
 		if (type == GDNet.PacketType.RpcRequest)
 		{
-			_RpcRequest(bytes, peerId);
+			_RpcRequestPacket(bytes, peerId);
 		}
 
 		else if (type == GDNet.PacketType.RpcReceive)
 		{
-			_RpcReceive(bytes, peerId);
+			_RpcReceivePacket(bytes, peerId);
         }
     }
 
-	public void _RpcRequest(byte[] bytes, long peerId)
+	public void _RpcRequestPacket(byte[] bytes, long peerId)
 	{
 
 	}
 
-    public void _RpcReceive(byte[] bytes, long peerId)
+    public void _RpcReceivePacket(byte[] bytes, long peerId)
     {
 
     }
 
-    public void Invoke()
+	public void _RpcRequestServer(long peerIdFrom, RpcType type, GDNetRpc rpc, Godot.Collections.Array args)
 	{
+        bool valid = Validate(peerIdFrom, GDNet.GetObjectAuthority(rpc.Owner), rpc.Cfg);
+		if (!valid)
+		{
+			return;
+		}
+
+		byte[] serializedArgs = SerializeArgs(args);
+
+    }
+
+	public void _InvokeByType(GDNetRpc rpc, RpcType type, Godot.Collections.Array args)
+	{
+		if (GDNet.Instance.IsServer)
+		{
+			_RpcRequestServer(GDNet.ServerID, type, rpc, args);
+			return;
+        }
+
+        bool valid = Validate(GDNet.Instance.UniqueID, GDNet.GetObjectAuthority(rpc.Owner), rpc.Cfg);
+		if (!valid)
+			return;
 
 	}
+
+    public void Invoke(GDNetRpc rpc, Godot.Collections.Array args)
+	{
+		_InvokeByType(rpc, RpcType.All, args);
+    }
+
+    public void InvokeFor(GDNetRpc rpc, Godot.Collections.Array args)
+    {
+        _InvokeByType(rpc, RpcType.Target, args);
+    }
 
 }

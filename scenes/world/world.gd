@@ -8,3 +8,9 @@ func _ready() -> void:
 		ss.name = "CLIENT"
 	
 	add_child(ss)
+
+var communicator: GDNetCommunicator = GDNetCommunicator.new()
+var aoi: GDNetAoI = GDNetAoI.new()
+func _process(delta: float) -> void:
+	for i in 1000:
+		communicator.Send(aoi, [])

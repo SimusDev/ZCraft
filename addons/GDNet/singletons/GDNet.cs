@@ -1,6 +1,9 @@
 using Godot;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 
 public partial class GDNet : Node
@@ -20,6 +23,23 @@ public partial class GDNet : Node
 
 	public event Action<PacketType, byte[], long> OnNetworkPacket;
 
+	private readonly MemoryStream _stream = new();
+	private readonly BinaryWriter _writer;
+	private readonly BinaryReader _reader;
+
+	public GDNet()
+	{
+		_writer = new BinaryWriter(_stream);
+		_reader = new BinaryReader(_stream);
+	}
+	public enum PacketType
+	{
+		RpcRequest,
+		RpcReceive,
+
+		CommunicationMessage,
+	}
+
 	private MultiplayerPeer.ConnectionStatus _connectionStatus = MultiplayerPeer.ConnectionStatus.Disconnected;
 	public bool IsConnectedToServer = false;
 	public bool IsServer = true;
@@ -28,25 +48,64 @@ public partial class GDNet : Node
 	[Export] private GDNetGarbageCollector _garbageCollector;
 	[Export] private GDNetMeta _meta;
 	[Export] private GDNetOptimizedSend _optimizedSend;
+	[Export] private GDNetMessageProcessor _messageProcessor;
 	[Export] private GDNetRpcProcessor _rpcProcessor;
 
-	public const string MetaNetworkID = "GDNetID";
+	public const string MetaHashID = "GDNetID";
+	public const string HashIDSalt = "GDNetHash";
+	public const string HashIDSaltResource = "GDNetHashResource";
 
-	public enum PacketType
+	private ulong _NextNetworkID = 0;
+
+	private ConcurrentDictionary<ulong, ulong> _ObjectsByHashID = new();
+	private ConcurrentDictionary<ulong, ulong> _HashIDByObjects = new();
+
+	public void SetObjectHashID(GodotObject obj, ulong id)
 	{
-		RpcRequest,
-		RpcReceive,
+		_ObjectsByHashID[obj.GetInstanceId()] = id;
+		_HashIDByObjects[id] = obj.GetInstanceId();
 	}
 
-	public void SetObjectNetworkID(GodotObject obj, ulong id)
+	public ulong GetObjectHashID(GodotObject obj)
 	{
+		return _ObjectsByHashID.GetValueOrDefault<ulong, ulong>(obj.GetInstanceId(), 0);
+	}
+
+	public GodotObject GetObjectByHashID(ulong id)
+	{
+		return InstanceFromId(_ObjectsByHashID.GetValueOrDefault<ulong, ulong>(id, 0));
+	}
+
+	public void AssignNetworkID(GodotObject obj)
+	{
+		_NextNetworkID++;
 
 	}
 
-	public ulong GetObjectNetworkID(GodotObject obj)
+	static public ulong GenerateObjectHashID(GodotObject obj)
 	{
-		return (ulong)obj.GetMeta(MetaNetworkID, 0);
+		if (obj is Node)
+		{
+			Node node = (Node)obj;
+			string path = node.GetPath().ToString();
+			string hashStr = $"{HashIDSalt}_{path}";
+			return (ulong)hashStr.Hash();
+		}
+
+		else if (obj is Resource)
+		{
+			Resource resource = (Resource)obj;
+			if (resource.ResourcePath != "")
+			{
+				string hashStr = $"{HashIDSaltResource}_{resource.ResourcePath}";
+				return (ulong)hashStr.Hash();
+			}
+		}
+
+		return 0;
 	}
+
+
 
 	public override void _EnterTree()
 	{
@@ -64,12 +123,18 @@ public partial class GDNet : Node
 		_garbageCollector.TryCollect += OnTryCollectGarbage;
 	}
 
-    private void OnTryCollectGarbage()
-    {
+	public override void _PhysicsProcess(double delta)
+	{
+		_optimizedSend.ProcessAll();
+		_messageProcessor.ProcessAll();
+	}
 
-    }
+	private void OnTryCollectGarbage()
+	{
 
-    private void UpdateNetworkStateTick()
+	}
+
+	private void UpdateNetworkStateTick()
 	{
 		MultiplayerPeer peer = Multiplayer.MultiplayerPeer;
 		if (peer == null)
@@ -119,23 +184,42 @@ public partial class GDNet : Node
 		Setup(new());
 	}
 
-	private void OnOptimizedPeerPacket(long id, byte[] bytes)
+	public static int GetObjectAuthority(GodotObject obj)
 	{
-		_buffer.DataArray = bytes;
-		_buffer.Seek(0);
-		
-		var type = (PacketType)_buffer.GetU8();
-		OnNetworkPacket?.Invoke(type, (byte[])_buffer.GetData(_buffer.GetAvailableBytes())[1], id);
+		if (IsInstanceValid(obj))
+		{
+			if (obj.HasMethod("get_multiplayer_authority"))
+			{
+				return obj.Call("get_multiplayer_authority").As<int>();
+			}
+		}
+
+		return ServerID;
 	}
+
 
 	public void SendPacket(PacketType type, byte[] bytes, int peer, MultiplayerPeer.TransferModeEnum mode, int channel)
 	{
-		_buffer.Clear();
-		_buffer.Seek(0);
-		_buffer.PutU8((byte)type);
-		_buffer.PutData(bytes);
-		_optimizedSend.MultiplayerSendBytes(_buffer.DataArray, peer, mode, channel);
+		_stream.Position = 0;
+		_stream.SetLength(0);
 
+		_writer.Write((byte)type);
+		_writer.Write(bytes);
+
+		_optimizedSend.MultiplayerSendBytes(_stream.ToArray(), peer, mode, channel);
+	}
+
+	private void OnOptimizedPeerPacket(long id, byte[] bytes)
+	{
+		_stream.Position = 0;
+		_stream.SetLength(0);
+		_stream.Write(bytes, 0, bytes.Length);
+		_stream.Position = 0;
+
+		var type = (PacketType)_reader.ReadByte();
+		var data = _reader.ReadBytes((int)(_stream.Length - 1));
+
+		OnNetworkPacket?.Invoke(type, data, id);
 	}
 
 
