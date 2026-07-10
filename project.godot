@@ -21,7 +21,6 @@ GDNet="*uid://dbr3vod01qpcy"
 Panku="*uid://cyftuo4syatlv"
 InterfaceStack="*uid://cidx3lachl84n"
 NetworkManager="*uid://bciqak7k4xrtd"
-ECS="*uid://dfqwl5njvdnmq"
 
 [display]
 
@@ -36,7 +35,7 @@ project/assembly_name="ZCraft"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/gecs/plugin.cfg", "res://addons/panku_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/panku_console/plugin.cfg")
 
 [gui]
 
