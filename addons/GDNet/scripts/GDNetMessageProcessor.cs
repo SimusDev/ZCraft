@@ -13,9 +13,9 @@ public partial class GDNetMessageProcessor : Node
 
 	private GDNetUtils.ChunkedList<PendingCommunication> _pendingCommunicator = new(512);
 
-    private ConcurrentDictionary<CommunicationBatchKey, CommunicationBatch> _batchProcess = new();
+	private ConcurrentDictionary<CommunicationBatchKey, CommunicationBatch> _batchProcess = new();
 
-    private Mutex _mutex = new();
+	private Mutex _mutex = new();
 
 	const int MTU = 1400;
 
@@ -34,6 +34,7 @@ public partial class GDNetMessageProcessor : Node
 
 		public PendingCommunication(ulong networkId, long peer, MultiplayerPeer.TransferModeEnum mode, int channel, byte[] data)
 		{
+			NetworkID = networkId;
 			Peer = peer;
 			Mode = mode;
 			Channel = channel;
@@ -46,25 +47,20 @@ public partial class GDNetMessageProcessor : Node
 		public long Peer;
 		public MultiplayerPeer.TransferModeEnum Mode;
 		public int Channel;
-		public byte[] Bytes;
 
-		public MemoryStream Stream;
-		public BinaryWriter Writer;
+		public GDNetBuffer Buffer;
 
 		public CommunicationBatch(long peer, MultiplayerPeer.TransferModeEnum mode, int channel)
 		{
 			Peer = peer;
 			Mode = mode;
 			Channel = channel;
-
-			Stream = new MemoryStream();
-			Writer = new BinaryWriter(Stream);
+			Buffer = new GDNetBuffer();
 		}
 
 		public void Dispose()
 		{
-			Stream?.Dispose();
-			Writer?.Dispose();
+
 		}
 	}
 
@@ -92,62 +88,72 @@ public partial class GDNetMessageProcessor : Node
 		ProcessCommunication();
 	}
 
-	private void ProcessCommunication()
-	{
-		List<PendingCommunication[]> pending = _pendingCommunicator.TakeOwnership();
+    private void ProcessCommunication()
+    {
+        List<PendingCommunication[]> pending = _pendingCommunicator.TakeOwnership();
+        if (pending.Count == 0) return;
 
-		if (pending.Count == 0)
-		{
-			return;
-		}
+        // Массив результатов: каждый чанк -> список батчей
+        var results = new List<CommunicationBatch>[pending.Count];
+        for (int i = 0; i < pending.Count; i++)
+        {
+            results[i] = new List<CommunicationBatch>();
+        }
 
-		
+        Parallel.For(0, pending.Count, (chunkIndex) =>
+        {
+            PendingCommunication[] chunk = pending[chunkIndex];
+            var localBatches = new Dictionary<CommunicationBatchKey, CommunicationBatch>();
 
-		ConcurrentQueue<CommunicationBatch> readyToSend = new();
+            for (int j = 0; j < chunk.Length; j++)
+            {
+				PendingCommunication data = chunk[j];
 
-		Parallel.For(0, pending.Count, (i) =>
-		{
-			PendingCommunication[] batch = pending[i];
+                var key = new CommunicationBatchKey(data.Peer, data.Mode, data.Channel);
 
-			for (i = 0; i < batch.Length; i++)
-			{
-				PendingCommunication data = batch[i];
-				CommunicationBatchKey key = new CommunicationBatchKey(data.Peer, data.Mode, data.Channel);
+                if (!localBatches.TryGetValue(key, out var batch))
+                {
+                    batch = new CommunicationBatch(key.Peer, key.Mode, key.Channel);
+                    localBatches[key] = batch;
+                }
 
-				if (!_batchProcess.TryGetValue(key, out CommunicationBatch communicationBatch))
-				{
-                    _batchProcess[key] = new CommunicationBatch(key.Peer, key.Mode, key.Channel);
-				}
+                batch.Buffer.WriteInt((long)data.NetworkID);
+                batch.Buffer.WriteBytes(data.Data);
 
-				communicationBatch.Writer.Write(data.NetworkID);
-				communicationBatch.Writer.Write(data.Data.Length);
-				communicationBatch.Writer.Write(data.Data);
+                if (batch.Buffer.Size >= MTU)
+                {
+                    lock (results)
+                    {
+                        results[chunkIndex].Add(batch);
+                    }
 
-				if (communicationBatch.Stream.Length >= MTU)
-				{
-					readyToSend.Enqueue(communicationBatch);
-                    _batchProcess.TryRemove(key, out var deleted);
-				}
+                    localBatches[key] = new CommunicationBatch(key.Peer, key.Mode, key.Channel);
+                }
+            }
 
-			}
+            foreach (var kvp in localBatches)
+            {
+                lock (results)
+                {
+                    results[chunkIndex].Add(kvp.Value);
+                }
+            }
+        });
 
-		});
-
-		foreach (var pair in _batchProcess)
-		{
-			readyToSend.Enqueue(pair.Value);
-		}
+        // Отправляем строго по порядку чанков
+        for (int i = 0; i < results.Length; i++)
+        {
+            foreach (var batch in results[i])
+            {
+                GDNet.Instance.SendPacket(GDNet.PacketType.CommunicationMessage, batch.Buffer.GetBytes(), (int)batch.Peer, batch.Mode, batch.Channel);
+                batch.Dispose();
+            }
+        }
 
         _batchProcess.Clear();
+    }
 
-		while (readyToSend.TryDequeue(out var batch))
-		{
-			GDNet.Instance.SendPacket(GDNet.PacketType.CommunicationMessage, batch.Stream.ToArray(), (int)batch.Peer, batch.Mode, batch.Channel);
-			batch.Dispose();
-		}
-	}
-
-	public void ___QueueCommunicator(ulong networkID, GDNetAoI AoI, byte[] data, MultiplayerPeer.TransferModeEnum mode, int channel)
+    public void ___QueueCommunicator(ulong networkID, GDNetAoI AoI, byte[] data, MultiplayerPeer.TransferModeEnum mode, int channel)
 	{
 		if (GDNet.Instance.IsServer)
 		{
