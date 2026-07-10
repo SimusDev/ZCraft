@@ -11,6 +11,3 @@ func _ready() -> void:
 
 var communicator: GDNetCommunicator = GDNetCommunicator.new()
 var aoi: GDNetAoI = GDNetAoI.new()
-func _process(delta: float) -> void:
-	for i in 1000:
-		communicator.Send(aoi, [])
