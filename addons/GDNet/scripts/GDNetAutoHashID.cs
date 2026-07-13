@@ -23,22 +23,22 @@ public partial class GDNetAutoHashID : RefCounted
 
 		if (obj is Node)
 		{
-			Node node = (Node)obj;
-			if (node.IsInsideTree())
-				GDNet.Instance.SetObjectHashID(node, GDNet.GenerateObjectHashID(node));
+			//Node node = (Node)obj;
+			//if (node.IsInsideTree())
+			//	GDNet.Instance.SetObjectHashID(node, GDNet.GenerateObjectHashID(node));
 
-			node.TreeEntered += NodeGenerateHashID;
-			node.Renamed += NodeGenerateHashID;
+			//node.TreeEntered += NodeGenerateHashID;
+			//node.Renamed += NodeGenerateHashID;
 
-			GDNetMeta.Set(obj, "AutoHashID", this);
+			//GDNetMeta.Set(obj, "AutoHashID", this);
 
 			return;
 		}
 
 		if (obj is Resource)
 		{
-			ulong hash = GDNet.GenerateObjectHashID(obj);
-			GDNet.Instance.SetObjectHashID(obj, hash);
+			//ulong hash = GDNet.GenerateObjectHashID(obj);
+			//GDNet.Instance.SetObjectHashID(obj, hash);
 			return;
 		}
 
@@ -52,7 +52,7 @@ public partial class GDNetAutoHashID : RefCounted
 			return;
 		}
 
-		GDNet.Instance.SetObjectHashID(node, GDNet.GenerateObjectHashID(node));
+		//GDNet.Instance.SetObjectHashID(node, GDNet.GenerateObjectHashID(node));
 
 	}
 }

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Threading.Tasks;
 
 public partial class GDNet : Node
@@ -11,6 +12,8 @@ public partial class GDNet : Node
 	public static GDNet Instance = null;
 
 	private StreamPeerBuffer _buffer = new();
+
+	public static bool Debug = true;
 
 	public const int ServerID = 1;
 
@@ -41,15 +44,14 @@ public partial class GDNet : Node
 	}
 
 	private MultiplayerPeer.ConnectionStatus _connectionStatus = MultiplayerPeer.ConnectionStatus.Disconnected;
-	public bool IsConnectedToServer = false;
-	public bool IsServer = true;
-	public int UniqueID = ServerID;
+	public static bool isConnectedToServer = false;
+	public static bool isServer = true;
+	public static int uniqueID = ServerID;
 
 	[Export] private GDNetGarbageCollector _garbageCollector;
 	[Export] private GDNetMeta _meta;
 	[Export] private GDNetOptimizedSend _optimizedSend;
 	[Export] private GDNetMessageProcessor _messageProcessor;
-	[Export] private GDNetRpcProcessor _rpcProcessor;
 
 	public const string MetaHashID = "GDNetID";
 	public const string HashIDSalt = "GDNetHash";
@@ -59,6 +61,21 @@ public partial class GDNet : Node
 
 	private ConcurrentDictionary<ulong, ulong> _ObjectsByHashID = new();
 	private ConcurrentDictionary<ulong, ulong> _HashIDByObjects = new();
+
+	public bool IsConnectedToServer()
+	{
+		return isConnectedToServer;
+	}
+
+	public bool IsServer()
+	{
+		return isServer;
+	}
+
+	public int GetUniqueID()
+	{
+		return uniqueID;
+	}
 
 	public void SetObjectHashID(GodotObject obj, ulong id)
 	{
@@ -82,30 +99,18 @@ public partial class GDNet : Node
 
 	}
 
-	static public ulong GenerateObjectHashID(GodotObject obj)
+	public static ulong HashString64(string input)
 	{
-		if (obj is Node)
-		{
-			Node node = (Node)obj;
-			string path = node.GetPath().ToString();
-			string hashStr = $"{HashIDSalt}_{path}";
-			return (ulong)hashStr.Hash();
-		}
+		string combined = input + "GDNetSalt";
 
-		else if (obj is Resource)
-		{
-			Resource resource = (Resource)obj;
-			if (resource.ResourcePath != "")
-			{
-				string hashStr = $"{HashIDSaltResource}_{resource.ResourcePath}";
-				return (ulong)hashStr.Hash();
-			}
-		}
+		int h1_int = GD.Hash(combined);
+		int h2_int = GD.Hash(combined + "_salt_" + input.Length);
 
-		return 0;
+		uint h1 = (uint)h1_int;
+		uint h2 = (uint)h2_int;
+
+		return ((ulong)h1 << 32) | h2;
 	}
-
-
 
 	public override void _EnterTree()
 	{
@@ -114,11 +119,13 @@ public partial class GDNet : Node
 
 	public override void _Ready()
 	{
+		Debug = OS.IsDebugBuild();
+
 		_tickTimer.Timeout += UpdateNetworkStateTick;
 		_tickTimer.Start();
 
 		_meta.SingletonReady();
-		_rpcProcessor.SingletonReady();
+		_messageProcessor.SingletonReady();
 
 		_garbageCollector.TryCollect += OnTryCollectGarbage;
 	}
@@ -131,7 +138,7 @@ public partial class GDNet : Node
 
 	private void OnTryCollectGarbage()
 	{
-
+		
 	}
 
 	private void UpdateNetworkStateTick()
@@ -155,9 +162,9 @@ public partial class GDNet : Node
 
 	private void ConnectionStatusChanged()
 	{
-		IsServer = Multiplayer.IsServer();
-		IsConnectedToServer = _connectionStatus == MultiplayerPeer.ConnectionStatus.Connected;
-		UniqueID = Multiplayer.GetUniqueId();
+		isServer = Multiplayer.IsServer();
+		isConnectedToServer = _connectionStatus == MultiplayerPeer.ConnectionStatus.Connected;
+		uniqueID = Multiplayer.GetUniqueId();
 
 		switch (_connectionStatus)
 		{

@@ -9,7 +9,11 @@ var _socket: PacketPeerUDP
 
 signal on_connected()
 
+var test_packet: PackedByteArray = []
+
 func _ready() -> void:
+	test_packet.resize(1300)
+	
 	_socket = PacketPeerUDP.new()
 	var err: Error = _socket.connect_to_host(ip, port)
 	_socket.set_broadcast_enabled(true)

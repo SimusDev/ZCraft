@@ -56,6 +56,7 @@ namespace GDNetUtils
             return _chunks;
         }
 
+        private object _lock = new();
         public List<T[]> TakeOwnership()
         {
             var chunks = _chunks;

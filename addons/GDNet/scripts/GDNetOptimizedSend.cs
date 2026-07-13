@@ -75,11 +75,11 @@ public partial class GDNetOptimizedSend : Node
             var unbatch = unbatchResults[i];
             if (unbatch == null || unbatch.Count == 0) continue;
 
-            foreach (var packetData in unbatch)
-            {
-				EmitSignal(SignalName.MultiplayerPeerPacket, packets[i].SenderId, packetData);
-            }
+			for (int j = 0; i + j < unbatch.Count; j++)
+                EmitSignal(SignalName.MultiplayerPeerPacket, packets[i].SenderId, unbatch[j]);
+
         }
+
     }
 
 	private List<byte[]> TryUnbatchRawPackets(byte[] bytes)

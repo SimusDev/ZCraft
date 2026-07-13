@@ -1,170 +1,32 @@
 [gd_scene format=3 uid="uid://c4sqqx1h0gmtc"]
 
 [ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
-[ext_resource type="Script" uid="uid://4kp5fct8fw7p" path="res://scripts/world/Z_WorldTicker.gd" id="2_252at"]
-[ext_resource type="Texture2D" uid="uid://dgwjpc7ldm22v" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055.webp" id="2_gbddb"]
-[ext_resource type="Texture2D" uid="uid://c6x2iiuplujlj" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_ambient.png" id="3_qxiha"]
-[ext_resource type="Texture2D" uid="uid://dl0i78w1kq82h" path="res://textures/bandage/worn-mummy-bandage-texture-loose-600nw-2529485055_normal.png" id="4_i1jm3"]
-[ext_resource type="Script" uid="uid://b0fjpddhg1okx" path="res://scripts/ZMultiplayerSpawner.gd" id="5_qxiha"]
-[ext_resource type="PackedScene" uid="uid://ciboju1pan8px" path="res://scenes/plaer/player.tscn" id="6_252at"]
-[ext_resource type="Texture2D" uid="uid://djurwv7ikdbtj" path="res://textures/images (3).jpg" id="8_qh0kd"]
-[ext_resource type="Texture2D" uid="uid://cibhmbq2qtn8u" path="res://test/Jenny Belle.png" id="9_i08rc"]
-[ext_resource type="ArrayMesh" uid="uid://f1ypapojpvo4" path="res://test/model_0.obj" id="10_o0dc1"]
-[ext_resource type="ArrayMesh" uid="uid://b0clw11vdjhd0" path="res://test/model_1.obj" id="11_mmgww"]
-[ext_resource type="ArrayMesh" uid="uid://pihcuqjmwha7" path="res://test/model_2.obj" id="12_jy5j1"]
-[ext_resource type="ArrayMesh" uid="uid://cnkufjeyjfrnt" path="res://test/model_3.obj" id="13_umbuh"]
-[ext_resource type="ArrayMesh" uid="uid://cy0sieluqbi74" path="res://test/model_4.obj" id="14_juaju"]
-[ext_resource type="ArrayMesh" uid="uid://vwoqdrx6q83g" path="res://test/model_5.obj" id="15_lplgh"]
-[ext_resource type="ArrayMesh" uid="uid://cu2haitjm3f8t" path="res://test/model_6.obj" id="16_d6tky"]
-[ext_resource type="ArrayMesh" uid="uid://bxqopptk52jw1" path="res://test/model_7.obj" id="17_6mhxi"]
-[ext_resource type="ArrayMesh" uid="uid://bi3pe3lr22o52" path="res://test/model_8.obj" id="18_xclow"]
-[ext_resource type="ArrayMesh" uid="uid://dh5jsgrtip0nb" path="res://test/model_9.obj" id="19_hon07"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_57qmd"]
-sky_top_color = Color(0.30702353, 0.4645756, 0.6115609, 1)
-sky_horizon_color = Color(0.66313845, 0.623602, 0.7775695, 1)
-sky_curve = 0.15528975
-ground_bottom_color = Color(0.00062933034, 0.0006562498, 0.0011319412, 1)
-ground_horizon_color = Color(0.6653405, 0.62894696, 0.7809732, 1)
-ground_curve = 0.17753106
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lmafn"]
+vertex_color_use_as_albedo = true
 
-[sub_resource type="Sky" id="Sky_yf5fn"]
-sky_material = SubResource("ProceduralSkyMaterial_57qmd")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5qbjp"]
+frequency = 0.0011
 
-[sub_resource type="Environment" id="Environment_g4v7s"]
-background_mode = 2
-sky = SubResource("Sky_yf5fn")
-ambient_light_source = 3
-reflected_light_source = 2
-tonemap_mode = 3
-tonemap_exposure = 0.7
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-volumetric_fog_density = 0.01
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_ackey"]
+noise = SubResource("FastNoiseLite_5qbjp")
+channel = 0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4v7s"]
-albedo_texture = ExtResource("2_gbddb")
-normal_enabled = true
-normal_texture = ExtResource("4_i1jm3")
-ao_enabled = true
-ao_texture = ExtResource("3_qxiha")
-uv1_triplanar = true
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_2w063"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dobjl"]
-albedo_texture = ExtResource("9_i08rc")
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_1jgnd"]
+color = Color(0.50363815, 0.35056528, 0.18741071, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iehkj"]
-albedo_texture = ExtResource("9_i08rc")
+[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_33axn"]
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_2w063"), SubResource("VoxelBlockyModelCube_1jgnd")])
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iqxvy"]
-albedo_texture = ExtResource("9_i08rc")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pi2y4"]
-albedo_texture = ExtResource("9_i08rc")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xokg7"]
-albedo_texture = ExtResource("9_i08rc")
+[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_3fxko"]
+library = SubResource("VoxelBlockyLibrary_33axn")
 
 [node name="World" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
 
-[node name="Z_WorldTicker" type="Node3D" parent="." unique_id=596288572]
-script = ExtResource("2_252at")
-metadata/_custom_type_script = "uid://4kp5fct8fw7p"
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=875727389 node_paths=PackedStringArray("spawn_points")]
-_spawnable_scenes = PackedStringArray("uid://ciboju1pan8px")
-spawn_path = NodePath("../Players")
-script = ExtResource("5_qxiha")
-player_prefab = ExtResource("6_252at")
-spawn_points = [NodePath("../SpawnPoints/1"), NodePath("../SpawnPoints/2"), NodePath("../SpawnPoints/3"), NodePath("../SpawnPoints/4"), NodePath("../SpawnPoints/5")]
-
-[node name="Env" type="Node3D" parent="." unique_id=1072300610]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Env" unique_id=1395414315]
-environment = SubResource("Environment_g4v7s")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env" unique_id=2077239613]
-transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 0, 0)
-shadow_enabled = true
-
-[node name="Terrain" type="Node3D" parent="." unique_id=698458386]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Terrain" unique_id=652597666]
-material_override = SubResource("StandardMaterial3D_g4v7s")
-use_collision = true
-size = Vector3(100, 1, 100)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Terrain" unique_id=252891406]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 0)
-material_override = SubResource("StandardMaterial3D_g4v7s")
-
-[node name="SpawnPoints" type="Node3D" parent="." unique_id=1092012360]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.9660697, 0)
-
-[node name="1" type="Marker3D" parent="SpawnPoints" unique_id=454666330]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.660085, 2.4879029)
-
-[node name="2" type="Marker3D" parent="SpawnPoints" unique_id=1786948003]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.660085, -2.5217931)
-
-[node name="3" type="Marker3D" parent="SpawnPoints" unique_id=526531344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, -0.035954)
-
-[node name="4" type="Marker3D" parent="SpawnPoints" unique_id=1155460434]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, -2.5923917)
-
-[node name="5" type="Marker3D" parent="SpawnPoints" unique_id=1484456867]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5295997, 1.660085, 2.104356)
-
-[node name="Players" type="Node3D" parent="." unique_id=972499555]
-
-[node name="Sprite3D" type="Sprite3D" parent="." unique_id=1082553985]
-transform = Transform3D(0.395, 0, 0, 0, -0.0101883765, 0.39486858, 0, -0.39486858, -0.0101883765, 0, 0.58419657, 0)
-texture = ExtResource("8_qh0kd")
-
-[node name="Model0" type="MeshInstance3D" parent="." unique_id=1107915356]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-material_override = SubResource("StandardMaterial3D_dobjl")
-mesh = ExtResource("10_o0dc1")
-
-[node name="Model1" type="MeshInstance3D" parent="." unique_id=337603079]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-material_override = SubResource("StandardMaterial3D_iehkj")
-mesh = ExtResource("11_mmgww")
-
-[node name="Model2" type="MeshInstance3D" parent="." unique_id=607687524]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-material_override = SubResource("StandardMaterial3D_iqxvy")
-mesh = ExtResource("12_jy5j1")
-
-[node name="Model3" type="MeshInstance3D" parent="." unique_id=574122366]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-material_override = SubResource("StandardMaterial3D_pi2y4")
-mesh = ExtResource("13_umbuh")
-
-[node name="Model4" type="MeshInstance3D" parent="." unique_id=1402953027]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-material_override = SubResource("StandardMaterial3D_xokg7")
-mesh = ExtResource("14_juaju")
-
-[node name="Model5" type="MeshInstance3D" parent="." unique_id=1628901114]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-mesh = ExtResource("15_lplgh")
-
-[node name="Model6" type="MeshInstance3D" parent="." unique_id=940998232]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-mesh = ExtResource("16_d6tky")
-
-[node name="Model7" type="MeshInstance3D" parent="." unique_id=836429523]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-mesh = ExtResource("17_6mhxi")
-
-[node name="Model8" type="MeshInstance3D" parent="." unique_id=757787004]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-mesh = ExtResource("18_xclow")
-
-[node name="Model9" type="MeshInstance3D" parent="." unique_id=294512162]
-transform = Transform3D(0.125, 0, 0, 0, 0.004040322, 0.12493469, 0, -0.12493469, 0.004040322, -0.13292217, 0.48156476, -7.9504957)
-mesh = ExtResource("19_hon07")
+[node name="VoxelTerrain" type="VoxelTerrain" parent="." unique_id=189756132]
+material_override = SubResource("StandardMaterial3D_lmafn")
+generator = SubResource("VoxelGeneratorNoise2D_ackey")
+mesher = SubResource("VoxelMesherBlocky_3fxko")
