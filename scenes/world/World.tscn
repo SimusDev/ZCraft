@@ -1,32 +1,14 @@
 [gd_scene format=3 uid="uid://c4sqqx1h0gmtc"]
 
-[ext_resource type="Script" uid="uid://csboee8xsdikp" path="res://scenes/world/world.gd" id="1_5qbjp"]
+[ext_resource type="Script" uid="uid://db8i2yfuyl4fd" path="res://scenes/world/GameWorld.cs" id="1_5qbjp"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lmafn"]
-vertex_color_use_as_albedo = true
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5qbjp"]
-frequency = 0.0011
-
-[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_ackey"]
-noise = SubResource("FastNoiseLite_5qbjp")
-channel = 0
-
-[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_2w063"]
-
-[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_1jgnd"]
-color = Color(0.50363815, 0.35056528, 0.18741071, 1)
-
-[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_33axn"]
-models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_2w063"), SubResource("VoxelBlockyModelCube_1jgnd")])
-
-[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_3fxko"]
-library = SubResource("VoxelBlockyLibrary_33axn")
-
-[node name="World" type="Node3D" unique_id=5532753]
+[node name="GameWorld" type="Node3D" unique_id=5532753 node_paths=PackedStringArray("_testButtonSend")]
 script = ExtResource("1_5qbjp")
+_testButtonSend = NodePath("Button")
 
-[node name="VoxelTerrain" type="VoxelTerrain" parent="." unique_id=189756132]
-material_override = SubResource("StandardMaterial3D_lmafn")
-generator = SubResource("VoxelGeneratorNoise2D_ackey")
-mesher = SubResource("VoxelMesherBlocky_3fxko")
+[node name="Button" type="Button" parent="." unique_id=374354846]
+offset_left = 74.0
+offset_top = 40.0
+offset_right = 305.0
+offset_bottom = 79.0
+text = "SEND"

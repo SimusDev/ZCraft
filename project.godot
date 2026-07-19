@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GDNet="*uid://dbr3vod01qpcy"
+GameServer="*uid://c1n2vhckxsbsb"
 Panku="*uid://cyftuo4syatlv"
 
 [display]
@@ -35,9 +36,14 @@ project/assembly_name="ZCraft"
 
 enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/panku_console/plugin.cfg")
 
+[global_group]
+
+Server=""
+Client=""
+
 [gui]
 
-theme/custom_font="uid://io3kp1y047p2"
+theme/custom_font="uid://bj4xwm4ah2kq2"
 
 [input]
 

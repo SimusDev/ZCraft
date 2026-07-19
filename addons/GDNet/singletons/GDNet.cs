@@ -1,8 +1,10 @@
+using GDNetExtensions;
 using Godot;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,9 @@ public partial class GDNet : Node
 	[Signal] public delegate void OnNetworkReadyEventHandler();
 	[Signal] public delegate void OnNetworkConnectingEventHandler();
 	[Signal] public delegate void OnNetworkDisconnectedEventHandler();
+	[Signal] public delegate void OnNetworkPeerConnectedEventHandler(int peer);
+	[Signal] public delegate void OnNetworkPeerDisconnectedEventHandler(int peer);
+
 
 	[Export] private Timer _tickTimer;
 
@@ -57,10 +62,12 @@ public partial class GDNet : Node
 	public const string HashIDSalt = "GDNetHash";
 	public const string HashIDSaltResource = "GDNetHashResource";
 
-	private ulong _NextNetworkID = 0;
+	private long _NextNetworkID = 0;
 
 	private ConcurrentDictionary<ulong, ulong> _ObjectsByHashID = new();
 	private ConcurrentDictionary<ulong, ulong> _HashIDByObjects = new();
+
+
 
 	public bool IsConnectedToServer()
 	{
@@ -76,27 +83,10 @@ public partial class GDNet : Node
 	{
 		return uniqueID;
 	}
-
-	public void SetObjectHashID(GodotObject obj, ulong id)
-	{
-		_ObjectsByHashID[obj.GetInstanceId()] = id;
-		_HashIDByObjects[id] = obj.GetInstanceId();
-	}
-
-	public ulong GetObjectHashID(GodotObject obj)
-	{
-		return _ObjectsByHashID.GetValueOrDefault<ulong, ulong>(obj.GetInstanceId(), 0);
-	}
-
-	public GodotObject GetObjectByHashID(ulong id)
-	{
-		return InstanceFromId(_ObjectsByHashID.GetValueOrDefault<ulong, ulong>(id, 0));
-	}
-
-	public void AssignNetworkID(GodotObject obj)
+	public long GenerateNetworkID()
 	{
 		_NextNetworkID++;
-
+		return _NextNetworkID;
 	}
 
 	public static ulong HashString64(string input)
@@ -185,7 +175,26 @@ public partial class GDNet : Node
 		GetTree().SetMultiplayer(api);
 		_optimizedSend.Setup(api);
 		_optimizedSend.MultiplayerPeerPacket += OnOptimizedPeerPacket;
+
+		api.PeerConnected += OnApiPeerConnected;
+		api.PeerDisconnected += OnApiPeerDisconnected;
+
 	}
+	private void OnApiPeerConnected(long id)
+	{
+		EmitSignal(SignalName.OnNetworkPeerConnected, (int)id);
+	}
+
+	private void OnApiPeerDisconnected(long id)
+	{
+		EmitSignal(SignalName.OnNetworkPeerDisconnected, (int)id);
+	}
+
+	public int[] GetConnectedPeers()
+	{
+		return Multiplayer.GetPeers();
+	}
+
 	public void Setup()
 	{
 		Setup(new());

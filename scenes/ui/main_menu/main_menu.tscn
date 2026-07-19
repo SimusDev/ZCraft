@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b7mijap51eoyi"]
 
-[ext_resource type="Script" uid="uid://b8xyj4ilttdct" path="res://scenes/ui/main_menu/main_menu.gd" id="1_1ch07"]
+[ext_resource type="Script" uid="uid://d53kas74ne1i" path="res://scenes/ui/main_menu/MainMenu.cs" id="1_e8t4i"]
 [ext_resource type="Script" uid="uid://5voikuodtgwm" path="res://scenes/ui/main_menu/main.gd" id="2_e8t4i"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_02q7b"]
@@ -16,7 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_1ch07")
+script = ExtResource("1_e8t4i")
 
 [node name="BGColor" type="ColorRect" parent="." unique_id=2011350680]
 layout_mode = 1
