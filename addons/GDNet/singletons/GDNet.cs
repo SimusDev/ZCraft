@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public partial class GDNet : Node
 {
@@ -31,7 +32,10 @@ public partial class GDNet : Node
 
 	public event Action<PacketType, byte[], long> OnNetworkPacket;
 
-	private readonly MemoryStream _stream = new();
+	public event Action<int> OnNetworkPacketSizeSent;
+	public event Action<int> OnNetworkPacketSizeReceived;
+
+    private readonly MemoryStream _stream = new();
 	private readonly BinaryWriter _writer;
 	private readonly BinaryReader _reader;
 
@@ -49,12 +53,11 @@ public partial class GDNet : Node
 	}
 
 	private MultiplayerPeer.ConnectionStatus _connectionStatus = MultiplayerPeer.ConnectionStatus.Disconnected;
+	public MultiplayerPeer.ConnectionStatus ConnectionStatus => _connectionStatus;
 	public static bool isConnectedToServer = false;
 	public static bool isServer = true;
 	public static int uniqueID = ServerID;
 
-	[Export] private GDNetGarbageCollector _garbageCollector;
-	[Export] private GDNetMeta _meta;
 	[Export] private GDNetOptimizedSend _optimizedSend;
 	[Export] private GDNetMessageProcessor _messageProcessor;
 
@@ -114,10 +117,8 @@ public partial class GDNet : Node
 		_tickTimer.Timeout += UpdateNetworkStateTick;
 		_tickTimer.Start();
 
-		_meta.SingletonReady();
 		_messageProcessor.SingletonReady();
 
-		_garbageCollector.TryCollect += OnTryCollectGarbage;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -175,12 +176,15 @@ public partial class GDNet : Node
 		GetTree().SetMultiplayer(api);
 		_optimizedSend.Setup(api);
 		_optimizedSend.MultiplayerPeerPacket += OnOptimizedPeerPacket;
+		_optimizedSend.MultiplayerPeerPacketRawSent += OnOptimizedPeerRawSent;
+		_optimizedSend.MultiplayerPeerPacketRawReceived += OnOptimizedPeerRawReceived;
 
-		api.PeerConnected += OnApiPeerConnected;
+        api.PeerConnected += OnApiPeerConnected;
 		api.PeerDisconnected += OnApiPeerDisconnected;
 
 	}
-	private void OnApiPeerConnected(long id)
+
+    private void OnApiPeerConnected(long id)
 	{
 		EmitSignal(SignalName.OnNetworkPeerConnected, (int)id);
 	}
@@ -200,20 +204,6 @@ public partial class GDNet : Node
 		Setup(new());
 	}
 
-	public static int GetObjectAuthority(GodotObject obj)
-	{
-		if (IsInstanceValid(obj))
-		{
-			if (obj.HasMethod("get_multiplayer_authority"))
-			{
-				return obj.Call("get_multiplayer_authority").As<int>();
-			}
-		}
-
-		return ServerID;
-	}
-
-
 	public void SendPacket(PacketType type, byte[] bytes, int peer, MultiplayerPeer.TransferModeEnum mode, int channel)
 	{
 		_stream.Position = 0;
@@ -222,12 +212,14 @@ public partial class GDNet : Node
 		_writer.Write((byte)type);
 		_writer.Write(bytes);
 
-		_optimizedSend.MultiplayerSendBytes(_stream.ToArray(), peer, mode, channel);
-	}
+		var data = _stream.ToArray();
+        _optimizedSend.MultiplayerSendBytes(data, peer, mode, channel);
+        
+    }
 
 	private void OnOptimizedPeerPacket(long id, byte[] bytes)
 	{
-		_stream.Position = 0;
+        _stream.Position = 0;
 		_stream.SetLength(0);
 		_stream.Write(bytes, 0, bytes.Length);
 		_stream.Position = 0;
@@ -236,7 +228,17 @@ public partial class GDNet : Node
 		var data = _reader.ReadBytes((int)(_stream.Length - 1));
 
 		OnNetworkPacket?.Invoke(type, data, id);
+		
 	}
+    private void OnOptimizedPeerRawReceived(long id, byte[] bytes)
+    {
+        OnNetworkPacketSizeReceived?.Invoke(bytes.Length);
+    }
+
+    private void OnOptimizedPeerRawSent(long id, byte[] bytes)
+    {
+        OnNetworkPacketSizeSent?.Invoke(bytes.Length);
+    }
 
 
 

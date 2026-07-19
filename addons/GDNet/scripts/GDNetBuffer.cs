@@ -16,6 +16,7 @@ public partial class GDNetBuffer : RefCounted
         GodotVar,
         Object,
 
+        BytesDynamic,
         Bool,
         Int8,
         Int16,
@@ -87,6 +88,9 @@ public partial class GDNetBuffer : RefCounted
 
         _writers[typeof(ulong)] = (b, v) => { b._WriteVarType(VarType.UInt64); b.WriteUInt64((ulong)v); };
         _readers[VarType.UInt64] = b => b.ReadUInt64();
+
+        _writers[typeof(byte[])] = (b, v) => { b._WriteVarType(VarType.BytesDynamic); b.WriteBytesDynamic((byte[])v); };
+        _readers[VarType.BytesDynamic] = b => b.ReadBytesDynamic();
 
         _writers[typeof(Vector3)] = (b, v) => { b._WriteVarType(VarType.Vector3); b.WriteVector3((Vector3)v); };
         _readers[VarType.Vector3] = b => b.ReadVector3();
