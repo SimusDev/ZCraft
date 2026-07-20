@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://j8wjbmsx6q77" path="res://interface/SwitchScreenComponent.cs" id="2_dftu7"]
 [ext_resource type="PackedScene" uid="uid://doqd2pv55tgo1" path="res://interface/buttons/main_button.tscn" id="3_rahlh"]
 
-[node name="MainMenu" type="Control" unique_id=1482358870]
+[node name="MainMenu" type="Control" unique_id=1482358870 node_paths=PackedStringArray("_connectionLineEdit", "_hookButtons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +12,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_g8ogf")
+_connectionLineEdit = NodePath("MultiplayerScreen/Container/LineEdit")
+_hookButtons = [NodePath("MultiplayerScreen/Container/Connect"), NodePath("MainScreen/ButtonContainer/Quit"), NodePath("MainScreen/ButtonContainer/Run Server")]
 
 [node name="SwitchScreenComponent" type="Node" parent="." unique_id=1828393820 node_paths=PackedStringArray("_initialScreen", "_screens", "_buttonHooks")]
 script = ExtResource("2_dftu7")
@@ -66,15 +68,15 @@ grow_vertical = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Start Server" parent="MainScreen/ButtonContainer" unique_id=1037380258 instance=ExtResource("3_rahlh")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Start Server"
-
 [node name="Multiplayer" parent="MainScreen/ButtonContainer" unique_id=2098366853 instance=ExtResource("3_rahlh")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Multiplayer"
+
+[node name="Run Server" parent="MainScreen/ButtonContainer" unique_id=1037380258 instance=ExtResource("3_rahlh")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Run Server"
 
 [node name="Settings" parent="MainScreen/ButtonContainer" unique_id=1612461478 instance=ExtResource("3_rahlh")]
 layout_mode = 2

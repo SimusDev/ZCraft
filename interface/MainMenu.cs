@@ -4,6 +4,7 @@ using System;
 
 public partial class MainMenu : Control
 {
+	[Export] private LineEdit _connectionLineEdit;
 	[Export] private Godot.Collections.Array<Button> _hookButtons = new();
 	public override void _Ready()
 	{
@@ -22,7 +23,10 @@ public partial class MainMenu : Control
 				GetTree().Quit();
 				break;
 			case "Connect":
-				
+				GameServer.Instance.CreateClient(_connectionLineEdit.Text);
+				break;
+			case "Run Server":
+				GameServer.Instance.CreateServer();
 				break;
 
 		}

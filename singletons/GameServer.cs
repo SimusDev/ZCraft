@@ -14,6 +14,7 @@ public partial class GameServer : Node
     
 	private GDNetRpc _rpc = new();
 
+	public static GameServer Instance { get; private set; }
 
 	[Export] private Godot.Collections.Dictionary<long, Connection.User> _users = new();
 
@@ -33,6 +34,7 @@ public partial class GameServer : Node
 
 	public override void _Ready()
 	{
+		Instance = this;
 		var Api = new SceneMultiplayer();
 		Api.ServerRelay = false;
 		GDNet.Instance.Setup(Api);
