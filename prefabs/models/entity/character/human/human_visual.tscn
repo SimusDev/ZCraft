@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://c0mjgwpgqwwda"]
+
+[ext_resource type="PackedScene" uid="uid://47jfl5xkpwax" path="res://prefabs/models/entity/character/human/blocky_human.tscn" id="1_hfopw"]
+[ext_resource type="Script" uid="uid://2glv5ghbac2x" path="res://scripts/models/visuals/character/human/HumanVisual.cs" id="1_jhwep"]
+[ext_resource type="Material" uid="uid://7vwvylsfttfs" path="res://materials/models/characters/human/steve.tres" id="2_gt4uy"]
+
+[node name="HumanVisual" unique_id=1020324638 node_paths=PackedStringArray("_meshes") groups=["ClientNode"] instance=ExtResource("1_hfopw")]
+script = ExtResource("1_jhwep")
+_meshes = [NodePath("Root/Skeleton3D/Object_7"), NodePath("Root/Skeleton3D/Object_9"), NodePath("Root/Skeleton3D/Object_11"), NodePath("Root/Skeleton3D/Object_13"), NodePath("Root/Skeleton3D/Object_15"), NodePath("Root/Skeleton3D/Object_17")]
+VisualMaterial = ExtResource("2_gt4uy")
+
+[node name="Object_7" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="0" unique_id=1064071058]
+material_override = ExtResource("2_gt4uy")
+
+[node name="Object_9" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="1" unique_id=2127031044]
+material_override = ExtResource("2_gt4uy")
+
+[node name="Object_11" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="2" unique_id=1495703995]
+material_override = ExtResource("2_gt4uy")
+
+[node name="Object_13" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="3" unique_id=182070630]
+material_override = ExtResource("2_gt4uy")
+
+[node name="Object_15" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="4" unique_id=122287425]
+material_override = ExtResource("2_gt4uy")
+
+[node name="Object_17" parent="Root/Skeleton3D" parent_id_path=PackedInt32Array(228744533) index="5" unique_id=724592626]
+material_override = ExtResource("2_gt4uy")

@@ -1,8 +1,38 @@
 [gd_scene format=3 uid="uid://pa7jbhdk4fme"]
 
+[ext_resource type="Script" uid="uid://bm8swrto6fg4f" path="res://scripts/inventory/Inventory.cs" id="1_y4f71"]
+[ext_resource type="Script" uid="uid://b1b0hbt6orbc7" path="res://scripts/inventory/ContainerSlot.cs" id="2_w7rw4"]
+[ext_resource type="Script" uid="uid://dmb8uwigbh2l2" path="res://scripts/inventory/SlotsContainer.cs" id="3_pejtq"]
+[ext_resource type="Script" uid="uid://cpkm18ds0voi7" path="res://scripts/inventory/ItemStack.cs" id="3_w7rw4"]
+[ext_resource type="PackedScene" uid="uid://c0mjgwpgqwwda" path="res://prefabs/models/entity/character/human/human_visual.tscn" id="5_pejtq"]
+
+[sub_resource type="Resource" id="Resource_w7rw4"]
+script = ExtResource("3_w7rw4")
+metadata/_custom_type_script = "uid://cpkm18ds0voi7"
+
+[sub_resource type="Resource" id="Resource_pejtq"]
+script = ExtResource("2_w7rw4")
+_itemStack = SubResource("Resource_w7rw4")
+metadata/_custom_type_script = "uid://b1b0hbt6orbc7"
+
+[sub_resource type="Resource" id="Resource_y4f71"]
+script = ExtResource("3_pejtq")
+_slots = Array[ExtResource("2_w7rw4")]([SubResource("Resource_pejtq")])
+metadata/_custom_type_script = "uid://dmb8uwigbh2l2"
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dg6jo"]
+radius = 0.4501953
+height = 1.8786621
 
 [node name="Player" type="CharacterBody3D" unique_id=490877209]
 
+[node name="Inventory" type="Node" parent="." unique_id=1118496669]
+script = ExtResource("1_y4f71")
+_container = SubResource("Resource_y4f71")
+metadata/_custom_type_script = "uid://bm8swrto6fg4f"
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=976180097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92387944, 0)
 shape = SubResource("CapsuleShape3D_dg6jo")
+
+[node name="HumanVisual" parent="." unique_id=1020324638 groups=["ClientNode"] instance=ExtResource("5_pejtq")]

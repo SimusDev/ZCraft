@@ -3,8 +3,8 @@ using System;
 
 public partial class ClientServerNodeParser : RefCounted
 {
-    public const string ServerGroup = "Server";
-    public const string ClientGroup = "Client";
+    public const string ServerGroup = "ServerNode";
+    public const string ClientGroup = "ClientNode";
 
     public static System.Collections.Generic.Dictionary<string, bool> ClientClasses = new()
     {
@@ -31,6 +31,13 @@ public partial class ClientServerNodeParser : RefCounted
             if (IsClientNode(children[i]) && !GDNet.isServer)
             {
                 children[i].QueueFree();
+                continue;
+            }
+
+            if (!GDNet.isServer)
+            {
+                if (children[i].IsInGroup(ServerGroup))
+                    children[i].QueueFree();
                 continue;
             }
 

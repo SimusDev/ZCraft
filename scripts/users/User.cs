@@ -22,27 +22,6 @@ namespace Connection
             _rpc.BindAll(this);
         }
 
-        public void PhysicsTick(double delta)
-        {
-            _time += delta;
-            if (_time >= 1)
-            {
-                Synchronize();
-                _time = 0;
-            }
-        }
-
-        private void Synchronize()
-        {
-            _rpc.InvokeOnServer(_ServerReceiveData, Time.GetTicksMsec());
-        }
-
-        [GDNetRpc(permission: Permission.ServerOrAuth, Channel = 0, Mode = Mode.Reliable)]
-        private void _ServerReceiveData(ulong time)
-        {
-
-        }
-
 
     }
 

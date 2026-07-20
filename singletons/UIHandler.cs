@@ -6,28 +6,39 @@ namespace Singletons
     public partial class UIHandler : Node
     {
         private static UIHandler _instance;
-        public UIHandler Instance => _instance;
+        public static UIHandler Instance => _instance;
 
-        private System.Collections.Generic.List<AudioStreamPlayer> _playPool = new();
+        private int _activity = 0;
 
-        const int PlayPoolSize = 32;
+        [Signal] public delegate void OnGlobalActivityChangedEventHandler();
 
-        public override void _Ready()
+        private void _AddGlobalActivity()
         {
-            _instance = this;
-
-            for (int i = 0;  i < PlayPoolSize; i++)
-            {
-                var player = new AudioStreamPlayer();
-                player.Finished += () => OnPlayerFinished(player);
-                _playPool.Add(player);
-            }
+            _activity++;
+            EmitSignal(SignalName.OnGlobalActivityChanged);
         }
 
-        private void OnPlayerFinished(AudioStreamPlayer player)
+        private void _RemoveGlobalActivity()
         {
-
+            _activity--;
+            EmitSignal(SignalName.OnGlobalActivityChanged);
         }
+
+        public static bool HasGlobalActivity()
+        {
+            return Instance._activity > 0;
+        }
+
+        public static void AddGlobalActivity()
+        {
+            Instance._AddGlobalActivity();
+        }
+
+        public static void RemoveGlobalActivity()
+        {
+            Instance._RemoveGlobalActivity();
+        }
+
     }
 
 }

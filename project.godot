@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ZCraft"
-run/main_scene="uid://b7mijap51eoyi"
+run/main_scene="uid://ccucfwfuchp4g"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -39,8 +39,8 @@ enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCore
 
 [global_group]
 
-Server=""
-Client=""
+ClientNode=""
+ServerNode=""
 
 [gui]
 
