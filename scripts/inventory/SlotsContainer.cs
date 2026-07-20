@@ -20,9 +20,9 @@ public partial class SlotsContainer : Resource, IGDNetSerializable
 	public void Deserialize(GDNetBuffer buffer)
 	{
 		_slots.Clear();
-		_rpc.SynchronizeNetworkIDByUniqueID(buffer.ReadLong());
+		_rpc.SynchronizeNetworkIDByUniqueID(buffer.ReadLongVar());
 
-		var slotCount = buffer.ReadLong();
+		var slotCount = buffer.ReadIntVar();
 
 		for (int i = 0; i < slotCount; i++)
 			_slots.Add(buffer.ReadSerializable<ContainerSlot>());
@@ -30,8 +30,8 @@ public partial class SlotsContainer : Resource, IGDNetSerializable
 
 	public void Serialize(GDNetBuffer buffer)
 	{
-		buffer.WriteLong(_netId);
-		buffer.WriteLong(_slots.Count);
+		buffer.WriteLongVar(_netId);
+		buffer.WriteIntVar(_slots.Count);
 
 		foreach (var slot in _slots)
 			buffer.WriteSerializable(slot);

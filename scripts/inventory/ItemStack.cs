@@ -36,13 +36,13 @@ public partial class ItemStack : Resource, IGDNetSerializable
 
     public void Deserialize(GDNetBuffer buffer)
     {
-        _rpc.SynchronizeNetworkIDByUniqueID(buffer.ReadLong());
+        _rpc.SynchronizeNetworkIDByUniqueID(buffer.ReadLongVar());
         _resource = buffer.ReadResource<RGameResource>();
     }
 
     public void Serialize(GDNetBuffer buffer)
     {
-        buffer.WriteLong(_netId);
+        buffer.WriteLongVar(_netId);
         buffer.WriteResource(_resource);
     }
 
