@@ -4,10 +4,27 @@ using System;
 
 public partial class MainMenu : Control
 {
-	private GDNetBuffer _buffer = new();
+	[Export] private Godot.Collections.Array<Button> _hookButtons = new();
 	public override void _Ready()
 	{
-		_buffer.Write(this);
+		foreach (var button in _hookButtons)
+		{
+			button.Pressed += () => OnButtonPressed(button);
+		}
 
+	}
+
+	private void OnButtonPressed(Button button)
+	{
+		switch (button.Name)
+		{
+			case "Quit":
+				GetTree().Quit();
+				break;
+			case "Connect":
+				
+				break;
+
+		}
 	}
 }

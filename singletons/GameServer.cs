@@ -9,10 +9,27 @@ public partial class GameServer : Node
 		BigData,
 		Users,
 	}
+
+	public int Port = 8080;
     
 	private GDNetRpc _rpc = new();
 
+
 	[Export] private Godot.Collections.Dictionary<long, Connection.User> _users = new();
+
+	public Error CreateServer()
+	{
+		ENetMultiplayerPeer peer = new();
+		var err = peer.CreateServer(Port, 1000);
+		return err;
+	}
+
+	public Error CreateClient(string address)
+	{
+        ENetMultiplayerPeer peer = new();
+		var err = peer.CreateClient(address, Port);
+        return err;
+    }
 
 	public override void _Ready()
 	{

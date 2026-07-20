@@ -19,7 +19,6 @@ config/icon="res://icon.svg"
 
 GDNet="*uid://dbr3vod01qpcy"
 GameServer="*uid://c1n2vhckxsbsb"
-Panku="*uid://cyftuo4syatlv"
 
 [display]
 
@@ -35,7 +34,7 @@ project/assembly_name="ZCraft"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg", "res://addons/panku_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg")
 
 [global_group]
 
