@@ -5,11 +5,21 @@ using System;
 public partial class ItemStack : Resource, IGDNetSerializable
 {
     [Export] private RGameResource _resource = null;
-    [Export] private int _quantity = 1;
+    private int _quantity = 1;
 
     private long _netId = GDNet.GenerateUniqueID();
 
-    private GDNetRpc _rpc = new();
+    [Export] private GDNetRpc _rpc = new();
+
+    [Export] public int Quantity
+    {
+        set
+        {
+            SetQuantity(value);
+        }
+
+        get { return _quantity; }
+    }
 
     public ItemStack()
     {
@@ -32,6 +42,7 @@ public partial class ItemStack : Resource, IGDNetSerializable
     private void SetQuantityNet(int value)
     {
         _quantity = value;
+        GD.Print($"Set Quantity Net {_quantity}");
     }
 
     public void Deserialize(GDNetBuffer buffer)

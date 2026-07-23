@@ -1,25 +1,25 @@
 using Connection;
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class MainMenu : Control
 {
-	GDNetBuffer _buffer = new();
-
 	[Export] private LineEdit _connectionLineEdit;
 	[Export] private Godot.Collections.Array<Button> _hookButtons = new();
 	public override void _Ready()
 	{
-		int maxValue = int.MaxValue;
-        _buffer.WriteLongVar(long.MinValue);
-		_buffer.Seek(0);
-		GD.Print(_buffer.ReadLongVar());
-
+		GDNet.Instance.OnNetworkReady += OnNetworkReady;
 		foreach (var button in _hookButtons)
 		{
 			button.Pressed += () => OnButtonPressed(button);
 		}
 
+	}
+
+	private void OnNetworkReady()
+	{
+		GetTree().ChangeSceneToFile("res://scenes/world/World.tscn");
 	}
 
 	private void OnButtonPressed(Button button)

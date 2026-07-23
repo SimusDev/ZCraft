@@ -10,6 +10,12 @@ public partial class HierarchyTree : Node
 
 	public override void _Ready()
 	{
+		SetProcess(false);
+		SetPhysicsProcess(false);
+		SetProcessInput(false);
+		SetProcessUnhandledInput(false);
+		SetProcessShortcutInput(false);
+		SetProcessUnhandledKeyInput(false);
 
 	}
 

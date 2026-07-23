@@ -4,6 +4,9 @@ using System;
 [GlobalClass]
 public partial class RGameResource : Resource
 {
+	public static GDNetRegistry<RGameResource> Entities = new();
+
+
 	[Export] private Godot.Collections.Array<RGameResource> _children = new();
 
 #nullable enable

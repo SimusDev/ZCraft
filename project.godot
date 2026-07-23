@@ -34,7 +34,7 @@ project/assembly_name="ZCraft"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GDNet/plugin.cfg", "res://addons/NetCoreUtils/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDNet/plugin.cfg")
 
 [global_group]
 

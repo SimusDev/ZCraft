@@ -8,7 +8,7 @@ using System.Linq;
 public partial class GDNetCommunicator : RefCounted, IDisposable
 {
 
-	private ulong _networkID = 0;
+	[Export] private ulong _networkID = 0;
 	public MultiplayerPeer.TransferModeEnum Mode = MultiplayerPeer.TransferModeEnum.Reliable;
 	public int Channel = 0;
 

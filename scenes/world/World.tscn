@@ -2,17 +2,45 @@
 
 [ext_resource type="Script" uid="uid://db8i2yfuyl4fd" path="res://scenes/world/GameWorld.cs" id="1_5qbjp"]
 [ext_resource type="PackedScene" uid="uid://bnhvcegwshl68" path="res://addons/GDNet/profiler/SimpleProfiler.tscn" id="2_1oml7"]
+[ext_resource type="Script" uid="uid://bm8swrto6fg4f" path="res://scripts/inventory/Inventory.cs" id="3_6eebf"]
+[ext_resource type="Script" uid="uid://b1b0hbt6orbc7" path="res://scripts/inventory/ContainerSlot.cs" id="4_i1jm3"]
+[ext_resource type="Script" uid="uid://cpkm18ds0voi7" path="res://scripts/inventory/ItemStack.cs" id="5_252at"]
+[ext_resource type="Script" uid="uid://dmb8uwigbh2l2" path="res://scripts/inventory/SlotsContainer.cs" id="6_qh0kd"]
 
-[node name="GameWorld" type="Node3D" unique_id=5532753 node_paths=PackedStringArray("_testButtonSend")]
+[sub_resource type="Resource" id="Resource_252at"]
+script = ExtResource("5_252at")
+metadata/_custom_type_script = "uid://cpkm18ds0voi7"
+
+[sub_resource type="Resource" id="Resource_gbddb"]
+script = ExtResource("4_i1jm3")
+_itemStack = SubResource("Resource_252at")
+metadata/_custom_type_script = "uid://b1b0hbt6orbc7"
+
+[sub_resource type="Resource" id="Resource_qh0kd"]
+script = ExtResource("5_252at")
+metadata/_custom_type_script = "uid://cpkm18ds0voi7"
+
+[sub_resource type="Resource" id="Resource_qxiha"]
+script = ExtResource("4_i1jm3")
+_itemStack = SubResource("Resource_qh0kd")
+metadata/_custom_type_script = "uid://b1b0hbt6orbc7"
+
+[sub_resource type="Resource" id="Resource_yr1n6"]
+script = ExtResource("5_252at")
+metadata/_custom_type_script = "uid://cpkm18ds0voi7"
+
+[sub_resource type="Resource" id="Resource_i1jm3"]
+script = ExtResource("4_i1jm3")
+_itemStack = SubResource("Resource_yr1n6")
+metadata/_custom_type_script = "uid://b1b0hbt6orbc7"
+
+[sub_resource type="Resource" id="Resource_6eebf"]
+script = ExtResource("6_qh0kd")
+_slots = Array[ExtResource("4_i1jm3")]([SubResource("Resource_gbddb"), SubResource("Resource_qxiha"), SubResource("Resource_i1jm3")])
+metadata/_custom_type_script = "uid://dmb8uwigbh2l2"
+
+[node name="GameWorld" type="Node3D" unique_id=5532753]
 script = ExtResource("1_5qbjp")
-_testButtonSend = NodePath("Button")
-
-[node name="Button" type="Button" parent="." unique_id=374354846]
-offset_left = 74.0
-offset_top = 40.0
-offset_right = 305.0
-offset_bottom = 79.0
-text = "SEND"
 
 [node name="SimpleProfilerBase" parent="." unique_id=492826883 instance=ExtResource("2_1oml7")]
 anchors_preset = 3
@@ -26,3 +54,8 @@ offset_right = 0.0
 offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="Inventory" type="Node" parent="." unique_id=2094036584]
+script = ExtResource("3_6eebf")
+_container = SubResource("Resource_6eebf")
+metadata/_custom_type_script = "uid://bm8swrto6fg4f"

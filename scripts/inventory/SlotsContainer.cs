@@ -3,7 +3,7 @@ using Godot;
 [GlobalClass]
 public partial class SlotsContainer : Resource, IGDNetSerializable
 {
-	private GDNetRpc _rpc = new();
+	[Export] private GDNetRpc _rpc = new();
 
 	private long _netId = 0;
 

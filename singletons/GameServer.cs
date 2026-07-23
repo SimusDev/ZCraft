@@ -22,6 +22,7 @@ public partial class GameServer : Node
 	{
 		ENetMultiplayerPeer peer = new();
 		var err = peer.CreateServer(Port, 1000);
+		Multiplayer.MultiplayerPeer = peer;
 		return err;
 	}
 
@@ -29,6 +30,7 @@ public partial class GameServer : Node
 	{
         ENetMultiplayerPeer peer = new();
 		var err = peer.CreateClient(address, Port);
+        Multiplayer.MultiplayerPeer = peer;
         return err;
     }
 

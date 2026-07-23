@@ -35,4 +35,4 @@ metadata/_custom_type_script = "uid://bm8swrto6fg4f"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92387944, 0)
 shape = SubResource("CapsuleShape3D_dg6jo")
 
-[node name="HumanVisual" parent="." unique_id=1020324638 groups=["ClientNode"] instance=ExtResource("5_pejtq")]
+[node name="HumanVisual" parent="." unique_id=1020324638 instance=ExtResource("5_pejtq")]

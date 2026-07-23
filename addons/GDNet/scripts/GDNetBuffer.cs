@@ -361,14 +361,12 @@ public partial class GDNetBuffer : RefCounted
 
 	public void WriteResource(Resource resource)
 	{
-		if (resource == null)
+		WriteBool(resource == null);
+		if (resource != null)
 		{
-			WriteBool(true);
-			return;
+			long hash = ResourceUid.TextToId(ResourceUid.PathToUid(resource.ResourcePath));
+			WriteInt64(hash);
 		}
-
-		long hash = ResourceUid.TextToId(ResourceUid.PathToUid(resource.ResourcePath));
-		WriteInt64(hash);
 	}
 
 	public Resource ReadResource()
