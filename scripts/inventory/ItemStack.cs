@@ -11,7 +11,7 @@ public partial class ItemStack : Resource, IGDNetSerializable
 
     [Export] private GDNetRpc _rpc = new();
 
-    [Export] public int Quantity
+    [Export] int Quantity
     {
         set
         {
@@ -42,7 +42,6 @@ public partial class ItemStack : Resource, IGDNetSerializable
     private void SetQuantityNet(int value)
     {
         _quantity = value;
-        GD.Print($"Set Quantity Net {_quantity}");
     }
 
     public void Deserialize(GDNetBuffer buffer)

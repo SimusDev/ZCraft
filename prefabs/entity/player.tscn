@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dmb8uwigbh2l2" path="res://scripts/inventory/SlotsContainer.cs" id="3_pejtq"]
 [ext_resource type="Script" uid="uid://cpkm18ds0voi7" path="res://scripts/inventory/ItemStack.cs" id="3_w7rw4"]
 [ext_resource type="PackedScene" uid="uid://c0mjgwpgqwwda" path="res://prefabs/models/entity/character/human/human_visual.tscn" id="5_pejtq"]
+[ext_resource type="Script" uid="uid://ctti5ipv8jgd2" path="res://scripts/components/state_machine/CStateMachine.cs" id="6_10icu"]
 
 [sub_resource type="Resource" id="Resource_w7rw4"]
 script = ExtResource("3_w7rw4")
@@ -30,6 +31,10 @@ height = 1.8786621
 script = ExtResource("1_y4f71")
 _container = SubResource("Resource_y4f71")
 metadata/_custom_type_script = "uid://bm8swrto6fg4f"
+
+[node name="CStateMachine" type="Node" parent="." unique_id=183332405]
+script = ExtResource("6_10icu")
+metadata/_custom_type_script = "uid://ctti5ipv8jgd2"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=976180097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92387944, 0)
