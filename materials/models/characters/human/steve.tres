@@ -1,7 +1,0 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://7vwvylsfttfs"]
-
-[ext_resource type="Texture2D" uid="uid://rdgqeu4eesh8" path="res://textures/models/characters/human/steve.png" id="1_cbrgn"]
-
-[resource]
-albedo_texture = ExtResource("1_cbrgn")
-texture_filter = 0

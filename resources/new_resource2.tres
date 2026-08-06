@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="RGameResource" format=3 uid="uid://dy1biw22opea5"]
-
-[ext_resource type="Script" uid="uid://bsr5rbp6edwps" path="res://scripts/resources/RGameResource.cs" id="1_6k2nk"]
-
-[resource]
-script = ExtResource("1_6k2nk")
-metadata/_custom_type_script = "uid://bsr5rbp6edwps"

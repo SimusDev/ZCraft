@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://2pkvvlivom4o"]
+
+[ext_resource type="Script" uid="uid://wjgwrsggat8d" path="res://Source/Networking/NetworkTransport.cs" id="1_j0p05"]
+[ext_resource type="Script" uid="uid://c2cem23x3ttka" path="res://Source/World/Level.cs" id="2_5nsto"]
+
+[node name="World" type="Node" unique_id=912735876]
+
+[node name="NetworkTransport" type="Node" parent="." unique_id=603708039]
+script = ExtResource("1_j0p05")
+
+[node name="Level" type="Node3D" parent="." unique_id=1091713175 node_paths=PackedStringArray("NetworkTransport")]
+script = ExtResource("2_5nsto")
+NetworkTransport = NodePath("../NetworkTransport")

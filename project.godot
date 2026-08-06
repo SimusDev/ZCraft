@@ -11,14 +11,9 @@ config_version=5
 [application]
 
 config/name="ZCraft"
-run/main_scene="uid://ccucfwfuchp4g"
+run/main_scene="uid://byy12aeulaf0a"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
-
-[autoload]
-
-GDNet="*uid://dbr3vod01qpcy"
-GameServer="*uid://c1n2vhckxsbsb"
 
 [display]
 
@@ -31,18 +26,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="ZCraft"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/GDNet/plugin.cfg")
-
 [global_group]
 
 ClientNode=""
 ServerNode=""
-
-[gui]
-
-theme/custom_font="uid://bj4xwm4ah2kq2"
 
 [input]
 
