@@ -19,17 +19,20 @@ metadata/_custom_type_script = "uid://dk83k2kare24l"
 [node name="Player" type="Node3D" parent="." unique_id=164653440 node_paths=PackedStringArray("Root", "CameraControl", "MovementControl")]
 script = ExtResource("1_nmotr")
 Root = NodePath("..")
-CameraControl = NodePath("../PlayerCameraControl")
+CameraControl = NodePath("../Head")
 MovementControl = NodePath("../PlayerMovementControl")
 metadata/_custom_type_script = "uid://bp0k3jkggmh13"
 
-[node name="PlayerCameraControl" type="Node3D" parent="." unique_id=1602118586 node_paths=PackedStringArray("_body")]
+[node name="Head" type="Node3D" parent="." unique_id=1602118586 node_paths=PackedStringArray("_body", "_camera")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1848005, 0)
 script = ExtResource("3_ppye8")
 _body = NodePath("..")
+_camera = NodePath("EntityCamera3D")
 metadata/_custom_type_script = "uid://du6gprxlmh0aq"
 
-[node name="EntityCamera3D" type="Camera3D" parent="PlayerCameraControl" unique_id=46468473]
+[node name="EntityCamera3D" type="Camera3D" parent="Head" unique_id=46468473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5758873, 0)
+current = true
 metadata/_custom_type_script = "uid://cp1mwq31qo62e"
 
 [node name="PlayerMovementControl" type="Node" parent="." unique_id=264336661 node_paths=PackedStringArray("_body")]
