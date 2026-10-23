@@ -1,13 +1,43 @@
 [gd_scene format=3 uid="uid://2pkvvlivom4o"]
 
-[ext_resource type="Script" uid="uid://wjgwrsggat8d" path="res://Source/Networking/NetworkTransport.cs" id="1_j0p05"]
+[ext_resource type="Texture2D" uid="uid://bjh6bsf8fpaux" path="res://Resources/Textures/Prototyping/KenneyTextures/Orange/texture_09.png" id="1_j0p05"]
 [ext_resource type="Script" uid="uid://c2cem23x3ttka" path="res://Source/World/Level.cs" id="2_5nsto"]
+[ext_resource type="PackedScene" uid="uid://ddwtld50ousep" path="res://Resources/Scenes/World/Player/Player.tscn" id="3_5nsto"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5nsto"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_gjpho"]
+sky_material = SubResource("ProceduralSkyMaterial_5nsto")
+
+[sub_resource type="Environment" id="Environment_p70al"]
+background_mode = 2
+sky = SubResource("Sky_gjpho")
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5nsto"]
+albedo_texture = ExtResource("1_j0p05")
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_lmafn"]
+size = Vector2(80, 80)
 
 [node name="World" type="Node" unique_id=912735876]
 
-[node name="NetworkTransport" type="Node" parent="." unique_id=603708039]
-script = ExtResource("1_j0p05")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=685406354]
+environment = SubResource("Environment_p70al")
 
-[node name="Level" type="Node3D" parent="." unique_id=1091713175 node_paths=PackedStringArray("NetworkTransport")]
+[node name="MainWorld" type="Node3D" parent="." unique_id=1091713175]
 script = ExtResource("2_5nsto")
-NetworkTransport = NodePath("../NetworkTransport")
+
+[node name="Player" parent="MainWorld" unique_id=29700066 instance=ExtResource("3_5nsto")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0186466, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MainWorld" unique_id=274675612]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MainWorld/StaticBody3D" unique_id=1199811570]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MainWorld/StaticBody3D" unique_id=717778931]
+material_override = SubResource("StandardMaterial3D_5nsto")
+mesh = SubResource("PlaneMesh_lmafn")

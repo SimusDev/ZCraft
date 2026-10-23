@@ -1,5 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using ZCraft.Source.Networking;
+using ZCraft.Source.World;
 
 namespace ZCraft.Source.Scenes;
 
@@ -11,16 +14,30 @@ public partial class MainMenu : Control
 
 	public const int Port = 8080;
 
+	private List<ITickable> tickables = new();
+
 	public override void _Ready()
 	{
-		SceneMultiplayer multiplayer = new();
-		multiplayer.ServerRelay = false;
-		GetTree().SetMultiplayer(multiplayer);
-
 		Multiplayer.ConnectedToServer += OnConnectedToServer;
 
 		_buttonServer.Pressed += CreateServer;
 		_buttonClient.Pressed += CreateClient;
+
+		for (int i = 0; i < 1000000; i++)
+		{
+			var tickableNode = new ITickableTest();
+			AddChild(tickableNode);
+			tickables.Add(tickableNode);
+		}
+
+	}
+
+	public override void _Process(double delta)
+	{
+		for (int i = 0; i < tickables.Count; i++)
+		{
+			tickables[i].Tick(delta);
+		}
 	}
 
 	private void OnConnectedToServer()
@@ -35,23 +52,15 @@ public partial class MainMenu : Control
 
 	public void CreateServer()
 	{
-		ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
-		Error err = peer.CreateServer(Port);
+		Error err = NetworkManager.Instance.StartServer(Port);
 		if (err == Error.Ok)
 		{
-			Multiplayer.MultiplayerPeer = peer;
 			ChangeSceneToWorld();
 		}
-
 	}
 
 	public void CreateClient()
 	{
-		ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
-		Error err = peer.CreateClient(_ipLine.Text, Port);
-		if (err == Error.Ok)
-		{
-			Multiplayer.MultiplayerPeer = peer;
-		}
+		NetworkManager.Instance.StartClient("localhost", Port);
 	}
 }
