@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://ddwtld50ousep"]
 
-[ext_resource type="Script" path="res://Source/Entity/EntityModules.cs" id="1_5acwq"]
 [ext_resource type="Script" uid="uid://bp0k3jkggmh13" path="res://Source/World/Player/Player.cs" id="1_nmotr"]
+[ext_resource type="Script" uid="uid://dk83k2kare24l" path="res://Source/World/Entity/EntityModules.cs" id="1_ubdh3"]
 [ext_resource type="Script" uid="uid://du6gprxlmh0aq" path="res://Source/World/Player/PlayerCameraControl.cs" id="3_ppye8"]
-[ext_resource type="Script" path="res://Source/Entity/Camera/EntityCamera3D.cs" id="4_ubdh3"]
 [ext_resource type="Script" uid="uid://310qow0g6puj" path="res://Source/World/Player/PlayerMovementControl.cs" id="5_a4xwu"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_lmafn"]
@@ -12,10 +11,9 @@
 
 [node name="Player" type="CharacterBody3D" unique_id=29700066]
 
-[node name="EntityModules" type="Node" parent="." unique_id=18691119 node_paths=PackedStringArray("Target", "_initialNodes")]
-script = ExtResource("1_5acwq")
+[node name="EntityModules" type="Node" parent="." unique_id=18691119 node_paths=PackedStringArray("Target")]
+script = ExtResource("1_ubdh3")
 Target = NodePath("..")
-_initialNodes = [NodePath("../Player"), NodePath("../PlayerCameraControl/EntityCamera3D")]
 metadata/_custom_type_script = "uid://dk83k2kare24l"
 
 [node name="Player" type="Node3D" parent="." unique_id=164653440 node_paths=PackedStringArray("Root", "CameraControl", "MovementControl")]
@@ -32,7 +30,6 @@ metadata/_custom_type_script = "uid://du6gprxlmh0aq"
 
 [node name="EntityCamera3D" type="Camera3D" parent="PlayerCameraControl" unique_id=46468473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5758873, 0)
-script = ExtResource("4_ubdh3")
 metadata/_custom_type_script = "uid://cp1mwq31qo62e"
 
 [node name="PlayerMovementControl" type="Node" parent="." unique_id=264336661 node_paths=PackedStringArray("_body")]
