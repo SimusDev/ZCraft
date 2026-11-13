@@ -21,7 +21,7 @@ namespace ZCraft.Source.World.Player
         {
             if (@event is InputEventMouseMotion mouse)
             {
-                float actualSens = _sensitivity * 0.006f;
+                float actualSens = _sensitivity * 0.0045f;
                 RotateY(-mouse.Relative.X * actualSens);
 
                 _camera.RotateX(-mouse.Relative.Y * actualSens);

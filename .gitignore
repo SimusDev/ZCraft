@@ -10,3 +10,6 @@ saves/
 .vs/
 *.csproj
 *.sln
+
+# DSH: recovery records from the one-time workspace permission repair
+.dsh-acl-recovery/

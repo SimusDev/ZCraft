@@ -1,184 +1,213 @@
-using Godot;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Xml;
+using Godot;
+using ZCraft.Source.Serialization;
 
-namespace ZCraft.Source.Networking
+namespace ZCraft.Source.Networking;
+
+public static class NetworkReplicator
 {
-    public static class NetworkReplicator
+    #nullable enable
+    public static Dictionary<NetworkId, INetworkReplicationObject> _objectsById = new();
+    public static Dictionary<INetworkReplicationObject, NetworkId> _idByObjects = new();
+
+    public static int ActiveObjectCount => _objectsById.Count;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static NetworkId GetObjectNetworkId(INetworkReplicationObject @object)
     {
-        private static Dictionary<INetworkObject, NetworkReplicationObject> _registry = new();
-        private static Dictionary<ulong, NetworkReplicationObject> _registryId = new();
-
-        public static bool EnableLog = true;
-
-        [ThreadStatic] private static Serialization.BufferStream _RpcBuffer = new(512);
-
-        public static ulong HashStringDetermenistic(string str)
+        if (_idByObjects.TryGetValue(@object, out var netId))
         {
-            if (str == null)
-                return 0;
-
-            str += "ZCraftReplication";
-
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(str);
-
-            ulong hash = 0x9e3779b97f4a7c15UL;
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                hash ^= data[i];
-                hash *= 0xbf58476d1ce4e5b9UL;
-                hash = (hash << 27) | (hash >> 37);
-            }
-
-            return hash;
+            return netId;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AddObjectInternal(INetworkObject @object, string hash)
-        {
-            if (HasObject(@object))
-            {
-                GD.PushError($"Network Object {@object} already in replication!");
-                return;
-            }
+        throw new ArgumentException($"INetworkReplicationObject Id was not found {@object}, use NetworkReplicator.AddObject to register with Id");
+    }
 
-            ulong networkId = HashStringDetermenistic(hash);
-            var replicationObject = new NetworkReplicationObject(networkId, @object);
-            _registry[@object] = replicationObject;
-            _registryId[networkId] = replicationObject;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static INetworkReplicationObject? TryGetObjectByNetworkId(NetworkId id)
+    {
+        if (_objectsById.TryGetValue(id, out var @object))
+        {
+            return @object;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddObject(INetworkObject @object, ulong id)
+        return null;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddObject(INetworkReplicationObject @object, NetworkId networkId)
+    {
+        _objectsById[networkId] = @object;
+        _idByObjects[@object] = networkId;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void RemoveObject(INetworkReplicationObject @object)
+    {
+        if (_idByObjects.TryGetValue(@object, out var networkId))
         {
-            AddObjectInternal(@object, $"ByUlong_{id})");
+            _idByObjects.Remove(@object);
+            _objectsById.Remove(networkId);
+        }
+    }
+
+    internal static void OnObjectMessagePacket(int fromPeer, BytePacker packer)
+    {
+        NetworkId.TypeEnum netIdType = (NetworkId.TypeEnum)packer.ReadByte();
+        ulong Id = packer.ReadVarULong();
+        int bytesLength = packer.ReadVarInt();
+
+        NetworkId netId = new(netIdType, Id);
+
+        if (bytesLength <= 0 || bytesLength > packer.Remaining)
+            throw new InvalidOperationException(
+                $"Invalid payload length: {bytesLength}, remaining: {packer.Remaining}");
+
+        
+        INetworkReplicationObject? @object = TryGetObjectByNetworkId(netId);
+
+        if (@object != null)
+        {
+            @object.OnNetworkMessage(fromPeer, packer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddObject(INetworkObject @object, string id)
+        #if DEBUG
+        else
         {
-            AddObjectInternal(@object, $"ByString_{id}");
+            GD.PushError($"Failed to deliver message. INetworkReplicationObject by (ID: {netId}) was not found on your registry.");
+        }
+        #endif
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMessageToServer(INetworkReplicationObject @object, BytePacker bytePacker, NetworkManager.NetChannel channel = NetworkManager.NetChannel.Reliable)
+    {
+        if (NetworkManager.IsServer)
+        {
+            return;
+        }
+        
+        BytePacker packer = BytePackerPool.Rent();
+
+        try
+        {
+            SerializeMessage(@object, packer, bytePacker);
+
+            NetworkManager.Instance.SendPacketToPeer(
+            NetworkManager.ServerId,
+            packer.WrittenSpan,
+            NetworkManager.NetChannelToMultiplayerTransferMode(channel),
+            (int)channel
+            );
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddObject(INetworkObject @object, NodePath id)
+        catch(Exception e)
         {
-            AddObjectInternal(@object, $"ByNodePath_{id}");
+            GD.PushError($"SendMessageToServer failed: {e.Message}");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RemoveObject(INetworkObject @object)
+        finally
         {
-            if (_registry.TryGetValue(@object, out NetworkReplicationObject replicationObject))
-            {
-                _registry.Remove(@object);
-                _registryId.Remove(replicationObject.NetworkID);
-                replicationObject.Destroy();
-                replicationObject = null;
-            }
-
-            else
-            {
-                if (EnableLog)
-                {
-                    GD.PushError($"Network Object {@object} was not found, use NetworkReplicator.AddObject");
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool HasObject(INetworkObject @object)
-        {
-            return _registry.ContainsKey(@object);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetReplicationObject(INetworkObject @object, out NetworkReplicationObject replicationObject)
-        {
-            if (_registry.TryGetValue(@object, out replicationObject))
-                return true;
-
-            return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGetReplicationObjectByNetworkId(ulong networkId, out NetworkReplicationObject replicationObject)
-        {
-            return _registryId.TryGetValue(networkId, out replicationObject);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void SerializePacketHeader(Serialization.BufferStream stream)
-        {
-            stream.WriteByte(0);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void SerializeRpc(Serialization.BufferStream stream, ulong networkId, ushort rpcId)
-        {
-            stream.WriteUInt64(networkId);
-            stream.WriteUInt16(rpcId);
-        }
-
-        public static void RpcInvoke(INetworkObject @object, Delegate method, params object[] args)
-        {
-            if (!TryGetReplicationObject(@object, out NetworkReplicationObject replicationObject))
-            {
-                if (EnableLog)
-                    GD.PushError($"Can't invoke Rpc on unregistered object, {@object}:{method.Method.Name}, use NetworkReplicator.AddObject");
-
-                return;
-            }
-
-            if (!replicationObject.TryGetRpcId(method, out ushort rpcId))
-            {
-                if (EnableLog)
-                    GD.PushError($"Can't invoke Rpc on unregistered Method {@object}:{method.Method.Name}, rpcId was not found!");
-               
-                return;
-            }
-
-            if (NetworkManager.IsServer)
-            {
-                return;
-            }
-
-            SerializePacketHeader(_RpcBuffer);
-            SerializeRpc(_RpcBuffer, replicationObject.NetworkID, rpcId);
-            for (byte i  = 0; i < args.Length;  i++)
-            {
-                
-            }
-
-        }
-
-        public static void RpcInvoke(INetworkObject @object, Delegate method, ref object arg1)
-        {
-            if (!TryGetReplicationObject(@object, out NetworkReplicationObject replicationObject))
-                return;
-
-        }
-
-        public static void RpcInvoke(INetworkObject @object, Delegate method, ref object arg1, ref object arg2)
-        {
-            if (!TryGetReplicationObject(@object, out NetworkReplicationObject replicationObject))
-                return;
-        }
-
-        public static void RpcInvoke(INetworkObject @object, Delegate method, ref object arg1, ref object arg2, ref object arg3)
-        {
-            if (!TryGetReplicationObject(@object, out NetworkReplicationObject replicationObject))
-                return;
-        }
-
-        public static void RpcInvoke(INetworkObject @object, Delegate method, ref object arg1, ref object arg2, ref object arg3, ref object arg4)
-        {
-            if (!TryGetReplicationObject(@object, out NetworkReplicationObject replicationObject))
-                return;
+            if (bytePacker.IsFromPool)
+                BytePackerPool.Return(bytePacker);
+            
+            BytePackerPool.Return(packer);
         }
 
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMessageToPeers(HashSet<int> peers, INetworkReplicationObject @object, BytePacker bytePacker, NetworkManager.NetChannel channel = NetworkManager.NetChannel.Reliable)
+    {
+        if (peers.Count < 1)
+            return;
+        
+        if (!NetworkManager.IsServer)
+        {
+            throw new Exception("Only server can messages to peers");
+        }
+
+        BytePacker packer = BytePackerPool.Rent();
+
+        try
+        {
+            SerializeMessage(@object, packer, bytePacker);
+
+            foreach(int peer in peers)
+            {
+                NetworkManager.Instance.SendPacketToPeer(
+                peer,
+                packer.WrittenSpan,
+                NetworkManager.NetChannelToMultiplayerTransferMode(channel),
+                (int)channel
+                );
+            }
+        }
+
+        catch(Exception e)
+        {
+            GD.PushError($"SendMessageToPeers failed: {e.Message}");
+        }
+
+        finally
+        {
+            if (bytePacker.IsFromPool)
+                BytePackerPool.Return(bytePacker);
+            
+            BytePackerPool.Return(packer);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMessageToPeer(int peer, INetworkReplicationObject @object, BytePacker bytePacker, NetworkManager.NetChannel channel = NetworkManager.NetChannel.Reliable)
+    {
+        if (!NetworkManager.IsServer)
+        {
+            throw new Exception("Only server can messages to peers");
+        }
+
+        BytePacker packer = BytePackerPool.Rent();
+
+        try
+        {
+            SerializeMessage(@object, packer, bytePacker);
+
+            NetworkManager.Instance.SendPacketToPeer(
+            peer,
+            packer.WrittenSpan,
+            NetworkManager.NetChannelToMultiplayerTransferMode(channel),
+            (int)channel
+            );
+        }
+
+        catch(Exception e)
+        {
+            GD.PushError($"SendMessageToPeers failed: {e.Message}");
+        }
+
+        finally
+        {
+            if (bytePacker.IsFromPool)
+                BytePackerPool.Return(bytePacker);
+            
+            BytePackerPool.Return(packer);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void SerializeMessage(INetworkReplicationObject @object, BytePacker packer, BytePacker message)
+    {
+        NetworkId netId = GetObjectNetworkId(@object);
+
+        packer.WriteByte((byte)NetworkManager.PacketHeader.NetworkObjectMessage);
+        packer.WriteByte((byte)netId.Type);
+        packer.WriteVarULong(netId.Value);
+        packer.WriteVarInt(message.Length);
+        packer.WriteBytes(message.WrittenSpan);
+    }
+
+
 }

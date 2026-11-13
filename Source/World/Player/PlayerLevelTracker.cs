@@ -1,0 +1,73 @@
+using Godot;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+namespace ZCraft.Source.World.Player;
+
+[GlobalClass]
+public partial class PlayerLevelTracker : Node
+{
+	[Export] private Node3D _trackNode;
+
+	private Level _level;
+	private HashSet<ChunkPos> _visibleChunks = new();
+	private HashSet<ChunkPos> _visibleChunksOld = new();
+	private HashSet<ChunkPos> _removedChunks = new();
+	private HashSet<ChunkPos> _addedChunks = new();
+
+	public HashSet<ChunkPos> VisibleChunks => _visibleChunks;
+	public HashSet<ChunkPos> VisibleChunksOld => _visibleChunksOld;
+	public HashSet<ChunkPos> RemovedChunks => _removedChunks;
+	public HashSet<ChunkPos> AddedChunks => _addedChunks;
+
+	public string NickName = "";
+
+	public Node3D TrackNode => _trackNode;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public ChunkPos GetChunkPosition()
+	{
+		return new ChunkPos(_trackNode.GlobalPosition);
+	}
+	
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Vector3 GetGlobalPosition()
+	{
+		return _trackNode.GlobalPosition;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Level GetLevel()
+	{
+		return _level;
+	}
+
+	public override void _EnterTree()
+	{
+		_level = Level.FindAbove(this);
+		_level.AddPlayerTracker(this);
+	}
+
+	public override void _ExitTree()
+	{
+		_level.RemovePlayerTracker(this);
+	}
+
+	public void ResetClient(int newPeerId)
+	{
+		_visibleChunks.Clear();
+		_visibleChunksOld.Clear();
+		_removedChunks.Clear();
+		_addedChunks.Clear();
+
+		SetMultiplayerAuthorityTracker(newPeerId);
+	}
+
+	public void SetMultiplayerAuthorityTracker(int id)
+	{
+		SetMultiplayerAuthority(id, false);
+		_trackNode.SetMultiplayerAuthority(id, true);
+	}
+
+}

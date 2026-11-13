@@ -12,21 +12,14 @@ namespace ZCraft.Source.World.Player
 		[Export] public PlayerCameraControl CameraControl;
 		[Export] public PlayerMovementControl MovementControl;
 
-		public Level Level => _level;
-		public List<Player> All => _all;
-
-		private Level _level;
-		private List<Player> _all = new();
-
 		public override void _EnterTree()
 		{
-			_level = Level.FindAbove(this);
-			_all.Add(this);
+
 		}
 
 		public override void _ExitTree()
 		{
-			_all.Remove(this);
+			
 		}
 
 	}

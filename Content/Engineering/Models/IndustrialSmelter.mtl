@@ -1,0 +1,33 @@
+# ZCraft industrial voxel material palette
+
+newmtl DarkSteel
+Kd 0.065 0.075 0.085
+Ks 0.25 0.28 0.3
+Ns 72
+illum 2
+
+newmtl SteelPanel
+Kd 0.16 0.185 0.2
+Ks 0.34 0.37 0.4
+Ns 96
+illum 2
+
+newmtl Warning
+Kd 0.95 0.46 0.035
+Ks 0.28 0.14 0.01
+Ns 64
+illum 2
+
+newmtl HotCore
+Kd 1.0 0.11 0.01
+Ke 1.0 0.045 0.002
+Ks 0.4 0.02 0.0
+Ns 48
+illum 2
+
+newmtl Control
+Kd 0.025 0.035 0.045
+Ks 0.18 0.23 0.28
+Ns 80
+illum 2
+

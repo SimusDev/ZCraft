@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://b1c0w5cst5skf"]
+
+[ext_resource type="PackedScene" uid="uid://2pkvvlivom4o" path="res://Scenes/World.tscn" id="1_bk1xb"]
+[ext_resource type="Script" uid="uid://c2cem23x3ttka" path="res://Source/World/Level.cs" id="2_mm2yh"]
+[ext_resource type="PackedScene" uid="uid://c6kx01u2r6au3" path="res://Content/Engineering/Models/IndustrialSmelter.tscn" id="3_tp0qv"]
+
+[node name="World" unique_id=912735876 instance=ExtResource("1_bk1xb")]
+
+[node name="MainWorld" type="Node3D" parent="." index="3" unique_id=1065418233]
+script = ExtResource("2_mm2yh")
+
+[node name="IndustrialSmelter" parent="MainWorld" index="0" unique_id=502132620 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.600197, 0, -116.63547)
+
+[node name="IndustrialSmelter2" parent="MainWorld" index="1" unique_id=24813314 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -118.52189, 0, -116.63547)
+
+[node name="IndustrialSmelter3" parent="MainWorld" index="2" unique_id=856278921 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -206.42825, 0, -116.63547)
+
+[node name="IndustrialSmelter4" parent="MainWorld" index="3" unique_id=1993268235 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -303.9728, 0, -116.63547)
+
+[node name="IndustrialSmelter5" parent="MainWorld" index="4" unique_id=1588205799 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -303.9728, 0, -294.49484)
+
+[node name="IndustrialSmelter6" parent="MainWorld" index="5" unique_id=160453342 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -202.97281, 0, -293.49484)
+
+[node name="IndustrialSmelter7" parent="MainWorld" index="6" unique_id=578889930 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -121.21878, 0, -293.49484)
+
+[node name="IndustrialSmelter8" parent="MainWorld" index="7" unique_id=1691157712 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.152702, 0, -293.49484)
+
+[node name="IndustrialSmelter9" parent="MainWorld" index="8" unique_id=2032091203 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300.8345, 0, -293.49484)
+
+[node name="IndustrialSmelter10" parent="MainWorld" index="9" unique_id=1020159220 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300.8345, 0, -290.17484)
+
+[node name="IndustrialSmelter11" parent="MainWorld" index="10" unique_id=2107689996 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 304.69583, 0, -290.17484)
+
+[node name="IndustrialSmelter12" parent="MainWorld" index="11" unique_id=2051357689 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 304.69583, 0, -293.46805)
+
+[node name="IndustrialSmelter13" parent="MainWorld" index="12" unique_id=483810410 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 304.69583, 0, -296.80698)
+
+[node name="IndustrialSmelter14" parent="MainWorld" index="13" unique_id=552099820 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300.53537, 0, -296.80698)
+
+[node name="IndustrialSmelter15" parent="MainWorld" index="14" unique_id=161168188 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297.28796, 0, -296.80698)
+
+[node name="IndustrialSmelter16" parent="MainWorld" index="15" unique_id=355023730 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297.28796, 0, -293.1511)
+
+[node name="IndustrialSmelter17" parent="MainWorld" index="16" unique_id=862725531 instance=ExtResource("3_tp0qv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297.28796, 0, -289.74377)

@@ -2,7 +2,9 @@ using Godot;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml;
+using ZCraft.Source.Serialization;
 
 namespace ZCraft.Source.Networking
 {
@@ -22,7 +24,37 @@ namespace ZCraft.Source.Networking
 
         private static NetworkManager _instance;
 
-        private static Dictionary<int, Serialization.BufferStream> _peerBuffers = new();
+        public NetworkTransport Transport { get; private set; }
+
+        public enum PacketHeader : byte
+        {
+            Default = 0,
+            NetworkObjectMessage = 1,
+        }
+
+        public enum NetChannel : byte
+        {
+            Default = 0,
+            Reliable,
+            Unreliable,
+            UnreliableOrdered,
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]    
+        public static MultiplayerPeer.TransferModeEnum NetChannelToMultiplayerTransferMode(NetChannel channel)
+        {
+            switch(channel)
+            {
+                case NetChannel.Reliable:
+                    return MultiplayerPeer.TransferModeEnum.Reliable;
+                case NetChannel.Unreliable:
+                    return MultiplayerPeer.TransferModeEnum.Unreliable;
+                case NetChannel.UnreliableOrdered:
+                    return MultiplayerPeer.TransferModeEnum.UnreliableOrdered;
+            }
+
+            return MultiplayerPeer.TransferModeEnum.Reliable;
+        }
 
         public override void _EnterTree()
         {
@@ -31,7 +63,9 @@ namespace ZCraft.Source.Networking
             _api.ServerRelay = false;
             GetTree().SetMultiplayer(_api);
 
-            _api.PeerPacket += InternalApiPeerPacket;
+            Transport = new NetworkTransport { Name = "NetworkTransport" };
+            Transport.PacketReceivedSpan += InternalApiPeerPacket;
+            AddChild(Transport);
 
             Multiplayer.ConnectedToServer += OnConnectedToServer;
             Multiplayer.ServerDisconnected += OnServerDisconnected;
@@ -42,12 +76,12 @@ namespace ZCraft.Source.Networking
 
         private void OnPeerConnected(long id)
         {
-            _peerBuffers[(int)id] = new Serialization.BufferStream(2048);
+            
         }
 
         private void OnPeerDisconnected(long id)
         {
-            _peerBuffers.Remove((int)id);
+            
         }
 
         private void OnServerDisconnected()
@@ -62,6 +96,7 @@ namespace ZCraft.Source.Networking
 
         public void Shutdown()
         {
+            Transport?.Shutdown();
             _isServer = true;
             _uniqueId = ServerId;
             GD.Print("NetworkManager shutdown");
@@ -71,28 +106,62 @@ namespace ZCraft.Source.Networking
         {
             _isServer = asServer;
             _uniqueId = uniqueId;
+            Transport.Setup(asServer, _api);
             GD.Print($"NetworkManager started. asServer = {asServer}, uniqueId = {uniqueId}");
-        }
-
-        private void InternalApiPeerPacket(long id, byte[] packet)
-        {
-            
         }
 
         internal void QueuePacket(int peer, Span<byte> data, int channel, bool sendImmediate)
         {
+            Transport.SendPacketToPeer(peer, data,
+                NetChannelToMultiplayerTransferMode((NetChannel)channel), channel, sendImmediate);
+        }
 
+        private void InternalApiPeerPacket(int id, ReadOnlySpan<byte> packet)
+        {
+            BytePacker packer = BytePackerPool.Rent();
+
+            try
+            {
+                packer.Wrap(packet);
+                PacketHeader header = (PacketHeader)packer.ReadByte();
+
+                switch (header)
+                {
+                    case PacketHeader.NetworkObjectMessage:
+                        NetworkReplicator.OnObjectMessagePacket(id, packer);
+                        break;
+                }
+            }
+
+            catch(Exception e)
+            {
+                GD.Print($"Receiving Packet Error: {e}");
+            }
+
+            finally
+            {
+                BytePackerPool.Return(packer);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SendPacketToPeer(int peer, ReadOnlySpan<byte> data, MultiplayerPeer.TransferModeEnum mode, int channel)
+        {
+            Transport.SendPacketToPeer(peer, data, mode, channel);
         }
 
         public Error StartServer(int port)
         {
             ENetMultiplayerPeer peer = new();
             Error error = peer.CreateServer(port, MaxClients);
+            
             if (error == Error.Ok)
             {
+                Transport.Setup(true, _api);
                 Multiplayer.MultiplayerPeer = peer;
                 Start(Multiplayer.GetUniqueId(), Multiplayer.IsServer());
             }
+
             return error;
         }
 
@@ -102,11 +171,11 @@ namespace ZCraft.Source.Networking
             Error error = peer.CreateClient(address, port);
             if (error == Error.Ok)
             {
+                Transport.Setup(false, _api);
                 Multiplayer.MultiplayerPeer = peer;
             }
             return error;
         }
-
 
     }
 }

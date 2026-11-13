@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://crlvovts3e4oa"]
+
+[ext_resource type="Script" uid="uid://dmuxj6xsyfbvk" path="res://Resources/Interface/LevelDebug.cs" id="1_y2nyq"]
+
+[node name="LevelDebug" type="CanvasLayer" unique_id=818551252 node_paths=PackedStringArray("_info")]
+script = ExtResource("1_y2nyq")
+_info = NodePath("Label")
+
+[node name="Label" type="Label" parent="." unique_id=1668974739]
+offset_left = 24.0
+offset_top = 23.0
+offset_right = 329.32214
+offset_bottom = 217.0
+text = "debug.text"
+
+[node name="Panel" type="Panel" parent="Label" unique_id=1665403166]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

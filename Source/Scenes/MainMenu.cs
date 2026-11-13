@@ -14,8 +14,6 @@ public partial class MainMenu : Control
 
 	public const int Port = 8080;
 
-	private List<ITickable> tickables = new();
-
 	public override void _Ready()
 	{
 		Multiplayer.ConnectedToServer += OnConnectedToServer;
@@ -23,21 +21,11 @@ public partial class MainMenu : Control
 		_buttonServer.Pressed += CreateServer;
 		_buttonClient.Pressed += CreateClient;
 
-		for (int i = 0; i < 1000000; i++)
-		{
-			var tickableNode = new ITickableTest();
-			AddChild(tickableNode);
-			tickables.Add(tickableNode);
-		}
-
 	}
 
 	public override void _Process(double delta)
 	{
-		for (int i = 0; i < tickables.Count; i++)
-		{
-			tickables[i].Tick(delta);
-		}
+
 	}
 
 	private void OnConnectedToServer()
@@ -47,7 +35,7 @@ public partial class MainMenu : Control
 
 	private void ChangeSceneToWorld()
 	{
-		GetTree().CallDeferred("change_scene_to_file", "res://Scenes/World.tscn");
+		GetTree().CallDeferred("change_scene_to_file", "res://Scenes/SetupWorldAndContent.tscn");
 	}
 
 	public void CreateServer()
