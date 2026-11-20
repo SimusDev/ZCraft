@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlTypes;
 using System.Threading.Channels;
 using Godot;
 using ZCraft.Source.Content;
@@ -18,6 +20,8 @@ public partial class ZCraftWorld : Node
 	public event Action<PlayerProfile> PlayerConnected;
 	public event Action<PlayerProfile> PlayerDisconnected;
 
+	public static readonly TickablesRegistry Tickables = new();
+	public static readonly FixedTickablesRegistry FixedTickables = new();
 	private static ulong _nextUniqueId = 0;
 
 	public static ulong GenerateUniqueId()
@@ -25,7 +29,6 @@ public partial class ZCraftWorld : Node
 		_nextUniqueId++;
 		return _nextUniqueId;
 	}
-
 	public override void _Ready()
 	{
 		if (NetworkManager.IsServer)
@@ -48,8 +51,12 @@ public partial class ZCraftWorld : Node
 
 	public override void _PhysicsProcess(double delta)
 	{
-		foreach(NetworkTransform networkTransform in NetworkTransform.All)
-			networkTransform.Tick(delta);
+
+	}
+
+	public override void _Process(double delta)
+	{
+		Tickables.Tick(delta);
 	}
 
 	public Level GetPlayerStartLevel()

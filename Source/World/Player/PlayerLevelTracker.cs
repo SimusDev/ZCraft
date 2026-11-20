@@ -11,15 +11,15 @@ public partial class PlayerLevelTracker : Node
 	[Export] private Node3D _trackNode;
 
 	private Level _level;
-	private HashSet<ChunkPos> _visibleChunks = new();
-	private HashSet<ChunkPos> _visibleChunksOld = new();
-	private HashSet<ChunkPos> _removedChunks = new();
-	private HashSet<ChunkPos> _addedChunks = new();
+	private List<ChunkPos> _visibleChunks = new();
+	private List<ChunkPos> _visibleChunksOld = new();
+	private List<ChunkPos> _removedChunks = new();
+	private List<ChunkPos> _addedChunks = new();
 
-	public HashSet<ChunkPos> VisibleChunks => _visibleChunks;
-	public HashSet<ChunkPos> VisibleChunksOld => _visibleChunksOld;
-	public HashSet<ChunkPos> RemovedChunks => _removedChunks;
-	public HashSet<ChunkPos> AddedChunks => _addedChunks;
+	public List<ChunkPos> VisibleChunks => _visibleChunks;
+	public List<ChunkPos> VisibleChunksOld => _visibleChunksOld;
+	public List<ChunkPos> RemovedChunks => _removedChunks;
+	public List<ChunkPos> AddedChunks => _addedChunks;
 
 	public string NickName = "";
 

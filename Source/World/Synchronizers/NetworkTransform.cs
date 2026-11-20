@@ -7,14 +7,12 @@ using ZCraft.Source.Serialization;
 namespace ZCraft.Source.World.Synchronizers;
 
 [GlobalClass]
-public partial class NetworkTransform : Node, IWorldObject, INetworkReplicationObject
+public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationObject, ITickable
 {
     [Export] private Godot.Collections.Array<Node3D> _nodes = new(); 
     [Export] private double _tickRate = 0;
     [Export] private double _tickTime = 0;
     public static readonly List<NetworkTransform> All = new();
-    private WorldObjectData _data;
-
     public override void _EnterTree()
     {
         if (_tickRate <= 0)
@@ -22,15 +20,15 @@ public partial class NetworkTransform : Node, IWorldObject, INetworkReplicationO
             _tickRate = 32;
         }
 
-        All.Add(this);
+        ZCraftWorld.Tickables.Add(this);
     }
 
     public override void _ExitTree()
     {
-        All.Remove(this);
+        ZCraftWorld.Tickables.Remove(this);
     }
 
-    public void Tick(double delta)
+    void ITickable.OnTick(double delta)
     {
         if (IsMultiplayerAuthority())
         {
@@ -83,36 +81,19 @@ public partial class NetworkTransform : Node, IWorldObject, INetworkReplicationO
         }
     }
 
-    void IWorldObject.Create(WorldObjectData data)
+    void ILevelObject.SnapshotNetworkWrite(BytePacker packer)
     {
-        _data = data;
-        //NetworkReplicator.AddObject(this, data.UniqueId);
     }
 
-    void IWorldObject.Delete(WorldObjectData data)
+    void ILevelObject.SnapshotNetworkRead(BytePacker packer)
     {
-        NetworkReplicator.RemoveObject(this);
     }
 
-    void IWorldObject.SnapshotNetworkWrite(BytePacker packer)
+    void ILevelObject.SnapshotSave(BytePacker packer)
     {
-
     }
 
-    void IWorldObject.SnapshotNetworkRead(BytePacker packer)
+    void ILevelObject.SnapshotLoad(BytePacker packer)
     {
-  
     }
-
-    void IWorldObject.SnapshotSave(BytePacker packer)
-    {
-       
-    }
-
-    void IWorldObject.SnapshotLoad(BytePacker packer)
-    {
-        
-    }
-
-
 }

@@ -26,6 +26,8 @@ namespace ZCraft.Source.Networking
 
         public NetworkTransport Transport { get; private set; }
 
+        public static readonly List<int> Peers = new();
+
         public enum PacketHeader : byte
         {
             Default = 0,
@@ -76,12 +78,12 @@ namespace ZCraft.Source.Networking
 
         private void OnPeerConnected(long id)
         {
-            
+            Peers.Add((int)id);
         }
 
         private void OnPeerDisconnected(long id)
         {
-            
+            Peers.Remove((int)id);
         }
 
         private void OnServerDisconnected()
@@ -100,6 +102,7 @@ namespace ZCraft.Source.Networking
             _isServer = true;
             _uniqueId = ServerId;
             GD.Print("NetworkManager shutdown");
+            Engine.MaxFps = 0;
         }
 
         private void Start(int uniqueId, bool asServer)
@@ -108,6 +111,11 @@ namespace ZCraft.Source.Networking
             _uniqueId = uniqueId;
             Transport.Setup(asServer, _api);
             GD.Print($"NetworkManager started. asServer = {asServer}, uniqueId = {uniqueId}");
+            
+            if (asServer)
+            {
+                Engine.MaxFps = 48;
+            }
         }
 
         internal void QueuePacket(int peer, Span<byte> data, int channel, bool sendImmediate)

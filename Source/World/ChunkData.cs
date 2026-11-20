@@ -9,7 +9,7 @@ namespace ZCraft.Source.World
     public sealed class ChunkData
     {
         public HashSet<int> ServerPeers = new();
-        public Dictionary<Node, LevelEntityData> Nodes = new();
+        public List<Node> Nodes = new();
         public void Clear()
         {
             ServerPeers.Clear();

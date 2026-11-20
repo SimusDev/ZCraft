@@ -14,11 +14,15 @@ namespace ZCraft.Source.World.Player
 
         public override void _Ready()
         {
-            Input.MouseMode = Input.MouseModeEnum.Captured;
+            if (IsMultiplayerAuthority())
+                Input.MouseMode = Input.MouseModeEnum.Captured;
         }
 
         public override void _Input(InputEvent @event)
         {
+            if (!IsMultiplayerAuthority())
+                return;
+            
             if (@event is InputEventMouseMotion mouse)
             {
                 float actualSens = _sensitivity * 0.0045f;

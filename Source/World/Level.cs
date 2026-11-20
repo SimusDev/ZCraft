@@ -1,8 +1,10 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -20,24 +22,10 @@ public partial class Level : Node3D, INetworkReplicationObject
 	
 	[Export] public bool Debug = true;
 	[Export] public int RenderDistance = 4;   
-
+	public readonly List<int> PeerVisibility = new();
 	public List<Player.PlayerLevelTracker> PlayerTrackers => _playerTrackers;
 
 	private List<Player.PlayerLevelTracker> _playerTrackers = new();
-
-	private HashSet<Node3D> _trackableNodes = new();
-
-	private HashSet<Node3D> _childEnteredQueue = new();
-
-	private List<ITickable> _tickables = new();
-
-	private Dictionary<ChunkPos, ChunkData> _chunksData = new();
-
-	public Dictionary<ChunkPos, ChunkData> ChunksData => _chunksData;
-
-	private Dictionary<IWorldObject, WorldObjectData> _worldObjects = new();
-
-	public int ActiveChunksCount => _chunksData.Count;
 
 	private string _savePath;
 
@@ -45,12 +33,40 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 	public static List<Level> All => _all;
 
-	public static readonly StringName GodotMetaCurrentChunkName = new("CurrentChunk");
+	private readonly Dictionary<string, long> _sceneFilePathCache = new();
+	private readonly Dictionary<long, PackedScene> _packedSceneCache = new();
+	private readonly Dictionary<ulong, Node> _replicatedNodes = new();
+	private readonly Dictionary<Node, ulong> _rootUniqueIdenteriers = new();
+	private readonly Dictionary<ulong, WorldRegionNetwork> _rootUniqueNetworks = new();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public long CacheSceneFileAndGetUID(string sceneFilePath)
+	{
+		if (_sceneFilePathCache.TryGetValue(sceneFilePath, out long id))
+			return id;
+		
+		id = ResourceUid.TextToId(ResourceUid.PathToUid(sceneFilePath));
+		_sceneFilePathCache[sceneFilePath] = id;
+		return id;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public PackedScene CacheUIDAndGetPackedScene(long sceneUID)
+	{
+		if (_packedSceneCache.TryGetValue(sceneUID, out PackedScene packedScene))
+			return packedScene;
+		
+		packedScene = GD.Load<PackedScene>(ResourceUid.GetIdPath(sceneUID));
+		_packedSceneCache[sceneUID] = packedScene;
+		return packedScene;
+	}
 
 	private enum PacketHeader : byte
 	{
 		ChunkReceive,
 		ChunkRemove,
+		ObjectsRequest,
+		ObjectRecieve,
 	}
 
 	public string GenerateRuntimeSavePath()
@@ -75,29 +91,34 @@ public partial class Level : Node3D, INetworkReplicationObject
 		return levelPath;
 	}
 
+    public override void _EnterTree()
+	{
+		NetworkReplicator.AddObject(this, new NetworkId(GetPath()));
+	}
+
+    public override void _ExitTree()
+	{
+		NetworkReplicator.RemoveObject(this);
+	}
+
 	public override void _Ready()
 	{
-		InitializeNetworkReplication(new NetworkId(this.GetPath()));
 		_all.Add(this);
-		
-		_savePath = GenerateRuntimeSavePath();
 		
 		if (NetworkManager.IsServer)
 		{
+			_savePath = GenerateRuntimeSavePath();
 			ChildEnteredTree += OnChildEnteredTree;
 			ChildExitingTree += OnChildExitingTree;
 			GenerateMapServer();
 		}
-	}
 
-	public void InitializeNetworkReplication(NetworkId networkId)
-	{
-		NetworkReplicator.AddObject(this, networkId);
-	}
-
-	public void DeinitializeNetworkReplication()
-	{
-		NetworkReplicator.RemoveObject(this);
+		else
+		{
+			BytePacker packer = BytePackerPool.Rent();
+			packer.WriteByte((byte)PacketHeader.ObjectsRequest);
+			NetworkReplicator.SendMessageToServer(this, packer);
+		}
 	}
 
     private void GenerateMapServer()
@@ -106,140 +127,66 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 		for (int i = 0; i < GetChildCount(); i++)
 		{
-			Node node = GetChild(i);
-
-			if (node.SceneFilePath == string.Empty)
-				continue;
-
-			if (node is Node3D node3d)
-			{
-				ChunkPos chunkPos = new ChunkPos(node3d.GlobalPosition);
-				CreateEntityNode(node3d, chunkPos);
-
-				if (IsDynamicObject(node3d))
-					RegisterTrackableNode(node3d);
-			}
+			Node child = GetChild(i);
+			if (IsRootTreeSerializable(child))
+				TryGenerateUniqueNodeTree(child);
 		}
-
-		InitializeWorldObjectNodeTree(this);
 
 		sw.Stop();
-		GD.Print($"({Name}) Server MapGen time: {sw.Elapsed.TotalMilliseconds} miliseconds");
 	}
-
-	public override void _PhysicsProcess(double delta)
-	{
-		for (int i = 0; i < _tickables.Count; i++)
-		{
-			_tickables[i].PhysicsTick(delta);
-		}
-
-		if (!NetworkManager.IsServer)
-			return;
-
-		for (int p = 0; p < _playerTrackers.Count; p++)
-		{
-			UpdatePlayerTracker(_playerTrackers[p]);
-		}
-
-		foreach(Node3D q in _childEnteredQueue)
-		{
-			CreateEntityNode(q, new ChunkPos(q.GlobalPosition));
-			_childEnteredQueue.Remove(q);
-		}
-
-		foreach(Node3D t in _trackableNodes)
-		{
-			UpdateTrackableNode(t);
-		}
-
-	}
-
-    public override void _ExitTree()
-	{
-		DeinitializeNetworkReplication();
-	}
-
-	public void RegisterTrackableNode(Node3D node)
-	{
-		_trackableNodes.Add(node);
-		ZCraftWorldDebug.ActiveTrackableNodes++;
-	}
-
-	public void UnregisterTrackableNode(Node3D node)
-	{
-		_trackableNodes.Remove(node);
-		ZCraftWorldDebug.ActiveTrackableNodes--;
-	}
-
-	private void CreateEntityNode(Node node, ChunkPos startPosition)
-	{
-		if (!_chunksData.TryGetValue(startPosition, out ChunkData chunkData))
-		{
-			chunkData = ChunkDataPool.Rent();
-			_chunksData[startPosition] = chunkData;
-			ZCraftWorldDebug.ActiveChunks++;
-		}
-
-		ulong uniqueId = ZCraftWorld.GenerateUniqueId();
-		node.Name = uniqueId.ToString();
-		chunkData.Nodes[node] = new LevelEntityData(uniqueId, node.SceneFilePath);
-		ZCraftWorldDebug.ActiveEntityData++;
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void UpdateNodeChunk(Node3D node)
-	{
-		
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void UpdateObjectChunk(Node @object, ChunkPos fromPosition, ChunkPos toPosition)
-	{
-		if (fromPosition == toPosition)
-			return;
-		
-		_chunksData.TryGetValue(fromPosition, out ChunkData fromChunk);
-		_chunksData.TryGetValue(toPosition, out ChunkData toChunk);
-
-		//if (fromChunk == toChunk)
-		//	return;
-		
-		//fromChunk?.SubtractObjectCount();
-		//toChunk.AddObjectCount();
-
-		//if (Debug)
-		//	@object.SetMeta(GodotMetaCurrentChunkName, toChunk.ChunkPos.ToString());
-	}
-
     private void OnChildExitingTree(Node node)
 	{
-		if (node.SceneFilePath == string.Empty)
+		if (!IsRootTreeSerializable(node))
 			return;
 		
-		if (node is Node3D node3D)
+		if (IsNodeTreeQueuedForDeletion(node))
 		{
-			if (IsDynamicObject(node3D))
-				UnregisterTrackableNode(node3D);
-
-			ChunkPos chunkPos = new(node3D.GlobalPosition);
-
-			if (_chunksData.TryGetValue(chunkPos, out ChunkData chunkData))
+			if (_rootUniqueIdenteriers.TryGetValue(node, out ulong id))
 			{
-				if (chunkData.Nodes.TryGetValue(node3D, out LevelEntityData entityData))
-				{
-					chunkData.Nodes.Remove(node3D);
-					ZCraftWorldDebug.ActiveEntityData--;
-				}
-
-				if (chunkData.IsEmpty())
-				{
-					_chunksData.Remove(chunkPos);
-					ChunkDataPool.Return(chunkData);
-					ZCraftWorldDebug.ActiveChunks--;
-				}
+				ZCraftWorldDebug.UniqueNodeRoots--;
+				_rootUniqueIdenteriers.Remove(node);
+				_rootUniqueNetworks.Remove(id);
 			}
 		}
+
+		if (!NetworkReplicator.IsPackedSceneCanBeReplicated(node.SceneFilePath))
+			return;
+	}
+
+	private void OnChildEnteredTree(Node node)
+	{
+		if (!IsRootTreeSerializable(node))
+			return;
+		
+		TryGenerateUniqueNodeTree(node);
+
+		if (!NetworkReplicator.IsPackedSceneCanBeReplicated(node.SceneFilePath))
+			return;
+	}
+
+	private void TryGenerateUniqueNodeTree(Node node)
+	{
+		if (!_rootUniqueIdenteriers.TryGetValue(node, out ulong uniqueId))
+		{
+			ZCraftWorldDebug.UniqueNodeRoots++;
+			uniqueId = ZCraftWorld.GenerateUniqueId();
+			node.Name = uniqueId.ToString();
+			_rootUniqueIdenteriers[node] = uniqueId;
+			
+			var network = new WorldRegionNetwork();
+			network.SetPeers(NetworkManager.Peers);
+			_rootUniqueNetworks[uniqueId] = network;
+		}
+	}
+
+	private void CollectObjectsToSend()
+	{
+		
+	}
+
+	private void SendAllObjectsToPeer(int toPeer)
+	{
+		Stopwatch stopwatch = new();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -248,114 +195,10 @@ public partial class Level : Node3D, INetworkReplicationObject
 		return node is RigidBody3D || node is CharacterBody3D;
 	}
 
-    private void OnChildEnteredTree(Node node)
-	{
-		if (node.SceneFilePath == string.Empty)
-			return;
-		
-		if (!node.IsNodeReady())
-		{
-			InitializeWorldObjectNodeTree(node);
-		}
-		
-		if (node is Node3D node3D)
-		{
-			_childEnteredQueue.Add(node3D);
-			
-			if (IsDynamicObject(node3D))
-				RegisterTrackableNode(node3D);
-			
-		}
-	}
-
-	private void InitializeWorldObjectNodeTree(Node node)
-	{
-		for (int i = 0; i < node.GetChildCount(); i++)
-		{
-			Node child = node.GetChild(i);
-			InitializeWorldObjectNodeTree(child);
-		}
-
-		InitializeWorldObjectNode(node);
-	}
-
-	private void InitializeWorldObjectNode(Node node)
-	{
-		if (node is IWorldObject worldObject)
-		{
-			WorldObjectData data = RegisterWorldObject(worldObject);
-			node.Name = "WO_" + data.UniqueId.ToString();
-			node.TreeExited += () => OnNodeWorldObjectTreeExited(node);
-		}
-	}
-
-	private void OnNodeWorldObjectTreeExited(Node node)
-	{
-		if (node.IsQueuedForDeletion())
-			UnregisterWorldObject((IWorldObject)node);
-	}
-
-	public WorldObjectData GetWorldObjectData(IWorldObject @object)
-	{
-		return _worldObjects[@object];
-	}
-
-	public WorldObjectData RegisterWorldObject(IWorldObject @object)
-	{
-		return RegisterWorldObject(@object, ZCraftWorld.GenerateUniqueId());
-	}
-
-	public WorldObjectData RegisterWorldObject(IWorldObject @object, ulong uniqueId)
-	{
-		WorldObjectData data = new(ZCraftWorld.GenerateUniqueId());
-		_worldObjects[@object] = data;
-		return data;
-	}
-
-	public void UnregisterWorldObject(IWorldObject @object)
-	{
-		_worldObjects.Remove(@object);
-	}
-
-	public override void _Process(double delta)
-	{
-		for (int i = 0; i < _tickables.Count; i++)
-		{
-			_tickables[i].Tick(delta);
-		}
-	}
-
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void UpdatePlayerTracker(Player.PlayerLevelTracker tracker)
+	public static bool IsRootTreeSerializable(Node rootTree)
 	{
-		int peerId = tracker.GetMultiplayerAuthority();
-		
-		if (!Multiplayer.GetPeers().Contains(peerId))
-			return;
-		
-		ChunkPos center = tracker.GetChunkPosition();
-
-		HashSet<ChunkPos> peerVisibleChunks = tracker.VisibleChunks;
-		HashSet<ChunkPos> peerVisibleChunksOld = tracker.VisibleChunksOld;
-		peerVisibleChunks.Clear();
-
-		for (int dx = -RenderDistance; dx <= RenderDistance; dx++)
-			for (int dy = -RenderDistance; dy <= RenderDistance; dy++)
-				for (int dz = -RenderDistance; dz <= RenderDistance; dz++)
-				{
-					ChunkPos visible = new ChunkPos(center.X + dx, center.Y + dy, center.Z + dz);
-					if (_chunksData.ContainsKey(visible))
-						peerVisibleChunks.Add(visible);
-				}
-		
-		
-
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void UpdateTrackableNode(Node3D node3D)
-	{
-		
+		return rootTree.SceneFilePath != string.Empty;
 	}
 
     public void OnNetworkMessage(int fromPeer, BytePacker packer)
@@ -364,6 +207,9 @@ public partial class Level : Node3D, INetworkReplicationObject
 		
 		switch(header)
 		{
+			case PacketHeader.ObjectsRequest:
+				SendAllObjectsToPeer(fromPeer);
+				break;
 			case PacketHeader.ChunkReceive:
 
 				break;
@@ -372,16 +218,6 @@ public partial class Level : Node3D, INetworkReplicationObject
 				break;
 		}
     }
-
-	public void AddTickable(ITickable tickable)
-	{
-		_tickables.Add(tickable);
-	}
-
-	public void RemoveTickable(ITickable tickable)
-	{
-		_tickables.Remove(tickable);
-	}
 
 	internal void AddPlayerTracker(Player.PlayerLevelTracker tracker)
 	{
@@ -392,7 +228,7 @@ public partial class Level : Node3D, INetworkReplicationObject
 	{
 		_playerTrackers.Remove(tracker);
 	}
-
+	
 	public static Level FindAbove(Node node)
 	{
 		while (node != null)
@@ -418,13 +254,17 @@ public partial class Level : Node3D, INetworkReplicationObject
 		using var file = FileAccess.Open(_savePath, FileAccess.ModeFlags.WriteRead);
 	}
 
-    public override void _Input(InputEvent @event)
+	public static bool IsNodeTreeQueuedForDeletion(Node node)
 	{
-		if (Input.IsActionJustPressed("pipi"))
+		while (node != null)
 		{
-			foreach(var child in GetChildren())
-				child.QueueFree();
+			if (node.IsQueuedForDeletion())
+				return true;
+			
+			node = node.GetParent();
 		}
+
+		return false;
 	}
 
 }

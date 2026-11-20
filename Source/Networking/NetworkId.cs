@@ -7,6 +7,7 @@ public readonly struct NetworkId : IEquatable<NetworkId>
 {
     public enum TypeEnum : byte
     {
+        Unique,
         ULong,
         StringHash,
         NodePathHash,
@@ -14,6 +15,15 @@ public readonly struct NetworkId : IEquatable<NetworkId>
 
     public readonly TypeEnum Type { get; init; }
     public readonly ulong Value { get; init; }
+
+    private static ulong _nextId = 0;
+
+    public NetworkId()
+    {
+        Type = TypeEnum.Unique;
+        Value = _nextId;
+        _nextId++;
+    }
 
     public NetworkId(ulong id)
     {

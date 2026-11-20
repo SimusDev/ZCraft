@@ -33,7 +33,7 @@ project/assembly_name="ZCraft"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/asset_placer/plugin.cfg")
 
 [input]
 

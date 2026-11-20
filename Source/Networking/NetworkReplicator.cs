@@ -15,6 +15,51 @@ public static class NetworkReplicator
 
     public static int ActiveObjectCount => _objectsById.Count;
 
+    public static Dictionary<string, string> _clientPackedScenes = new();
+    public static HashSet<string> _packedScenes = new();
+
+    public static void AddClientPackedScene(PackedScene serverScene, PackedScene clientScene)
+    {
+        AddClientPackedScene(serverScene.ResourcePath, clientScene.ResourcePath);
+    }
+
+    public static void AddClientPackedScene(string serverSceneFilePath, string clientSceneFilePath)
+    {
+        _clientPackedScenes[serverSceneFilePath] = clientSceneFilePath;
+    }
+
+    public static void AddPackedScene(PackedScene scene)
+    {
+        AddPackedScene(scene.ResourcePath);
+    }
+
+    public static void AddPackedScene(string sceneFilePath)
+    {
+        _packedScenes.Add(sceneFilePath);
+    }
+
+    public static bool IsPackedSceneCanBeReplicated(string sceneFilePath)
+    {
+        return _packedScenes.Contains(sceneFilePath);
+    }
+
+    public static void ClearRegistry()
+    {
+        _clientPackedScenes.Clear();
+        _packedScenes.Clear();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string? TryGetClientScenePath(string serverScenePath)
+    {
+        if (_clientPackedScenes.TryGetValue(serverScenePath, out var scene))
+        {
+            return scene;
+        }
+
+        return null;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static NetworkId GetObjectNetworkId(INetworkReplicationObject @object)
     {
@@ -120,7 +165,8 @@ public static class NetworkReplicator
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendMessageToPeers(HashSet<int> peers, INetworkReplicationObject @object, BytePacker bytePacker, NetworkManager.NetChannel channel = NetworkManager.NetChannel.Reliable)
+
+    public static void SendMessageToPeers(List<int> peers, INetworkReplicationObject @object, BytePacker bytePacker, NetworkManager.NetChannel channel = NetworkManager.NetChannel.Reliable)
     {
         if (peers.Count < 1)
             return;

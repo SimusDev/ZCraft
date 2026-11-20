@@ -3,7 +3,7 @@ using Godot;
 namespace ZCraft.Source.World.Player
 {
     [GlobalClass]
-    public partial class PlayerMovementControl : Node, ITickable
+    public partial class PlayerMovementControl : Node, IFixedTickable
     {
         [Export] private CharacterBody3D _body;
         [Export] private float _gravity = 9.8f;
@@ -14,7 +14,7 @@ namespace ZCraft.Source.World.Player
 
         private bool _isNetworkAuthority = false;
 
-        public void PhysicsTick(double delta)
+        public void OnFixedTick(double delta)
         {
             if (_isNetworkAuthority)
             {
@@ -71,19 +71,14 @@ namespace ZCraft.Source.World.Player
             _isNetworkAuthority = IsMultiplayerAuthority();
         }
 
-        public void Tick(double delta)
-        {
-            
-        }
-
         public override void _EnterTree()
         {
-            Level.FindAbove(this).AddTickable(this);
+            ZCraftWorld.FixedTickables.Add(this);
         }
 
         public override void _ExitTree()
         {
-            Level.FindAbove(this).RemoveTickable(this);
+            ZCraftWorld.FixedTickables.Remove(this);
         }
 
     }
