@@ -1,4 +1,5 @@
 using Godot;
+using ZCraft.Source.Entity;
 
 namespace ZCraft.Source.World.Player
 {
@@ -73,12 +74,12 @@ namespace ZCraft.Source.World.Player
 
         public override void _EnterTree()
         {
-            ZCraftWorld.FixedTickables.Add(this);
+            Ticker.FixedRegistry.Add(this);
         }
 
         public override void _ExitTree()
         {
-            ZCraftWorld.FixedTickables.Remove(this);
+            Ticker.FixedRegistry.Remove(this);
         }
 
     }

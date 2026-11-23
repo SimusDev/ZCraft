@@ -15,7 +15,6 @@ public readonly struct NetworkId : IEquatable<NetworkId>
 
     public readonly TypeEnum Type { get; init; }
     public readonly ulong Value { get; init; }
-
     private static ulong _nextId = 0;
 
     public NetworkId()

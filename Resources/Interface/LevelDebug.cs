@@ -13,7 +13,7 @@ public partial class LevelDebug : CanvasLayer
 	
 	public override void _PhysicsProcess(double delta)
 	{
-		_info.Text = $"Fps: {Engine.GetFramesPerSecond()}\nReplicated objects: {ZCraftWorldDebug.ReplicatedObjects}" +
-		$"\nTickable objects: {ZCraftWorldDebug.TickableObjects}";
+		_info.Text = $"Fps: {Engine.GetFramesPerSecond()}\nNetworkReplicator objects: {NetworkReplicator.ActiveObjectCount}\nReplicated objects: {ZCraftWorldDebug.ReplicatedObjects}" +
+		$"\nTickable objects: {ZCraftWorldDebug.TickableObjects}\nUnique Node Roots: {ZCraftWorldDebug.UniqueNodeRoots}";
 	}
 }

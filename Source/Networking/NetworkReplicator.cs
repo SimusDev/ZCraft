@@ -156,9 +156,6 @@ public static class NetworkReplicator
 
         finally
         {
-            if (bytePacker.IsFromPool)
-                BytePackerPool.Return(bytePacker);
-            
             BytePackerPool.Return(packer);
         }
 
@@ -200,9 +197,6 @@ public static class NetworkReplicator
 
         finally
         {
-            if (bytePacker.IsFromPool)
-                BytePackerPool.Return(bytePacker);
-            
             BytePackerPool.Return(packer);
         }
     }
@@ -236,9 +230,6 @@ public static class NetworkReplicator
 
         finally
         {
-            if (bytePacker.IsFromPool)
-                BytePackerPool.Return(bytePacker);
-            
             BytePackerPool.Return(packer);
         }
     }

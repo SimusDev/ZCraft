@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using ZCraft.Source.Entity;
 using ZCraft.Source.Networking;
 using ZCraft.Source.Serialization;
 
@@ -12,7 +13,9 @@ public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationO
     [Export] private Godot.Collections.Array<Node3D> _nodes = new(); 
     [Export] private double _tickRate = 0;
     [Export] private double _tickTime = 0;
-    public static readonly List<NetworkTransform> All = new();
+
+    private NetworkRegion _network;
+
     public override void _EnterTree()
     {
         if (_tickRate <= 0)
@@ -20,16 +23,19 @@ public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationO
             _tickRate = 32;
         }
 
-        ZCraftWorld.Tickables.Add(this);
+        Ticker.Registry.Add(this);
     }
 
     public override void _ExitTree()
     {
-        ZCraftWorld.Tickables.Remove(this);
+        Ticker.Registry.Remove(this);
     }
 
     void ITickable.OnTick(double delta)
     {
+        if (_network == null)
+            return;
+
         if (IsMultiplayerAuthority())
         {
             _tickTime += delta;
@@ -48,9 +54,11 @@ public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationO
                 }
 
                 if (NetworkManager.IsServer)
-                    NetworkReplicator.SendMessageToServer(this, packer, NetworkManager.NetChannel.Unreliable);
+                    _network.ClientSend(this, packer, NetworkManager.NetChannel.Unreliable);
                 else
-                    NetworkReplicator.SendMessageToPeers(_data.Peers, this, packer, NetworkManager.NetChannel.Unreliable);
+                    _network.ServerBroadcast(this, packer, NetworkManager.NetChannel.Unreliable);
+
+                BytePackerPool.Return(packer);
                 
                 _tickTime = 0;
             }
@@ -81,19 +89,23 @@ public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationO
         }
     }
 
-    void ILevelObject.SnapshotNetworkWrite(BytePacker packer)
+    public void SnapshotNetworkWrite(BytePacker packer) {}
+
+    public void SnapshotNetworkRead(BytePacker packer) {}
+
+    public void SnapshotSave(BytePacker packer) {}
+
+    public void SnapshotLoad(BytePacker packer) {}
+
+    public void LevelObjectCreate(Level level, NetworkId id, NetworkRegion network)
     {
+        _network = network;
+        NetworkReplicator.AddObject(this, id);
     }
 
-    void ILevelObject.SnapshotNetworkRead(BytePacker packer)
+    public void LevelObjectDestroy(Level level)
     {
-    }
-
-    void ILevelObject.SnapshotSave(BytePacker packer)
-    {
-    }
-
-    void ILevelObject.SnapshotLoad(BytePacker packer)
-    {
+        _network = null;
+        NetworkReplicator.RemoveObject(this);
     }
 }

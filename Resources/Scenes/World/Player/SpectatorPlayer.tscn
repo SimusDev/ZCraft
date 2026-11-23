@@ -2,28 +2,22 @@
 
 [ext_resource type="Script" uid="uid://b3xfiv5k6v1pm" path="res://Source/World/View/FreeCamera.cs" id="1_5h57q"]
 [ext_resource type="Script" uid="uid://dbrf7tttx37yo" path="res://Source/World/Player/PlayerLevelTracker.cs" id="2_lfpyx"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_lfpyx"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
+[ext_resource type="Script" uid="uid://bbh3wlyr6om1g" path="res://Source/World/Synchronizers/NetworkTransform.cs" id="3_j2py0"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_orj05"]
 
 [node name="SpectatorPlayer" type="Camera3D" unique_id=1095411980]
 script = ExtResource("1_5h57q")
 
+[node name="NetworkTransform" type="Node" parent="." unique_id=1750185709 node_paths=PackedStringArray("_nodes")]
+script = ExtResource("3_j2py0")
+_nodes = [NodePath("..")]
+metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
+
 [node name="PlayerLevelTracker" type="Node" parent="." unique_id=2144486363 node_paths=PackedStringArray("_trackNode")]
 script = ExtResource("2_lfpyx")
 _trackNode = NodePath("..")
 metadata/_custom_type_script = "uid://dbrf7tttx37yo"
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1892565418]
-replication_interval = 0.031
-replication_config = SubResource("SceneReplicationConfig_lfpyx")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1902926235]
 mesh = SubResource("SphereMesh_orj05")

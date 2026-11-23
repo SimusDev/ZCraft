@@ -5,6 +5,7 @@ using System.Data.SqlTypes;
 using System.Threading.Channels;
 using Godot;
 using ZCraft.Source.Content;
+using ZCraft.Source.Entity;
 using ZCraft.Source.Networking;
 using ZCraft.Source.Serialization;
 using ZCraft.Source.World;
@@ -19,9 +20,6 @@ public partial class ZCraftWorld : Node
 	[Export] private PackedScene _playerScene;
 	public event Action<PlayerProfile> PlayerConnected;
 	public event Action<PlayerProfile> PlayerDisconnected;
-
-	public static readonly TickablesRegistry Tickables = new();
-	public static readonly FixedTickablesRegistry FixedTickables = new();
 	private static ulong _nextUniqueId = 0;
 
 	public static ulong GenerateUniqueId()
@@ -47,16 +45,18 @@ public partial class ZCraftWorld : Node
 		{
 			RpcId(NetworkManager.ServerId, MethodName.SendAuthDataToServer, "player");
 		}
+
+
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-
+		Entity.Ticker.FixedRegistry.Tick(delta);
 	}
 
 	public override void _Process(double delta)
 	{
-		Tickables.Tick(delta);
+		Entity.Ticker.Registry.Tick(delta);
 	}
 
 	public Level GetPlayerStartLevel()

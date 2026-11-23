@@ -102,7 +102,7 @@ namespace ZCraft.Source.Networking
             _isServer = true;
             _uniqueId = ServerId;
             GD.Print("NetworkManager shutdown");
-            Engine.MaxFps = 0;
+            //Engine.MaxFps = 0;
         }
 
         private void Start(int uniqueId, bool asServer)
@@ -112,10 +112,10 @@ namespace ZCraft.Source.Networking
             Transport.Setup(asServer, _api);
             GD.Print($"NetworkManager started. asServer = {asServer}, uniqueId = {uniqueId}");
             
-            if (asServer)
-            {
-                Engine.MaxFps = 48;
-            }
+            // if (asServer)
+            // {
+            //     Engine.MaxFps = 48;
+            // }
         }
 
         internal void QueuePacket(int peer, Span<byte> data, int channel, bool sendImmediate)

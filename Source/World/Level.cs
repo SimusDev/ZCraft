@@ -33,11 +33,13 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 	public static List<Level> All => _all;
 
+	private readonly List<Node> _childEnteredTreeUniqueRootsQueue = new();
 	private readonly Dictionary<string, long> _sceneFilePathCache = new();
 	private readonly Dictionary<long, PackedScene> _packedSceneCache = new();
-	private readonly Dictionary<ulong, Node> _replicatedNodes = new();
-	private readonly Dictionary<Node, ulong> _rootUniqueIdenteriers = new();
-	private readonly Dictionary<ulong, WorldRegionNetwork> _rootUniqueNetworks = new();
+	private readonly Dictionary<Node, LevelUniqueTree> _rootUniqueIdenteriers = new();
+	private readonly Dictionary<ulong, Node> _clientRootUniqueNodes = new();
+
+	private readonly NetworkRegion _clientNetworkRegion = new();
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public long CacheSceneFileAndGetUID(string sceneFilePath)
@@ -63,10 +65,9 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 	private enum PacketHeader : byte
 	{
-		ChunkReceive,
-		ChunkRemove,
 		ObjectsRequest,
 		ObjectRecieve,
+		ObjectRemove,
 	}
 
 	public string GenerateRuntimeSavePath()
@@ -129,7 +130,7 @@ public partial class Level : Node3D, INetworkReplicationObject
 		{
 			Node child = GetChild(i);
 			if (IsRootTreeSerializable(child))
-				TryGenerateUniqueNodeTree(child);
+				TryGenerateUniqueNodeTreeServer(child);
 		}
 
 		sw.Stop();
@@ -138,19 +139,22 @@ public partial class Level : Node3D, INetworkReplicationObject
 	{
 		if (!IsRootTreeSerializable(node))
 			return;
-		
-		if (IsNodeTreeQueuedForDeletion(node))
+
+		bool queuedForDeletion = IsNodeTreeQueuedForDeletion(node);
+
+		if (_rootUniqueIdenteriers.TryGetValue(node, out LevelUniqueTree tree))
 		{
-			if (_rootUniqueIdenteriers.TryGetValue(node, out ulong id))
+			SerializeUniqueRootDeletionAndSend(tree, NetworkManager.Peers);
+
+			if (queuedForDeletion)
 			{
 				ZCraftWorldDebug.UniqueNodeRoots--;
 				_rootUniqueIdenteriers.Remove(node);
-				_rootUniqueNetworks.Remove(id);
+				tree.Destroy();
 			}
-		}
 
-		if (!NetworkReplicator.IsPackedSceneCanBeReplicated(node.SceneFilePath))
-			return;
+
+		}
 	}
 
 	private void OnChildEnteredTree(Node node)
@@ -158,24 +162,25 @@ public partial class Level : Node3D, INetworkReplicationObject
 		if (!IsRootTreeSerializable(node))
 			return;
 		
-		TryGenerateUniqueNodeTree(node);
+		TryGenerateUniqueNodeTreeServer(node);
 
-		if (!NetworkReplicator.IsPackedSceneCanBeReplicated(node.SceneFilePath))
-			return;
+		_childEnteredTreeUniqueRootsQueue.Add(node);
+
+		// if (!NetworkReplicator.IsPackedSceneCanBeReplicated(node.SceneFilePath))
+		// 	return;
+		
 	}
 
-	private void TryGenerateUniqueNodeTree(Node node)
+	private void TryGenerateUniqueNodeTreeServer(Node node)
 	{
-		if (!_rootUniqueIdenteriers.TryGetValue(node, out ulong uniqueId))
+		if (!_rootUniqueIdenteriers.TryGetValue(node, out LevelUniqueTree tree))
 		{
 			ZCraftWorldDebug.UniqueNodeRoots++;
-			uniqueId = ZCraftWorld.GenerateUniqueId();
-			node.Name = uniqueId.ToString();
-			_rootUniqueIdenteriers[node] = uniqueId;
-			
-			var network = new WorldRegionNetwork();
-			network.SetPeers(NetworkManager.Peers);
-			_rootUniqueNetworks[uniqueId] = network;
+			tree = new LevelUniqueTree(this, ZCraftWorld.GenerateUniqueId());
+			tree.CreateServer(node, new(NetworkManager.Peers));
+
+			node.Name = tree.RootUniqueId.ToString();
+			_rootUniqueIdenteriers[node] = tree;
 		}
 	}
 
@@ -187,6 +192,74 @@ public partial class Level : Node3D, INetworkReplicationObject
 	private void SendAllObjectsToPeer(int toPeer)
 	{
 		Stopwatch stopwatch = new();
+
+		List<int> peers = new(1);
+		peers.Add(toPeer);
+
+		foreach(var pair in _rootUniqueIdenteriers)
+		{
+			SerializeUniqueRootAndSend(pair.Key, pair.Value, peers);
+		}
+	}
+
+    public override void _Process(double delta)
+	{
+		int count = _childEnteredTreeUniqueRootsQueue.Count;
+		for (int i = 0; i < count; i++)
+		{
+			Node node = _childEnteredTreeUniqueRootsQueue[i];
+
+			if (!IsInstanceValid(node))
+				return;
+			
+			LevelUniqueTree tree = _rootUniqueIdenteriers[node];
+			SerializeUniqueRootAndSend(node, tree, NetworkManager.Peers);
+		}
+
+		_childEnteredTreeUniqueRootsQueue.RemoveRange(0, count);
+
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private void SerializeUniqueRootAndSend(Node node, LevelUniqueTree tree, List<int> peers)
+	{
+		BytePacker bytePacker = BytePackerPool.Rent();
+		bytePacker.WriteByte((byte)PacketHeader.ObjectRecieve);
+
+		long sceneId = CacheSceneFileAndGetUID(node.SceneFilePath);
+		bytePacker.WriteLong(sceneId);
+
+		bytePacker.WriteULong(tree.RootUniqueId);
+
+		if (node is Node3D node3d)
+		{
+			bytePacker.WriteBool(true);
+			bytePacker.WriteVector3(node3d.Position);
+			bytePacker.WriteVector3(node3d.Rotation);
+		}
+
+		else
+		{
+			bytePacker.WriteBool(false);
+		}
+
+		tree.SnapshotSerialize(bytePacker);
+
+		NetworkReplicator.SendMessageToPeers(peers, this, bytePacker);
+
+		BytePackerPool.Return(bytePacker);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private void SerializeUniqueRootDeletionAndSend(LevelUniqueTree tree, List<int> peers)
+	{
+		BytePacker bytePacker = BytePackerPool.Rent();
+		bytePacker.WriteByte((byte)PacketHeader.ObjectRemove);
+		bytePacker.WriteULong(tree.RootUniqueId);
+
+		NetworkReplicator.SendMessageToPeers(peers, this, bytePacker);
+
+		BytePackerPool.Return(bytePacker);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -210,10 +283,53 @@ public partial class Level : Node3D, INetworkReplicationObject
 			case PacketHeader.ObjectsRequest:
 				SendAllObjectsToPeer(fromPeer);
 				break;
-			case PacketHeader.ChunkReceive:
+
+			case PacketHeader.ObjectRecieve:
+				
+				long sceneId = packer.ReadLong();
+				PackedScene packedScene = CacheUIDAndGetPackedScene(sceneId);
+
+				ulong rootUniqueId = packer.ReadULong();
+
+				if (_clientRootUniqueNodes.ContainsKey(rootUniqueId))
+					return;
+				
+				bool isNode3D = packer.ReadBool();
+
+				Node nodeTree = packedScene.Instantiate();
+				nodeTree.Name = rootUniqueId.ToString();
+
+				if (nodeTree is Node3D node3d && isNode3D == true)
+				{
+					node3d.Position = packer.ReadVector3();
+					node3d.Rotation = packer.ReadVector3();
+				}
+
+
+				LevelUniqueTree tree = new(this, rootUniqueId);
+				tree.CreateClient(nodeTree, _clientNetworkRegion);
+				tree.SnapshotDeserialize(nodeTree, packer);
+
+				_rootUniqueIdenteriers[nodeTree] = tree;
+				_clientRootUniqueNodes[rootUniqueId] = nodeTree; 
+				
+				AddChild(nodeTree);
+				ZCraftWorldDebug.UniqueNodeRoots++;
 
 				break;
-			case PacketHeader.ChunkRemove:
+			case PacketHeader.ObjectRemove:
+				
+				ulong uid = packer.ReadULong();
+
+				if (_clientRootUniqueNodes.TryGetValue(uid, out Node node))
+				{
+					ZCraftWorldDebug.UniqueNodeRoots--;
+					LevelUniqueTree clientTree = _rootUniqueIdenteriers[node];
+					clientTree.Destroy();
+					_clientRootUniqueNodes.Remove(uid);
+					_rootUniqueIdenteriers.Remove(node);
+					node?.QueueFree();
+				}
 				
 				break;
 		}
@@ -266,5 +382,20 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 		return false;
 	}
+
+    public override void _Input(InputEvent @event)
+	{
+		if (!NetworkManager.IsServer)
+			return;
+		
+		if (Input.IsActionJustPressed("pipi"))
+		{
+			foreach(var child in GetChildren())
+			{
+				child.QueueFree();
+			}
+		}
+	}
+
 
 }
