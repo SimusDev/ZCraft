@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c6kx01u2r6au3"]
 
 [ext_resource type="ArrayMesh" uid="uid://b008w3p15tqyg" path="res://Content/Engineering/Models/IndustrialSmelter.obj" id="1_mesh"]
-[ext_resource type="Script" uid="uid://bbh3wlyr6om1g" path="res://Source/World/Synchronizers/NetworkTransform.cs" id="2_sdjs8"]
 
 [sub_resource type="BoxShape3D" id="BoxShapeSmelter"]
 size = Vector3(3, 5.42, 3)
@@ -14,23 +13,3 @@ mesh = ExtResource("1_mesh")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=294320329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.71, 0)
 shape = SubResource("BoxShapeSmelter")
-
-[node name="NetworkTransform" type="Node" parent="." unique_id=1972452452]
-script = ExtResource("2_sdjs8")
-metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
-
-[node name="NetworkTransform2" type="Node" parent="." unique_id=517313147]
-script = ExtResource("2_sdjs8")
-metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
-
-[node name="NetworkTransform3" type="Node" parent="." unique_id=1486686807]
-script = ExtResource("2_sdjs8")
-metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
-
-[node name="NetworkTransform4" type="Node" parent="." unique_id=2121240721]
-script = ExtResource("2_sdjs8")
-metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
-
-[node name="NetworkTransform5" type="Node" parent="." unique_id=373551673]
-script = ExtResource("2_sdjs8")
-metadata/_custom_type_script = "uid://bbh3wlyr6om1g"

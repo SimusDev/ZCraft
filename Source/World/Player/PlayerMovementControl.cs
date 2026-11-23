@@ -6,12 +6,12 @@ namespace ZCraft.Source.World.Player
     [GlobalClass]
     public partial class PlayerMovementControl : Node, IFixedTickable
     {
+        [Export] private Node3D _head;
         [Export] private CharacterBody3D _body;
         [Export] private float _gravity = 9.8f;
         [Export] private float _speed = 5.0f;
         [Export] private float _jumpForce = 4.5f;
 
-        [Export] private Node3D _head;
 
         private bool _isNetworkAuthority = false;
 

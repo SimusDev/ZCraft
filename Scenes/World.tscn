@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://2pkvvlivom4o"]
 
 [ext_resource type="Script" uid="uid://camvi30mftirf" path="res://Source/World/ZCraftWorld.cs" id="1_45d1s"]
-[ext_resource type="PackedScene" uid="uid://dhand85g1huhy" path="res://Resources/Scenes/World/Player/SpectatorPlayer.tscn" id="2_45d1s"]
 [ext_resource type="PackedScene" uid="uid://crlvovts3e4oa" path="res://Resources/Interface/LevelDebug.tscn" id="2_gjpho"]
+[ext_resource type="PackedScene" uid="uid://ddwtld50ousep" path="res://Resources/Scenes/World/Player/Player.tscn" id="2_p70al"]
 [ext_resource type="Texture2D" uid="uid://kcacwaxkcj3r" path="res://Resources/Textures/Prototyping/KenneyTextures/Orange/texture_05.png" id="3_gjpho"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5nsto"]
@@ -30,7 +30,7 @@ size = Vector3(1000, 1, 1000)
 
 [node name="World" type="Node" unique_id=912735876]
 script = ExtResource("1_45d1s")
-_playerScene = ExtResource("2_45d1s")
+_playerScene = ExtResource("2_p70al")
 
 [node name="LevelDebug" parent="." unique_id=818551252 instance=ExtResource("2_gjpho")]
 

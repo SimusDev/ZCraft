@@ -7,20 +7,46 @@ namespace ZCraft.Source.World.Player
     {
         [Export] private Node3D _body;
         [Export] private Camera3D _camera;
-
         [Export] private float _sensitivity = 1.0f;
         [Export] private float _minPitchDegrees { get; set; } = -89f;
         [Export] private float _maxPitchDegrees { get; set; } = 89f;
 
+        private bool _captured = false;
+
         public override void _Ready()
         {
             if (IsMultiplayerAuthority())
+            {
                 Input.MouseMode = Input.MouseModeEnum.Captured;
+                _captured = true;
+                _camera.MakeCurrent();
+            }                
         }
 
         public override void _Input(InputEvent @event)
         {
             if (!IsMultiplayerAuthority())
+                return;
+            
+            if (@event is InputEventKey key)
+            {
+                if (key.Pressed && key.Keycode == Key.Escape)
+                {
+                    if (Input.MouseMode == Input.MouseModeEnum.Captured)
+                    {
+                        Input.MouseMode = Input.MouseModeEnum.Visible;
+                        _captured = false;
+                    }
+
+                    else
+                    {
+                        Input.MouseMode = Input.MouseModeEnum.Captured;
+                        _captured = true;
+                    }
+                }
+            }
+
+            if (!_captured)
                 return;
             
             if (@event is InputEventMouseMotion mouse)
@@ -35,7 +61,6 @@ namespace ZCraft.Source.World.Player
                     _camera.Rotation.Y,
                     _camera.Rotation.Z
                     );
-
             }
         }
 

@@ -94,18 +94,18 @@ public partial class Level : Node3D, INetworkReplicationObject
 
     public override void _EnterTree()
 	{
+		_all.Add(this);
 		NetworkReplicator.AddObject(this, new NetworkId(GetPath()));
 	}
 
     public override void _ExitTree()
 	{
+		_all.Remove(this);
 		NetworkReplicator.RemoveObject(this);
 	}
 
 	public override void _Ready()
 	{
-		_all.Add(this);
-		
 		if (NetworkManager.IsServer)
 		{
 			_savePath = GenerateRuntimeSavePath();
@@ -210,7 +210,7 @@ public partial class Level : Node3D, INetworkReplicationObject
 			Node node = _childEnteredTreeUniqueRootsQueue[i];
 
 			if (!IsInstanceValid(node))
-				return;
+				continue;
 			
 			LevelUniqueTree tree = _rootUniqueIdenteriers[node];
 			SerializeUniqueRootAndSend(node, tree, NetworkManager.Peers);
