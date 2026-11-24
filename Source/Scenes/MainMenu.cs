@@ -49,6 +49,6 @@ public partial class MainMenu : Control
 
 	public void CreateClient()
 	{
-		NetworkManager.Instance.StartClient("localhost", Port);
+		NetworkManager.Instance.StartClient(_ipLine.Text, Port);
 	}
 }
