@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://b5unwykbcuaab"]
+
+[ext_resource type="Script" uid="uid://bcosw8oatla8y" path="res://Source/World/Item/DroppedItem.cs" id="1_vi1qa"]
+[ext_resource type="Script" uid="uid://bbh3wlyr6om1g" path="res://Source/World/Synchronizers/NetworkTransform.cs" id="2_pdpi8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lmafn"]
+size = Vector3(0.5, 0.097, 0.5)
+
+[node name="DroppedItem" type="RigidBody3D" unique_id=98496402]
+collision_layer = 0
+script = ExtResource("1_vi1qa")
+
+[node name="NetworkTransform" type="Node" parent="." unique_id=201073389 node_paths=PackedStringArray("_nodes")]
+script = ExtResource("2_pdpi8")
+_nodes = [NodePath("..")]
+_tickRate = 10.0
+metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=89834376]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.1552734e-05, 0.0069885254, -0.0011291504)
+shape = SubResource("BoxShape3D_lmafn")

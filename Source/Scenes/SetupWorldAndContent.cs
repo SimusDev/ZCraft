@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using ZCraft.Source.Networking;
 using ZCraft.Source.World;
@@ -27,8 +28,12 @@ namespace ZCraft.Source.Scenes
 			DirAccess content = DirAccess.Open(path);
 			content.ListDirBegin();
 			string fileName = content.GetNext();
+			
+			List<Content.Content> contents = new();
 
 			while (fileName != string.Empty)
+			
+
 			{
 				string fullPath = path.PathJoin(fileName);
 
@@ -48,12 +53,12 @@ namespace ZCraft.Source.Scenes
 						{
 							string id = path.Replace("res://Content/", "");
 							resource.Initialize(path, id);
-							resource.Enable();
+							contents.Add(resource);
 						}
 
 						else
 						{
-							GD.PushError($"Failed to load Content, script must inherit Content Class. {fullPath}");
+							//GD.PushError($"Failed to load Content, script must inherit Content Class. {fullPath}");
 						}
 					}
 					
@@ -61,6 +66,19 @@ namespace ZCraft.Source.Scenes
 
 				fileName = content.GetNext();
 			}
+
+			foreach(Content.Content c in contents)
+			{
+				c.OnRegistryStep();
+			}
+
+			foreach(Content.Content c in contents)
+			{
+				c.OnRegistryModifyStep();
+			}
+
+			
+
 		}
 	}
 }

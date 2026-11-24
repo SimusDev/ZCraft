@@ -11,25 +11,9 @@ public partial class PlayerLevelTracker : Node
 	[Export] private Node3D _trackNode;
 
 	private Level _level;
-	private List<ChunkPos> _visibleChunks = new();
-	private List<ChunkPos> _visibleChunksOld = new();
-	private List<ChunkPos> _removedChunks = new();
-	private List<ChunkPos> _addedChunks = new();
-
-	public List<ChunkPos> VisibleChunks => _visibleChunks;
-	public List<ChunkPos> VisibleChunksOld => _visibleChunksOld;
-	public List<ChunkPos> RemovedChunks => _removedChunks;
-	public List<ChunkPos> AddedChunks => _addedChunks;
-
 	public string NickName = "";
 
 	public Node3D TrackNode => _trackNode;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public ChunkPos GetChunkPosition()
-	{
-		return new ChunkPos(_trackNode.GlobalPosition);
-	}
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Vector3 GetGlobalPosition()
@@ -56,11 +40,6 @@ public partial class PlayerLevelTracker : Node
 
 	public void ResetClient(int newPeerId)
 	{
-		_visibleChunks.Clear();
-		_visibleChunksOld.Clear();
-		_removedChunks.Clear();
-		_addedChunks.Clear();
-
 		SetMultiplayerAuthorityTracker(newPeerId);
 	}
 

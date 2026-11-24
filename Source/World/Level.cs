@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ZCraft.Source.Networking;
 using ZCraft.Source.Serialization;
+using ZCraft.Source.World.Item;
 
 namespace ZCraft.Source.World;
 
@@ -390,10 +391,10 @@ public partial class Level : Node3D, INetworkReplicationObject
 		
 		if (Input.IsActionJustPressed("pipi"))
 		{
-			foreach(var child in GetChildren())
-			{
-				child.QueueFree();
-			}
+			var item = Item.Item.ByName("CopperIngot");
+			var stack = new ItemStack(item);
+
+			ItemStack.DropAtPosition(stack, this, new Vector3(0, 10, 0));
 		}
 	}
 

@@ -2,75 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://2pkvvlivom4o" path="res://Scenes/World.tscn" id="1_bk1xb"]
 [ext_resource type="Script" uid="uid://c2cem23x3ttka" path="res://Source/World/Level.cs" id="2_mm2yh"]
-[ext_resource type="PackedScene" uid="uid://c6kx01u2r6au3" path="res://Content/Engineering/Models/IndustrialSmelter.tscn" id="3_mm2yh"]
 
 [node name="World" unique_id=912735876 instance=ExtResource("1_bk1xb")]
 
 [node name="MainWorld" type="Node3D" parent="." index="3" unique_id=1065418233]
 script = ExtResource("2_mm2yh")
-
-[node name="IndustrialSmelter" parent="MainWorld" index="0" unique_id=502132620 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -36.74852)
-
-[node name="IndustrialSmelter2" parent="MainWorld" index="1" unique_id=1340526463 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -80.57566)
-
-[node name="IndustrialSmelter3" parent="MainWorld" index="2" unique_id=1295776627 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -130.03879)
-
-[node name="IndustrialSmelter4" parent="MainWorld" index="3" unique_id=443773361 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -181.11209)
-
-[node name="IndustrialSmelter5" parent="MainWorld" index="4" unique_id=1225073984 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -233.88435)
-
-[node name="IndustrialSmelter6" parent="MainWorld" index="5" unique_id=1487578605 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -266.88922)
-
-[node name="IndustrialSmelter7" parent="MainWorld" index="6" unique_id=970445459 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -274.88922)
-
-[node name="IndustrialSmelter8" parent="MainWorld" index="7" unique_id=569113791 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -280.88922)
-
-[node name="IndustrialSmelter9" parent="MainWorld" index="8" unique_id=955423322 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -286.88922)
-
-[node name="IndustrialSmelter10" parent="MainWorld" index="9" unique_id=1589010104 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -409.88922)
-
-[node name="IndustrialSmelter11" parent="MainWorld" index="10" unique_id=474718057 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -442.88922)
-
-[node name="IndustrialSmelter12" parent="MainWorld" index="11" unique_id=1363533364 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter13" parent="MainWorld" index="12" unique_id=582622863 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -262.59412, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter14" parent="MainWorld" index="13" unique_id=1966554922 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -267.29156, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter15" parent="MainWorld" index="14" unique_id=870161363 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -271.80096, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter16" parent="MainWorld" index="15" unique_id=1453083522 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -276.69806, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter17" parent="MainWorld" index="16" unique_id=604606644 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -282.35516, 3.0086765, -464.88922)
-
-[node name="IndustrialSmelter18" parent="MainWorld" index="17" unique_id=1596313379 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -282.35516, 3.0086765, -454.28705)
-
-[node name="IndustrialSmelter19" parent="MainWorld" index="18" unique_id=251364454 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -277.35516, 3.0086765, -454.28705)
-
-[node name="IndustrialSmelter20" parent="MainWorld" index="19" unique_id=947206192 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -271.90344, 3.0086765, -454.28705)
-
-[node name="IndustrialSmelter21" parent="MainWorld" index="20" unique_id=1124015125 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -267.48914, 3.0086765, -454.28705)
-
-[node name="IndustrialSmelter22" parent="MainWorld" index="21" unique_id=892584304 instance=ExtResource("3_mm2yh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -262.40762, 3.0086765, -454.28705)

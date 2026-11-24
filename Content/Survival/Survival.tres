@@ -1,7 +1,0 @@
-[gd_resource type="Resource" format=3 uid="uid://gkumkqy8bm40"]
-
-[ext_resource type="Script" uid="uid://urrwcrik6puf" path="res://Content/Survival/Survival.cs" id="1_js1jv"]
-
-[resource]
-script = ExtResource("1_js1jv")
-metadata/_custom_type_script = "uid://rtx0kpibtp4k"

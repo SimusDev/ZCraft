@@ -1,0 +1,22 @@
+[gd_resource type="Resource" format=3 uid="uid://gkumkqy8bm40"]
+
+[ext_resource type="Script" uid="uid://urrwcrik6puf" path="res://Content/Base/Base.cs" id="1_js1jv"]
+[ext_resource type="Script" uid="uid://dsm3jqbh4tpeb" path="res://Source/World/Item/Item.cs" id="1_m38xx"]
+[ext_resource type="Resource" uid="uid://bigk0r6022h4o" path="res://Content/Base/Items/Ingots/CopperIngot.tres" id="2_anwur"]
+[ext_resource type="Resource" uid="uid://j1avplu7ntx" path="res://Content/Base/Items/Ingots/IronIngot.tres" id="3_odo7m"]
+[ext_resource type="Resource" uid="uid://bwb233lylnqc2" path="res://Content/Base/Items/Ingots/TinIngot.tres" id="4_y0jqh"]
+[ext_resource type="Resource" uid="uid://c831ixfkwn5u" path="res://Content/Base/Items/Materials/Charcoal.tres" id="5_78pyd"]
+[ext_resource type="Resource" uid="uid://c53tvbq3p8dcq" path="res://Content/Base/Items/Materials/Diamond.tres" id="6_ec57q"]
+[ext_resource type="Resource" uid="uid://du4w0xdo3t1ws" path="res://Content/Base/Items/Materials/Quartz.tres" id="7_wlrjp"]
+[ext_resource type="Resource" uid="uid://bj7ceigssqiwt" path="res://Content/Base/Items/Materials/Stone.tres" id="8_xpacq"]
+[ext_resource type="Resource" uid="uid://bh2j337euxp31" path="res://Content/Base/Items/Materials/Wood.tres" id="9_ba5ek"]
+[ext_resource type="Resource" uid="uid://bdsk25ovmnye4" path="res://Content/Base/Items/Ores/CopperOre.tres" id="10_ermcj"]
+[ext_resource type="Resource" uid="uid://sfhjeyu64suc" path="res://Content/Base/Items/Ores/DiamondOre.tres" id="11_7h5fy"]
+[ext_resource type="Resource" uid="uid://hykbgvq0vbpr" path="res://Content/Base/Items/Ores/IronOre.tres" id="12_w25wn"]
+[ext_resource type="Resource" uid="uid://cwlog4wmjk30p" path="res://Content/Base/Items/Ores/QuartzOre.tres" id="13_csk80"]
+[ext_resource type="Resource" uid="uid://by2nv012cf3vi" path="res://Content/Base/Items/Ores/TinOre.tres" id="14_e30du"]
+
+[resource]
+script = ExtResource("1_js1jv")
+AutoloadItems = Array[ExtResource("1_m38xx")]([ExtResource("2_anwur"), ExtResource("3_odo7m"), ExtResource("4_y0jqh"), ExtResource("5_78pyd"), ExtResource("6_ec57q"), ExtResource("7_wlrjp"), ExtResource("8_xpacq"), ExtResource("9_ba5ek"), ExtResource("10_ermcj"), ExtResource("11_7h5fy"), ExtResource("12_w25wn"), ExtResource("13_csk80"), ExtResource("14_e30du")])
+metadata/_custom_type_script = "uid://rtx0kpibtp4k"

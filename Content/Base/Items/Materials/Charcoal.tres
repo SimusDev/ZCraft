@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Item" format=3 uid="uid://c831ixfkwn5u"]
+
+[ext_resource type="Texture2D" uid="uid://ci0j3x2xweci5" path="res://Content/Base/Items/Textures/coal_atlas.tres" id="1_2xnxk"]
+[ext_resource type="Script" uid="uid://dsm3jqbh4tpeb" path="res://Source/World/Item/Item.cs" id="1_w5u75"]
+[ext_resource type="Script" uid="uid://d16waysm74qex" path="res://Content/Base/Items/Components/IUIIconLayerItemComponent.cs" id="2_mq80k"]
+
+[sub_resource type="Resource" id="Resource_tr2fw"]
+script = ExtResource("2_mq80k")
+Texture = ExtResource("1_2xnxk")
+metadata/_custom_type_script = "uid://d16waysm74qex"
+
+[resource]
+script = ExtResource("1_w5u75")
+Behaviors = null
+Components = Array[Object]([SubResource("Resource_tr2fw")])
+metadata/_custom_type_script = "uid://dsm3jqbh4tpeb"
