@@ -15,6 +15,8 @@ namespace ZCraft.Source.World.Player
 
         private bool _captured = false;
 
+        private bool _wasAuth = false;
+
         public override void _Ready()
         {
             if (NetworkManager.IsServer)
@@ -23,8 +25,8 @@ namespace ZCraft.Source.World.Player
                 return;
             }
             
-            
             bool isAuth = IsMultiplayerAuthority();
+            _wasAuth = isAuth;
             
             SetProcessInput(isAuth);
 
@@ -42,7 +44,7 @@ namespace ZCraft.Source.World.Player
             if (NetworkManager.IsServer)
                 return;
             
-            if (IsNodeReady() && IsMultiplayerAuthority())
+            if (IsNodeReady() && _wasAuth)
             {
                 InterfaceStack.Get().ActiveChanged -= UpdateCapturing;
             }
@@ -57,7 +59,7 @@ namespace ZCraft.Source.World.Player
             {
                 Input.MouseMode = Input.MouseModeEnum.Visible;
             }
-            
+
             else
             {
                 Input.MouseMode = Input.MouseModeEnum.Captured;

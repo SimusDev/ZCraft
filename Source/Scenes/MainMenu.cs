@@ -104,9 +104,8 @@ public partial class MainMenu : Control
 
 	private void OnMainDisconnectPressed()
 	{
-		throw new NotImplementedException();
+		GetTree().ChangeSceneToFile("res://Scenes/Boot.tscn");
 	}
-
 
 	private void OnMainContinuePressed()
 	{

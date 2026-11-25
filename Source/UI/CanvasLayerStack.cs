@@ -23,4 +23,10 @@ public partial class CanvasLayerStack : CanvasLayer
         else
             _interfaceStack.RemoveActive();
     }
+
+    public override void _ExitTree()
+    {
+        if (Visible)
+            _interfaceStack.RemoveActive();
+    }
 }

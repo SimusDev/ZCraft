@@ -11,6 +11,9 @@ public partial class Boot : Node
 
     public override void _Ready()
     {
+        if (Multiplayer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Connected)
+            Multiplayer.MultiplayerPeer.Close();
+        
         if (OS.HasFeature("server"))
         {
             Error error = NetworkManager.Instance.StartServer(ServerPort);
@@ -30,6 +33,8 @@ public partial class Boot : Node
                 GD.PrintErr($"Failed to start server on {ServerPort} port. {error}");
             }
         }
+
+
 
         GetTree().CallDeferred("change_scene_to_file", "res://Scenes/MainClient.tscn");
     }

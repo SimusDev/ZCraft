@@ -7,6 +7,8 @@ namespace ZCraft.Source.Scenes
 {
 	public partial class SetupWorldAndContent : CanvasLayer
 	{
+		public static bool contentLoaded = false;
+
 		public override void _Ready()
 		{
 			ScanAndSetupContentIn("res://Content");
@@ -25,6 +27,10 @@ namespace ZCraft.Source.Scenes
 
 		public void ScanAndSetupContentIn(string path)
 		{
+			if (contentLoaded)
+				return;
+			
+			contentLoaded = true;
 			DirAccess content = DirAccess.Open(path);
 			content.ListDirBegin();
 			string fileName = content.GetNext();
