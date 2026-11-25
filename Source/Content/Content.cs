@@ -23,7 +23,6 @@ namespace ZCraft.Source.Content
                     continue;
                 
                 string path = item.ResourcePath.GetBaseName().GetFile();
-                GD.Print(path);
                 Registry.Items.Add(item, path);
             }
         }

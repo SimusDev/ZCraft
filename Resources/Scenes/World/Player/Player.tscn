@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dbrf7tttx37yo" path="res://Source/World/Player/PlayerLevelTracker.cs" id="2_ubdh3"]
 [ext_resource type="Script" uid="uid://du6gprxlmh0aq" path="res://Source/World/Player/PlayerCameraControl.cs" id="3_ppye8"]
 [ext_resource type="Script" uid="uid://310qow0g6puj" path="res://Source/World/Player/PlayerMovementControl.cs" id="5_a4xwu"]
+[ext_resource type="Script" uid="uid://b8nqbyy5wdp7n" path="res://Source/World/Interaction/EntityInteractor3D.cs" id="5_c8ah7"]
 [ext_resource type="Script" uid="uid://bbh3wlyr6om1g" path="res://Source/World/Synchronizers/NetworkTransform.cs" id="5_el2jh"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_lmafn"]
@@ -14,7 +15,7 @@
 
 [node name="NetworkTransform" type="Node" parent="." unique_id=919208360 node_paths=PackedStringArray("_nodes")]
 script = ExtResource("5_el2jh")
-_nodes = [NodePath("..")]
+_nodes = [NodePath(".."), NodePath("../Head/EntityCamera3D")]
 metadata/_custom_type_script = "uid://bbh3wlyr6om1g"
 
 [node name="PlayerComponent" type="Node" parent="." unique_id=2012554868 node_paths=PackedStringArray("RootNode")]
@@ -37,6 +38,14 @@ metadata/_custom_type_script = "uid://du6gprxlmh0aq"
 [node name="EntityCamera3D" type="Camera3D" parent="Head" unique_id=46468473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5758873, 0)
 metadata/_custom_type_script = "uid://cp1mwq31qo62e"
+
+[node name="EntityInteractor3D" type="RayCast3D" parent="Head/EntityCamera3D" unique_id=861875422 node_paths=PackedStringArray("_excludeBodies", "Source", "_player")]
+target_position = Vector3(0, 0, -2.5)
+script = ExtResource("5_c8ah7")
+_excludeBodies = [NodePath("../../..")]
+Source = NodePath("../../..")
+_player = NodePath("../../../PlayerComponent")
+metadata/_custom_type_script = "uid://b8nqbyy5wdp7n"
 
 [node name="PlayerMovementControl" type="Node" parent="." unique_id=264336661 node_paths=PackedStringArray("_head", "_body")]
 script = ExtResource("5_a4xwu")

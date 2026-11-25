@@ -13,11 +13,14 @@ public class ItemStack
     public ItemStack(Item item)
     {
         _itemId = Registry.Items.GetId(item);
+        item.OnCreate(this);
     }
 
     public ItemStack(string itemId)
     {
-        _itemId = Registry.Items.GetId(Registry.Items.GetByName(itemId));
+        Item item = Registry.Items.GetByName(itemId);
+        _itemId = Registry.Items.GetId(item);
+        item.OnCreate(this);
     }
 
     public static DroppedItem Drop(ItemStack item, Level level)

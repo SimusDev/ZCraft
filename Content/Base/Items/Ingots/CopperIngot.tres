@@ -1,17 +1,10 @@
 [gd_resource type="Resource" script_class="Item" format=3 uid="uid://bigk0r6022h4o"]
 
 [ext_resource type="Script" uid="uid://dsm3jqbh4tpeb" path="res://Source/World/Item/Item.cs" id="1_k3qwv"]
-[ext_resource type="Texture2D" uid="uid://dbjik362gndo6" path="res://Content/Base/Items/Textures/ingot_atlas.tres" id="1_kegwo"]
-[ext_resource type="Script" uid="uid://d16waysm74qex" path="res://Content/Base/Items/Components/IUIIconLayerItemComponent.cs" id="2_wjelb"]
-
-[sub_resource type="Resource" id="Resource_mkwwd"]
-script = ExtResource("2_wjelb")
-Texture = ExtResource("1_kegwo")
-Color = Color(1, 0.3712178, 0.1308642, 1)
-metadata/_custom_type_script = "uid://d16waysm74qex"
 
 [resource]
 script = ExtResource("1_k3qwv")
 Behaviors = null
-Components = Array[Object]([SubResource("Resource_mkwwd")])
+Components = null
+ClientComponents = null
 metadata/_custom_type_script = "uid://dsm3jqbh4tpeb"
