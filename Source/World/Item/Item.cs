@@ -17,6 +17,28 @@ public partial class Item : Resource
     private Dictionary<Type, object> _componentsCache = null;
     private Dictionary<Type, object> _clientComponentsCache = null;
 
+    public void AddComponent(ItemComponent component)
+    {
+        if (_componentsCache != null)
+            throw new Exception("Can't add component in runtime! Components already cached!");
+
+        if (Components == null)
+            Components = [];
+
+        Components.Add(component);
+    }
+
+    public void AddClientComponent(ClientItemComponent component)
+    {
+        if (_clientComponentsCache != null)
+            throw new Exception("Can't add component in runtime! Components already cached!");
+        
+        if (ClientComponents == null)
+            ClientComponents = [];
+        
+        ClientComponents.Add(component);
+    }
+
     #nullable enable
     public List<T>? GetComponents<T>() where T : ItemComponent
     {

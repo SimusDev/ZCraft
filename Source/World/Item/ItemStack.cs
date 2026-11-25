@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using ZCraft.Source.Content;
+using ZCraft.Source.Serialization;
 
 namespace ZCraft.Source.World.Item;
 
@@ -43,6 +44,58 @@ public class ItemStack
         DroppedItem droppedItem = Drop(item, level);
         droppedItem.GlobalPosition = pos;
         return droppedItem;
+    }
+
+    public void NetworkSerialize(BytePacker packer)
+    {
+        Item item = ResolveItem();
+
+        if (item.Components == null)
+            return;
+        
+        for (int i = 0; i < item.Components.Count; i++)
+        {
+            item.Components[i].NetworkSerialize(this, packer);
+        }
+    }
+
+    public void NetworkDeserialize(BytePacker packer)
+    {
+        Item item = ResolveItem();
+
+        if (item.Components == null)
+            return;
+        
+        for (int i = 0; i < item.Components.Count; i++)
+        {
+            item.Components[i].NetworkDeserialize(this, packer);
+        }
+    }
+
+    public void WorldSerialize(BytePacker packer)
+    {
+        Item item = ResolveItem();
+
+        if (item.Components == null)
+            return;
+        
+        for (int i = 0; i < item.Components.Count; i++)
+        {
+            item.Components[i].WorldSerialize(this, packer);
+        }
+    }
+
+    public void WorldDeserialize(BytePacker packer)
+    {
+        Item item = ResolveItem();
+
+        if (item.Components == null)
+            return;
+        
+        for (int i = 0; i < item.Components.Count; i++)
+        {
+            item.Components[i].WorldDeserialize(this, packer);
+        }
     }
 
 
