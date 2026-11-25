@@ -1,39 +1,54 @@
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using ZCraft.Source.Networking;
+using ZCraft.Source.Serialization;
 
 namespace ZCraft.Source.UI
 {
-    public partial class InterfaceStack : Node
+    public partial class InterfaceStack : Node, INetworkReplicationObject
     {
-        [Signal] public delegate void ItemActivatedEventHandler(CanvasItem item);
-        [Signal] public delegate void ItemDeactivatedEventHandler(CanvasItem item);
-        [Signal] public delegate void ItemsChangedEventHandler();
-        public int ActiveCount => _activeItems.Count;
-        public bool IsAnyActive => ActiveCount > 0;
-        public InterfaceStack Instance => _instance;
+        public int _activeCount = 0;
+        public int ActiveCount => _activeCount;
+        public bool IsAnyActive => _activeCount > 0;
+        public static InterfaceStack Instance => _instance;
+        private static InterfaceStack _instance;
 
-        private InterfaceStack _instance;
-        private List<CanvasItem> _activeItems = new();
+        public event Action ActiveChanged; 
 
+        public static InterfaceStack Get()
+        {
+            return _instance;
+        }
+        
         public override void _EnterTree()
         {
             _instance = this;
+            NetworkReplicator.AddObject(this, new NetworkId(GetPath()));
         }
 
-        public void Activate(CanvasItem item)
+        public override void _ExitTree()
         {
-            _activeItems.Add(item);
-            EmitSignal(SignalName.ItemActivated, item);
-            EmitSignal(SignalName.ItemsChanged);
+            NetworkReplicator.RemoveObject(this);
         }
 
-        public void Deactivate(CanvasItem item)
+        public void AddActive()
         {
-            _activeItems.Remove(item);
-            EmitSignal(SignalName.ItemDeactivated, item);
-            EmitSignal(SignalName.ItemsChanged);
+            _activeCount++;
+            ActiveChanged?.Invoke();
         }
 
+        public void RemoveActive()
+        {
+            _activeCount--;
+            ActiveChanged?.Invoke();
+        }
+
+        public void OnNetworkMessage(int fromPeer, BytePacker packer)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 

@@ -1,20 +1,37 @@
 [gd_scene format=3 uid="uid://byy12aeulaf0a"]
 
+[ext_resource type="Theme" uid="uid://l1gxolo3d583" path="res://Themes/ZCraftTheme.tres" id="1_853f1"]
 [ext_resource type="Script" uid="uid://dbw213alojl36" path="res://Source/Scenes/MainMenu.cs" id="1_tt5f1"]
 
-[node name="MainMenu" type="Control" unique_id=1107779522 node_paths=PackedStringArray("_buttonServer", "_buttonClient", "_ipLine")]
+[node name="MainMenu" type="Control" unique_id=1107779522 node_paths=PackedStringArray("_screensRoot", "_buttonMainMultiplayer", "_buttonMainSettings", "_buttonMainQuit", "_buttonMainContinue", "_buttonMainDisconnect", "_multiplayerAddressLineEdit", "_multiplayerNicknameLineEdit", "_buttonMultiplayerConnect")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_853f1")
 script = ExtResource("1_tt5f1")
-_buttonServer = NodePath("VBoxContainer/Server")
-_buttonClient = NodePath("VBoxContainer/Client")
-_ipLine = NodePath("VBoxContainer/LineEdit")
+_screensRoot = NodePath("Screens")
+_buttonMainMultiplayer = NodePath("Screens/Main/Multiplayer")
+_buttonMainSettings = NodePath("Screens/Main/Settings")
+_buttonMainQuit = NodePath("Screens/Main/Quit")
+_buttonMainContinue = NodePath("Screens/Main/Continue")
+_buttonMainDisconnect = NodePath("Screens/Main/Disconnect")
+_multiplayerAddressLineEdit = NodePath("Screens/Multiplayer/LineEditAddress")
+_multiplayerNicknameLineEdit = NodePath("Screens/Multiplayer/LineEditNick")
+_buttonMultiplayerConnect = NodePath("Screens/Multiplayer/Connect")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1559900199]
+[node name="Screens" type="Control" parent="." unique_id=1424461373]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Main" type="VBoxContainer" parent="Screens" unique_id=1559900199]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -29,19 +46,88 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Server" type="Button" parent="VBoxContainer" unique_id=683277525]
+[node name="Continue" type="Button" parent="Screens/Main" unique_id=686595374]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Create Server"
+text = "Continue"
 
-[node name="Client" type="Button" parent="VBoxContainer" unique_id=2063356524]
+[node name="Multiplayer" type="Button" parent="Screens/Main" unique_id=683277525]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Create Client"
+text = "Multiplayer"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer" unique_id=697905050]
+[node name="Settings" type="Button" parent="Screens/Main" unique_id=2063356524]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "localhost"
-placeholder_text = "IP"
+text = "Settings"
+
+[node name="Quit" type="Button" parent="Screens/Main" unique_id=626471155]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Quit"
+
+[node name="Disconnect" type="Button" parent="Screens/Main" unique_id=617789794]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Disconnect
+"
+
+[node name="Multiplayer" type="VBoxContainer" parent="Screens" unique_id=298552158]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -338.0
+offset_top = -192.0
+offset_right = 338.0
+offset_bottom = 192.0
+grow_horizontal = 2
+grow_vertical = 2
 alignment = 1
+
+[node name="LineEditNick" type="LineEdit" parent="Screens/Multiplayer" unique_id=327572869]
+layout_mode = 2
+text = "Player"
+placeholder_text = "Nickname"
+alignment = 1
+
+[node name="LineEditAddress" type="LineEdit" parent="Screens/Multiplayer" unique_id=645463798]
+layout_mode = 2
+text = "localhost:8080"
+placeholder_text = "Address:Port"
+alignment = 1
+
+[node name="Connect" type="Button" parent="Screens/Multiplayer" unique_id=533029057]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Connect"
+
+[node name="Back" type="Button" parent="Screens/Multiplayer" unique_id=909580580]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="Settings" type="VBoxContainer" parent="Screens" unique_id=1608461229]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -338.0
+offset_top = -192.0
+offset_right = 338.0
+offset_bottom = 192.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="Screens/Settings" unique_id=1261834258]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Back"

@@ -43,7 +43,7 @@ public partial class ZCraftWorld : Node
 
 		else
 		{
-			RpcId(NetworkManager.ServerId, MethodName.SendAuthDataToServer, "player");
+			RpcId(NetworkManager.ServerId, MethodName.SendAuthDataToServer, PlayerProfile.LocalConnectionNickName);
 		}
 
 

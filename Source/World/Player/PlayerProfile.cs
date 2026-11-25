@@ -12,6 +12,8 @@ public class PlayerProfile
     public int PeerId => _peerId;
     public string NickName => _nickName;
 
+    public static string LocalConnectionNickName = "Player";
+
     private static Dictionary<int, PlayerProfile> _profileByPeer = new();
 
     private static readonly List<PlayerProfile> _profileList = new(); 

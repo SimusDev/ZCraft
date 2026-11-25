@@ -1,4 +1,6 @@
 using Godot;
+using ZCraft.Source.Networking;
+using ZCraft.Source.UI;
 
 namespace ZCraft.Source.World.Player
 {
@@ -15,40 +17,55 @@ namespace ZCraft.Source.World.Player
 
         public override void _Ready()
         {
-            if (IsMultiplayerAuthority())
+            if (NetworkManager.IsServer)
+            {
+                SetProcessInput(false);
+                return;
+            }
+            
+            
+            bool isAuth = IsMultiplayerAuthority();
+            
+            SetProcessInput(isAuth);
+
+            if (!isAuth)
+                return;
+            
+            _camera.MakeCurrent();
+
+            UpdateCapturing();
+            InterfaceStack.Get().ActiveChanged += UpdateCapturing;
+        }
+
+        public override void _ExitTree()
+        {
+            if (NetworkManager.IsServer)
+                return;
+            
+            if (IsNodeReady() && IsMultiplayerAuthority())
+            {
+                InterfaceStack.Get().ActiveChanged -= UpdateCapturing;
+            }
+        }
+
+        public void UpdateCapturing()
+        {
+            bool anyInterfaceActive = InterfaceStack.Get().IsAnyActive;
+            SetProcessInput(!anyInterfaceActive);
+
+            if (anyInterfaceActive)
+            {
+                Input.MouseMode = Input.MouseModeEnum.Visible;
+            }
+            
+            else
             {
                 Input.MouseMode = Input.MouseModeEnum.Captured;
-                _captured = true;
-                _camera.MakeCurrent();
-            }                
+            }
         }
 
         public override void _Input(InputEvent @event)
         {
-            if (!IsMultiplayerAuthority())
-                return;
-            
-            if (@event is InputEventKey key)
-            {
-                if (key.Pressed && key.Keycode == Key.Escape)
-                {
-                    if (Input.MouseMode == Input.MouseModeEnum.Captured)
-                    {
-                        Input.MouseMode = Input.MouseModeEnum.Visible;
-                        _captured = false;
-                    }
-
-                    else
-                    {
-                        Input.MouseMode = Input.MouseModeEnum.Captured;
-                        _captured = true;
-                    }
-                }
-            }
-
-            if (!_captured)
-                return;
-            
             if (@event is InputEventMouseMotion mouse)
             {
                 float actualSens = _sensitivity * 0.0045f;

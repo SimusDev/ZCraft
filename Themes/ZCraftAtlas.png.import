@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://br6out6fo1xgl"
-path="res://.godot/imported/panel_metal.png-b89896a5c95fc0aa5516f3d6e0395b9d.ctex"
+uid="uid://cklerw5chluq1"
+path="res://.godot/imported/ZCraftAtlas.png-7e181302a7ff9224644600384dbd221d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/Textures/UI/panel_metal.png"
-dest_files=["res://.godot/imported/panel_metal.png-b89896a5c95fc0aa5516f3d6e0395b9d.ctex"]
+source_file="res://Themes/ZCraftAtlas.png"
+dest_files=["res://.godot/imported/ZCraftAtlas.png-7e181302a7ff9224644600384dbd221d.ctex"]
 
 [params]
 
