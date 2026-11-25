@@ -221,7 +221,6 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 	}
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void SerializeUniqueRootAndSend(Node node, LevelUniqueTree tree, List<int> peers)
 	{
 		BytePacker bytePacker = BytePackerPool.Rent();
@@ -251,7 +250,6 @@ public partial class Level : Node3D, INetworkReplicationObject
 		BytePackerPool.Return(bytePacker);
 	}
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void SerializeUniqueRootDeletionAndSend(LevelUniqueTree tree, List<int> peers)
 	{
 		BytePacker bytePacker = BytePackerPool.Rent();
