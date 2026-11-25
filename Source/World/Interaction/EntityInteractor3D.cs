@@ -29,21 +29,10 @@ public partial class EntityInteractor3D : RayCast3D, IFixedTickable, ILevelObjec
         NetworkReplicator.RemoveObject(this);
     }
 
-    public void SnapshotLoad(BytePacker packer)
-    {
-    }
-
-    public void SnapshotNetworkRead(BytePacker packer)
-    {
-    }
-
-    public void SnapshotNetworkWrite(BytePacker packer)
-    {
-    }
-
-    public void SnapshotSave(BytePacker packer) 
-    {
-    }
+    public void SnapshotLoad(TagCompound tagCompound) {}
+    public void SnapshotSave(TagCompound tagCompound) {}
+    public void SnapshotNetworkRead(BytePacker packer) {}
+    public void SnapshotNetworkWrite(BytePacker packer) {}
 
     public void OnFixedTick(double delta)
     {

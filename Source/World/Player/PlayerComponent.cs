@@ -16,8 +16,8 @@ public partial class PlayerComponent : Node, ILevelObject
 
 	public void LevelObjectDestroy(Level level) {}
 
-	public void SnapshotLoad(BytePacker packer) {}
-	public void SnapshotSave(BytePacker packer) {}
+	public void SnapshotLoad(TagCompound tagCompound) {}
+	public void SnapshotSave(TagCompound tagCompound) {}
 
 	public void SnapshotNetworkRead(BytePacker packer)
 	{

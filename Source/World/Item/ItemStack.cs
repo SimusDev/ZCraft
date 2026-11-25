@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Godot;
 using ZCraft.Source.Content;
 using ZCraft.Source.Serialization;
@@ -9,6 +10,7 @@ public class ItemStack
 {
     private int _itemId;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Item ResolveItem() => Registry.Items.GetById(_itemId);
 
     public ItemStack(Item item)
@@ -72,30 +74,27 @@ public class ItemStack
         }
     }
 
-    public void WorldSerialize(BytePacker packer)
+    public void WorldSerialize(TagCompound tagCompound)
     {
         Item item = ResolveItem();
 
         if (item.Components == null)
             return;
         
-        for (int i = 0; i < item.Components.Count; i++)
-        {
-            item.Components[i].WorldSerialize(this, packer);
-        }
+        //TODO: WORLD SERIALIZATION
+
     }
 
-    public void WorldDeserialize(BytePacker packer)
+    public void WorldDeserialize(TagCompound tagCompound)
     {
         Item item = ResolveItem();
 
         if (item.Components == null)
             return;
         
-        for (int i = 0; i < item.Components.Count; i++)
-        {
-            item.Components[i].WorldDeserialize(this, packer);
-        }
+        //TODO: WORLD DESERIALIZATION
+        
+
     }
 
 

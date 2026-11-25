@@ -9,6 +9,6 @@ public interface ILevelObject
     void LevelObjectDestroy(Level level);
     void SnapshotNetworkWrite(BytePacker packer);
     void SnapshotNetworkRead(BytePacker packer);
-    void SnapshotSave(BytePacker packer);
-    void SnapshotLoad(BytePacker packer);
+    void SnapshotSave(TagCompound tagCompound);
+    void SnapshotLoad(TagCompound tagCompound);
 }

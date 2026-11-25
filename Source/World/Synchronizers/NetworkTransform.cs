@@ -177,8 +177,8 @@ public partial class NetworkTransform : Node, ILevelObject, INetworkReplicationO
 
 	public void SnapshotNetworkWrite(BytePacker packer) {}
 	public void SnapshotNetworkRead(BytePacker packer) {}
-	public void SnapshotSave(BytePacker packer) {}
-	public void SnapshotLoad(BytePacker packer) {}
+	public void SnapshotSave(TagCompound tagCompound) {}
+	public void SnapshotLoad(TagCompound tagCompound) {}
 
 	public void LevelObjectCreate(Level level, NetworkId id, NetworkRegion network)
 	{

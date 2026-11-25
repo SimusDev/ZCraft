@@ -106,8 +106,8 @@ public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable, IIntera
 
 	}
 
-	public void SnapshotSave(BytePacker packer) {}
-	public void SnapshotLoad(BytePacker packer) {}
+	public void SnapshotSave(TagCompound tagCompound) {}
+	public void SnapshotLoad(TagCompound tagCompound) {}
 
     public void OnInteract(InteractionContext context)
 	{
