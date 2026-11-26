@@ -6,7 +6,7 @@ using ZCraft.Source.Serialization;
 
 namespace ZCraft.Source.World.Item;
 
-public class ItemStack
+public sealed class ItemStack
 {
     private int _itemId;
 
@@ -16,14 +16,12 @@ public class ItemStack
     public ItemStack(Item item)
     {
         _itemId = Registry.Items.GetId(item);
-        item.OnCreate(this);
     }
 
     public ItemStack(string itemId)
     {
         Item item = Registry.Items.GetByName(itemId);
         _itemId = Registry.Items.GetId(item);
-        item.OnCreate(this);
     }
 
     public static DroppedItem Drop(ItemStack item, Level level)
@@ -48,31 +46,51 @@ public class ItemStack
         return droppedItem;
     }
 
-    public void NetworkSerialize(BytePacker packer)
+    #nullable enable
+    public static void NetworkSerialize(ItemStack? itemStack, BytePacker packer)
     {
-        Item item = ResolveItem();
+        packer.WriteBool(itemStack == null);
+
+        if (itemStack == null)
+            return;
+        
+        Item item = itemStack.ResolveItem();
+        item.Serialize(packer);
 
         if (item.Components == null)
             return;
         
+        packer.WriteVarInt(itemStack._itemId);
+
         for (int i = 0; i < item.Components.Count; i++)
         {
-            item.Components[i].NetworkSerialize(this, packer);
+            item.Components[i].NetworkSerialize(itemStack, packer);
         }
     }
 
-    public void NetworkDeserialize(BytePacker packer)
+    #nullable disable
+
+    #nullable enable
+    public static ItemStack? NetworkDeserialize(BytePacker packer)
     {
-        Item item = ResolveItem();
+        bool isNull = packer.ReadBool();
+        if (isNull)
+            return null;
+        
+        Item item = Item.Deserialize(packer);
+        ItemStack itemStack = new ItemStack(item);
 
         if (item.Components == null)
-            return;
+            return itemStack;
         
         for (int i = 0; i < item.Components.Count; i++)
         {
-            item.Components[i].NetworkDeserialize(this, packer);
+            item.Components[i].NetworkDeserialize(itemStack, packer);
         }
+
+        return itemStack;
     }
+    #nullable disable
 
     public void WorldSerialize(TagCompound tagCompound)
     {

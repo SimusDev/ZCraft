@@ -190,7 +190,6 @@ public static class ObjectSerializer
     //  Сериализация
     // ---------------------------------------------------------------
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Serialize(object obj, BytePacker packer)
     {
         if (obj == null)

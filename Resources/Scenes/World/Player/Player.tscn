@@ -3,11 +3,10 @@
 [ext_resource type="Script" uid="uid://draa8cx16pv2g" path="res://Source/World/Player/PlayerComponent.cs" id="1_ubdh3"]
 [ext_resource type="Script" uid="uid://dbrf7tttx37yo" path="res://Source/World/Player/PlayerLevelTracker.cs" id="2_ubdh3"]
 [ext_resource type="Script" uid="uid://du6gprxlmh0aq" path="res://Source/World/Player/PlayerCameraControl.cs" id="3_ppye8"]
+[ext_resource type="Script" uid="uid://dtku1a2lphk6q" path="res://Source/Entity/ItemHolderComponent.cs" id="4_c8ah7"]
 [ext_resource type="Script" uid="uid://310qow0g6puj" path="res://Source/World/Player/PlayerMovementControl.cs" id="5_a4xwu"]
 [ext_resource type="Script" uid="uid://b8nqbyy5wdp7n" path="res://Source/World/Interaction/EntityInteractor3D.cs" id="5_c8ah7"]
 [ext_resource type="Script" uid="uid://bbh3wlyr6om1g" path="res://Source/World/Synchronizers/NetworkTransform.cs" id="5_el2jh"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_lmafn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ubdh3"]
 
@@ -27,6 +26,11 @@ metadata/_custom_type_script = "uid://draa8cx16pv2g"
 script = ExtResource("2_ubdh3")
 _trackNode = NodePath("..")
 metadata/_custom_type_script = "uid://dbrf7tttx37yo"
+
+[node name="ItemHolderComponent" type="Node3D" parent="." unique_id=1963650631]
+script = ExtResource("4_c8ah7")
+_initialItemName = "Coal"
+metadata/_custom_type_script = "uid://dtku1a2lphk6q"
 
 [node name="Head" type="Node3D" parent="." unique_id=1602118586 node_paths=PackedStringArray("_body", "_camera")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1848005, 0)
@@ -52,9 +56,6 @@ script = ExtResource("5_a4xwu")
 _head = NodePath("../Head")
 _body = NodePath("..")
 metadata/_custom_type_script = "uid://310qow0g6puj"
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1728611017]
-mesh = SubResource("CapsuleMesh_lmafn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=958679303]
 shape = SubResource("CapsuleShape3D_ubdh3")

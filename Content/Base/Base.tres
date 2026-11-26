@@ -15,8 +15,9 @@
 [ext_resource type="Resource" uid="uid://hykbgvq0vbpr" path="res://Content/Base/Items/Ores/IronOre.tres" id="12_w25wn"]
 [ext_resource type="Resource" uid="uid://cwlog4wmjk30p" path="res://Content/Base/Items/Ores/QuartzOre.tres" id="13_csk80"]
 [ext_resource type="Resource" uid="uid://by2nv012cf3vi" path="res://Content/Base/Items/Ores/TinOre.tres" id="14_e30du"]
+[ext_resource type="Resource" uid="uid://calnpvy50n63g" path="res://Content/Base/Items/Materials/Coal.tres" id="15_odo7m"]
 
 [resource]
 script = ExtResource("1_js1jv")
-AutoloadItems = Array[ExtResource("1_m38xx")]([ExtResource("2_anwur"), ExtResource("3_odo7m"), ExtResource("4_y0jqh"), ExtResource("5_78pyd"), ExtResource("6_ec57q"), ExtResource("7_wlrjp"), ExtResource("8_xpacq"), ExtResource("9_ba5ek"), ExtResource("10_ermcj"), ExtResource("11_7h5fy"), ExtResource("12_w25wn"), ExtResource("13_csk80"), ExtResource("14_e30du")])
+AutoloadItems = Array[ExtResource("1_m38xx")]([ExtResource("2_anwur"), ExtResource("3_odo7m"), ExtResource("4_y0jqh"), ExtResource("5_78pyd"), ExtResource("6_ec57q"), ExtResource("7_wlrjp"), ExtResource("8_xpacq"), ExtResource("9_ba5ek"), ExtResource("10_ermcj"), ExtResource("11_7h5fy"), ExtResource("12_w25wn"), ExtResource("13_csk80"), ExtResource("14_e30du"), ExtResource("15_odo7m")])
 metadata/_custom_type_script = "uid://rtx0kpibtp4k"

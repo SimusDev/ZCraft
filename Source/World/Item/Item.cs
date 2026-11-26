@@ -8,7 +8,7 @@ using ZCraft.Source.Serialization;
 namespace ZCraft.Source.World.Item;
 
 [GlobalClass]
-public partial class Item : Resource
+public sealed partial class Item : Resource
 {
     [Export] public Godot.Collections.Array<ItemBehaivor> Behaviors = null;
     [Export] public Godot.Collections.Array<ItemComponent> Components = null;
@@ -143,6 +143,5 @@ public partial class Item : Resource
     public static Item Deserialize(BytePacker packer)
         => Registry.Items.GetById(packer.ReadVarInt());
     
-    public virtual void OnCreate(ItemStack itemStack) {}
 
 }

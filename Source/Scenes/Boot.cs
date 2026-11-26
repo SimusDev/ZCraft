@@ -24,7 +24,7 @@ public partial class Boot : Node
                 Engine.MaxFps = 48;
                 Engine.MaxPhysicsStepsPerFrame = 48;
                 ZCraftWorldDebug.ServerStartTimeStopWatch.Start();
-                GetTree().CallDeferred("change_scene_to_file", "res://Scenes/ServerWorld.tscn");
+                GetTree().CallDeferred("change_scene_to_file", "res://Scenes/SetupWorldAndContent.tscn");
                 return;
             }
 
