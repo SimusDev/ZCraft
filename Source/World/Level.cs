@@ -122,6 +122,7 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 		else
 		{
+			ChildExitingTree += OnChildExitingTreeClient;
 			ClientLocalLevel = this;
 			BytePacker packer = BytePackerPool.Rent();
 			packer.WriteByte((byte)PacketHeader.ObjectsRequest);
@@ -147,7 +148,8 @@ public partial class Level : Node3D, INetworkReplicationObject
 
 		sw.Stop();
 	}
-    private void OnChildExitingTree(Node node)
+
+	private void OnChildExtitingTreeTryCleanUp(Node node)
 	{
 		if (!IsRootTreeSerializable(node))
 			return;
@@ -164,9 +166,17 @@ public partial class Level : Node3D, INetworkReplicationObject
 				_rootUniqueIdenteriers.Remove(node);
 				tree.Destroy();
 			}
-
-
 		}
+	}
+
+    private void OnChildExitingTree(Node node)
+	{
+		OnChildExtitingTreeTryCleanUp(node);
+	}
+
+	private void OnChildExitingTreeClient(Node node)
+	{
+		OnChildExtitingTreeTryCleanUp(node);
 	}
 
 	private void OnChildEnteredTree(Node node)
@@ -195,12 +205,6 @@ public partial class Level : Node3D, INetworkReplicationObject
 			_rootUniqueIdenteriers[node] = tree;
 		}
 	}
-
-	private void CollectObjectsToSend()
-	{
-		
-	}
-
 	private void SendAllObjectsToPeer(int toPeer)
 	{
 		Stopwatch stopwatch = new();
@@ -298,6 +302,9 @@ public partial class Level : Node3D, INetworkReplicationObject
 				
 				long sceneId = packer.ReadLong();
 				PackedScene packedScene = CacheUIDAndGetPackedScene(sceneId);
+				string clientPath = NetworkReplicator.TryGetClientScenePath(packedScene.ResourcePath);
+				if (clientPath != null)
+					packedScene = GD.Load<PackedScene>(clientPath);
 
 				ulong rootUniqueId = packer.ReadULong();
 
@@ -398,13 +405,6 @@ public partial class Level : Node3D, INetworkReplicationObject
 		if (!NetworkManager.IsServer)
 			return;
 		
-		if (Input.IsActionJustPressed("pipi"))
-		{
-			var item = Item.Item.ByName("CopperIngot");
-			var stack = new ItemStack(item);
-
-			ItemStack.DropAtPosition(stack, this, new Vector3(0, 10, 0));
-		}
 	}
 
 

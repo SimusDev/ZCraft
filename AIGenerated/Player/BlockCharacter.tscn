@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bvfjqi1y1ucws" path="res://AIGenerated/Player/BlockCharacter.cs" id="1_h1yxi"]
 [ext_resource type="Texture2D" uid="uid://da4w1iocnt3r8" path="res://AIGenerated/Player/ScoutClassic.png" id="2_feycq"]
+[ext_resource type="Texture2D" uid="uid://d1u6yu1uckae4" path="res://AIGenerated/Player/zxcvlad78.png" id="2_muaov"]
 [ext_resource type="Texture2D" uid="uid://b5owwpmcc5cag" path="res://AIGenerated/Player/ScoutSlim.png" id="3_06ew8"]
 [ext_resource type="Script" uid="uid://2e46oloyxchx" path="res://AIGenerated/Player/UpperBodyPoseLayer.cs" id="4_upper_pose"]
 [ext_resource type="AnimationLibrary" uid="uid://bbp3xvpuf3dto" path="res://AIGenerated/Player/UpperBodyAnimations.tres" id="5_upper_clips"]
@@ -133,7 +134,7 @@ bind/10/bone = 10
 bind/10/pose = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.115, -0.399, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_06ew8"]
-albedo_texture = ExtResource("2_feycq")
+albedo_texture = ExtResource("2_muaov")
 metallic_specular = 0.18
 roughness = 0.94
 texture_filter = 0
@@ -142,7 +143,7 @@ texture_filter = 0
 transparency = 2
 alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
-albedo_texture = ExtResource("2_feycq")
+albedo_texture = ExtResource("2_muaov")
 metallic_specular = 0.18
 roughness = 0.94
 texture_filter = 0
@@ -1500,6 +1501,7 @@ _data = {
 
 [node name="BlockCharacter" type="Node3D" unique_id=255376847]
 script = ExtResource("1_h1yxi")
+SkinTexture = ExtResource("2_muaov")
 ClassicMesh = SubResource("ArrayMesh_muaov")
 SlimMesh = SubResource("ArrayMesh_6xkdx")
 LegacyMesh = SubResource("ArrayMesh_bf0oh")
