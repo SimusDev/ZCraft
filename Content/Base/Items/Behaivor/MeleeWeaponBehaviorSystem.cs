@@ -1,19 +1,19 @@
 using System;
 using Godot;
+using ZCraft.Source.Networking;
+using ZCraft.Source.Serialization;
 using ZCraft.Source.World.Item;
 
 namespace ZCraft.Content.Base.Items.Behaivor;
 
-public sealed class MeleeWeaponBehaviorSystem : IItemBehaviorSystem
+public sealed class MeleeWeaponBehaviorSystem : IItemBehaviorSystem, INetworkReplicationObject
 {
     public void OnReady(ItemBehaviorContext context)
     {
-
     }
 
     public void OnDestroy(ItemBehaviorContext context)
     {
-
     }
 
     public void OnInput(ItemBehaviorContext context, InputEvent @event)
@@ -28,5 +28,9 @@ public sealed class MeleeWeaponBehaviorSystem : IItemBehaviorSystem
     public void FixedTick(ItemBehaviorContext context, double delta)
     {
         
+    }
+
+    public void OnNetworkMessage(int fromPeer, BytePacker packer)
+    {
     }
 }

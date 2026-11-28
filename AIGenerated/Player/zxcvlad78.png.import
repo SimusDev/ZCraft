@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1u6yu1uckae4"
-path.s3tc="res://.godot/imported/zxcvlad78.png-c6892867c3f1886b24c96244ed2bddd3.s3tc.ctex"
+path="res://.godot/imported/zxcvlad78.png-c6892867c3f1886b24c96244ed2bddd3.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://AIGenerated/Player/zxcvlad78.png"
-dest_files=["res://.godot/imported/zxcvlad78.png-c6892867c3f1886b24c96244ed2bddd3.s3tc.ctex"]
+dest_files=["res://.godot/imported/zxcvlad78.png-c6892867c3f1886b24c96244ed2bddd3.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
