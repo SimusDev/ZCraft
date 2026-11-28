@@ -5,10 +5,11 @@ using ZCraft.Content.Base.Items.Components;
 using ZCraft.Source.Entity;
 using ZCraft.Source.Networking;
 using ZCraft.Source.Serialization;
+using ZCraft.Source.World.Interaction;
 
 namespace ZCraft.Source.World.Item;
 
-public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable
+public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable, IInteractable
 {
 	private ItemStack _serverItemStack = null;
 	public ItemStack ServerItemStack => _serverItemStack;
@@ -22,6 +23,9 @@ public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable
 
     public override void _EnterTree()
 	{
+		SetCollisionLayerValue((int)WorldPhysicsCollisions.Layers.Interaction, true);
+		SetCollisionMaskValue((int)WorldPhysicsCollisions.Layers.Interaction, true);
+
 		_isServerSide = NetworkManager.IsServer;
 		Ticker.Registry.Add(this);
 
@@ -51,8 +55,6 @@ public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable
 				QueueFree();
 			}
 		}
-
-
 
 	}
 
@@ -87,7 +89,7 @@ public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable
 		_clientRoot.Position = new Vector3(0, -0.026f, 0);
 		AddChild(_clientRoot);
 
-		List<IUIIconLayerItemComponent> comps = _clientItem.GetComponents<IUIIconLayerItemComponent>();
+		List<IUIIconLayerItemComponent> comps = _clientItem.GetClientComponents<IUIIconLayerItemComponent>();
 		if (comps == null)
 			return;
 		
@@ -104,8 +106,12 @@ public partial class DroppedItem : RigidBody3D, ILevelObject, ITickable
 
 	}
 
-	public void SnapshotSave(BytePacker packer) {}
-	public void SnapshotLoad(BytePacker packer) {}
+	public void SnapshotSave(TagCompound tagCompound) {}
+	public void SnapshotLoad(TagCompound tagCompound) {}
 
+    public void OnInteract(InteractionContext context)
+	{
+		
+	}
 
 }

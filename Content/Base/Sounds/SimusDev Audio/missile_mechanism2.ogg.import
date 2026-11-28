@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dtapo0phrltpf"
+path="res://.godot/imported/missile_mechanism2.ogg-0895ecf59a79757161add1a6df6d476f.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/missile_mechanism2.ogg"
+dest_files=["res://.godot/imported/missile_mechanism2.ogg-0895ecf59a79757161add1a6df6d476f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

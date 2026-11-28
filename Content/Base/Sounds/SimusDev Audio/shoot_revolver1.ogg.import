@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://03hjpt3de74v"
+path="res://.godot/imported/shoot_revolver1.ogg-45dbb946e8e3333b8bcdac6034cd63fa.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_revolver1.ogg"
+dest_files=["res://.godot/imported/shoot_revolver1.ogg-45dbb946e8e3333b8bcdac6034cd63fa.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

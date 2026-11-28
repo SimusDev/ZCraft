@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://csrob3237kgbt"
+path="res://.godot/imported/explode_nuclear.ogg-4dcf32a8582d6fb9b941b8a5eacd78a8.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/explode_nuclear.ogg"
+dest_files=["res://.godot/imported/explode_nuclear.ogg-4dcf32a8582d6fb9b941b8a5eacd78a8.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dy5rs5nn1f2oi"
+path="res://.godot/imported/missile_padshoot1.ogg-e5d5428fbbfc58f3cd16e1a43c1e4902.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/missile_padshoot1.ogg"
+dest_files=["res://.godot/imported/missile_padshoot1.ogg-e5d5428fbbfc58f3cd16e1a43c1e4902.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

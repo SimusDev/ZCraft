@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dcev8y6fbkm1y"
+path="res://.godot/imported/explode_nuclear_mid.ogg-945f169c2c28c4f1eb5dd94a85deb69c.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/explode_nuclear_mid.ogg"
+dest_files=["res://.godot/imported/explode_nuclear_mid.ogg-945f169c2c28c4f1eb5dd94a85deb69c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

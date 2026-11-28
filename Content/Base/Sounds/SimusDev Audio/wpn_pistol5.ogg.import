@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bqk4o0noyoxix"
+path="res://.godot/imported/wpn_pistol5.ogg-34007f5632c827664ffe10eb6676fa4a.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_pistol5.ogg"
+dest_files=["res://.godot/imported/wpn_pistol5.ogg-34007f5632c827664ffe10eb6676fa4a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

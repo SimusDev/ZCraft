@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cmljm7tkxemov"
+path="res://.godot/imported/wpn_sniper1.ogg-50184b34e8a10d52839cfdca53f9e0e9.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_sniper1.ogg"
+dest_files=["res://.godot/imported/wpn_sniper1.ogg-50184b34e8a10d52839cfdca53f9e0e9.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

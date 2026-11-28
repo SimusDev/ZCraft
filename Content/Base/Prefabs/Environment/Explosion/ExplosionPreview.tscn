@@ -1,0 +1,259 @@
+[gd_scene format=3 uid="uid://dqoir760tmsy0"]
+
+[ext_resource type="Script" uid="uid://77qykcnq43pw" path="res://Content/Base/Prefabs/Environment/Explosion/ExplosionPreview.cs" id="1_script"]
+[ext_resource type="PackedScene" path="res://Content/Base/Prefabs/Environment/Explosion/ExplosionVfx.tscn" id="2_fx"]
+
+[sub_resource type="Environment" id="Environment_stage"]
+background_mode = 1
+background_color = Color(0.069, 0.087, 0.079, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.81, 0.87, 0.79, 1)
+ambient_light_energy = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stage"]
+albedo_color = Color(0.2, 0.24, 0.216, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage"]
+material = SubResource("StandardMaterial3D_stage")
+top_radius = 0.98
+bottom_radius = 1.0
+height = 0.105
+radial_segments = 12
+rings = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_focus"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.957, 0.69, 0.501, 1)
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_hover"]
+bg_color = Color(0.25, 0.3, 0.265, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.408, 0.464, 0.4, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button"]
+bg_color = Color(0.189, 0.233, 0.208, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.292, 0.364, 0.309, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_primary"]
+bg_color = Color(0.65, 0.309, 0.21, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.867, 0.541, 0.397, 1)
+
+[sub_resource type="Gradient" id="Gradient_knob"]
+colors = PackedColorArray(0.94, 0.62, 0.44, 1, 0.76, 0.39, 0.28, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_knob"]
+gradient = SubResource("Gradient_knob")
+width = 9
+height = 16
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_track_fill"]
+bg_color = Color(0.72, 0.423, 0.314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_track"]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.08, 0.106, 0.091, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+bg_color = Color(0.137, 0.174, 0.151, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.268, 0.338, 0.287, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_body"]
+font_names = PackedStringArray("Bahnschrift", "DejaVu Sans", "Arial")
+
+[sub_resource type="Theme" id="Theme_preview"]
+default_font = SubResource("SystemFont_body")
+default_font_size = 16
+Button/colors/font_color = Color(0.937, 0.915, 0.861, 1)
+Button/colors/font_hover_color = Color(1, 0.949, 0.882, 1)
+Button/styles/focus = SubResource("StyleBox_focus")
+Button/styles/hover = SubResource("StyleBox_hover")
+Button/styles/normal = SubResource("StyleBox_button")
+Button/styles/pressed = SubResource("StyleBox_primary")
+HSlider/icons/grabber = SubResource("GradientTexture2D_knob")
+HSlider/icons/grabber_highlight = SubResource("GradientTexture2D_knob")
+HSlider/styles/grabber_area = SubResource("StyleBox_track_fill")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBox_track_fill")
+HSlider/styles/slider = SubResource("StyleBox_track")
+Label/colors/font_color = Color(0.937, 0.915, 0.861, 1)
+PanelContainer/styles/panel = SubResource("StyleBox_panel")
+
+[sub_resource type="SystemFont" id="SystemFont_heading"]
+font_names = PackedStringArray("Bahnschrift", "DejaVu Sans", "Arial")
+font_weight = 700
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_primary_hover"]
+bg_color = Color(0.742, 0.367, 0.249, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.945, 0.627, 0.461, 1)
+
+[node name="ExplosionPreview" type="Node3D" unique_id=108958145]
+script = ExtResource("1_script")
+
+[node name="Environment" type="WorldEnvironment" parent="." unique_id=1379535346]
+environment = SubResource("Environment_stage")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="." unique_id=2044099660]
+transform = Transform3D(0.8480481, 0.43932298, -0.29632708, 0, 0.5591929, 0.82903755, 0.52991927, -0.7030637, 0.47422248, 0, 0, 0)
+light_color = Color(0.96, 0.94, 0.89, 1)
+light_energy = 0.7
+
+[node name="Stage" type="MeshInstance3D" parent="." unique_id=366689960]
+transform = Transform3D(0.9659258, 0, 0.25881904, 0, 1, 0, -0.25881904, 0, 0.9659258, 0, -0.057, 0)
+mesh = SubResource("CylinderMesh_stage")
+
+[node name="Explosion" parent="." unique_id=1895348267 instance=ExtResource("2_fx")]
+Autoplay = false
+Seed = 1877
+Speed = 0.1
+
+[node name="Camera" type="Camera3D" parent="." unique_id=1487268192]
+projection = 1
+current = true
+far = 300.0
+
+[node name="Interface" type="CanvasLayer" parent="." unique_id=2067409394]
+
+[node name="Heading" type="Control" parent="Interface" unique_id=758550611]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 42.0
+offset_top = 31.0
+mouse_filter = 2
+theme = SubResource("Theme_preview")
+
+[node name="Brand" type="Label" parent="Interface/Heading" unique_id=1833897468]
+layout_mode = 0
+offset_right = 210.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(0.898, 0.655, 0.493, 1)
+theme_override_fonts/font = SubResource("SystemFont_heading")
+theme_override_font_sizes/font_size = 20
+text = "ZCRAFT"
+
+[node name="Title" type="Label" parent="Interface/Heading" unique_id=638433356]
+layout_mode = 0
+offset_top = 26.0
+offset_right = 400.0
+offset_bottom = 86.0
+theme_override_fonts/font = SubResource("SystemFont_heading")
+theme_override_font_sizes/font_size = 46
+text = "Взрыв"
+
+[node name="Panel" type="PanelContainer" parent="Interface" unique_id=856963547]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -397.0
+offset_top = -128.0
+offset_right = -38.0
+offset_bottom = 128.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = SubResource("Theme_preview")
+
+[node name="Margins" type="MarginContainer" parent="Interface/Panel" unique_id=224732222]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Controls" type="VBoxContainer" parent="Interface/Panel/Margins" unique_id=1030126774]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="StrengthHeader" type="HBoxContainer" parent="Interface/Panel/Margins/Controls" unique_id=977187724]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Interface/Panel/Margins/Controls/StrengthHeader" unique_id=617570131]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_heading")
+theme_override_font_sizes/font_size = 24
+text = "Мощность"
+
+[node name="Number" type="Label" parent="Interface/Panel/Margins/Controls/StrengthHeader" unique_id=1082317432]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.65, 0.47, 1)
+theme_override_fonts/font = SubResource("SystemFont_heading")
+theme_override_font_sizes/font_size = 22
+text = "12"
+
+[node name="Strength" type="HSlider" parent="Interface/Panel/Margins/Controls" unique_id=326939627]
+layout_mode = 2
+min_value = 1.0
+value = 12.0
+
+[node name="Presets" type="HBoxContainer" parent="Interface/Panel/Margins/Controls" unique_id=37068293]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Small" type="Button" parent="Interface/Panel/Margins/Controls/Presets" unique_id=951091619]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Малый"
+
+[node name="Medium" type="Button" parent="Interface/Panel/Margins/Controls/Presets" unique_id=334321213]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Средний"
+
+[node name="Large" type="Button" parent="Interface/Panel/Margins/Controls/Presets" unique_id=1148106997]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Крупный"
+
+[node name="Space" type="Control" parent="Interface/Panel/Margins/Controls" unique_id=1409559518]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Replay" type="Button" parent="Interface/Panel/Margins/Controls" unique_id=2001641628]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_heading")
+theme_override_styles/normal = SubResource("StyleBox_primary")
+theme_override_styles/pressed = SubResource("StyleBox_primary_hover")
+theme_override_styles/hover = SubResource("StyleBox_primary_hover")
+text = "Повторить взрыв"
+
+[node name="Status" type="Label" parent="Interface/Panel/Margins/Controls" unique_id=325570373]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.68, 1)
+theme_override_font_sizes/font_size = 14
+text = "Эффект завершён"
+
+[connection signal="pressed" from="Interface/Panel/Margins/Controls/Replay" to="." method="Replay"]

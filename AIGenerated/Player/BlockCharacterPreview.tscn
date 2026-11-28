@@ -1,0 +1,495 @@
+[gd_scene format=3 uid="uid://cjpk470a41ug"]
+
+[ext_resource type="PackedScene" uid="uid://bihl4mn7ndoeo" path="res://AIGenerated/Player/BlockCharacter.tscn" id="1_x3ilc"]
+[ext_resource type="Texture2D" uid="uid://d1u6yu1uckae4" path="res://AIGenerated/Player/zxcvlad78.png" id="2_mk1yg"]
+
+[sub_resource type="Environment" id="Environment_5dgqf"]
+background_mode = 1
+background_color = Color(0.09019608, 0.11764706, 0.101960786, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.8392157, 0.89411765, 0.85882354, 1)
+ambient_light_energy = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mskj3"]
+albedo_color = Color(0.22352941, 0.27058825, 0.23137255, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_yb64g"]
+material = SubResource("StandardMaterial3D_mskj3")
+top_radius = 1.46
+bottom_radius = 1.53
+height = 0.115
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bxlex"]
+albedo_texture = ExtResource("2_mk1yg")
+metallic_specular = 0.18
+roughness = 0.94
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x3ilc"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_texture = ExtResource("2_mk1yg")
+metallic_specular = 0.18
+roughness = 0.94
+texture_filter = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14erp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.28235295, 0.20392157, 0.15686275, 1)
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9490196, 0.72156864, 0.5686275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a2qkg"]
+content_margin_left = 9.0
+content_margin_top = 7.0
+content_margin_right = 9.0
+content_margin_bottom = 7.0
+bg_color = Color(0.2627451, 0.30980393, 0.25882354, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4509804, 0.5019608, 0.44313726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6o5d"]
+content_margin_left = 9.0
+content_margin_top = 7.0
+content_margin_right = 9.0
+content_margin_bottom = 7.0
+bg_color = Color(0.1882353, 0.23529412, 0.20392157, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28235295, 0.34117648, 0.2901961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jrcub"]
+content_margin_left = 9.0
+content_margin_top = 7.0
+content_margin_right = 9.0
+content_margin_bottom = 7.0
+bg_color = Color(0.43137255, 0.28627452, 0.21176471, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8039216, 0.5647059, 0.42745098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sir5l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.14509805, 0.18039216, 0.15294118, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28627452, 0.34117648, 0.29411766, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_panel"]
+bg_color = Color(0.115, 0.151, 0.123, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.251, 0.316, 0.268, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_sr6al"]
+font_names = PackedStringArray("Bahnschrift", "DejaVu Sans", "Arial")
+subpixel_positioning = 0
+
+[sub_resource type="Theme" id="Theme_dc0tj"]
+default_font = SubResource("SystemFont_sr6al")
+default_font_size = 16
+Button/colors/font_color = Color(0.93333334, 0.9137255, 0.85490197, 1)
+Button/colors/font_hover_color = Color(1, 0.9490196, 0.8745098, 1)
+Button/colors/font_pressed_color = Color(1, 0.9490196, 0.8745098, 1)
+Button/styles/focus = SubResource("StyleBoxFlat_14erp")
+Button/styles/hover = SubResource("StyleBoxFlat_a2qkg")
+Button/styles/normal = SubResource("StyleBoxFlat_t6o5d")
+Button/styles/pressed = SubResource("StyleBoxFlat_jrcub")
+Label/colors/font_color = Color(0.93333334, 0.9137255, 0.85490197, 1)
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_sir5l")
+TabContainer/colors/font_hovered_color = Color(1, 0.949, 0.874, 1)
+TabContainer/colors/font_selected_color = Color(1, 0.949, 0.874, 1)
+TabContainer/colors/font_unselected_color = Color(0.743, 0.779, 0.712, 1)
+TabContainer/styles/panel = SubResource("StyleBoxFlat_tab_panel")
+TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_a2qkg")
+TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_jrcub")
+TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_t6o5d")
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_pose"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ciiug"]
+
+[node name="BlockCharacterPreview" type="Node3D" unique_id=285320689]
+
+[node name="Environment" type="WorldEnvironment" parent="." unique_id=435405327]
+environment = SubResource("Environment_5dgqf")
+
+[node name="Key" type="DirectionalLight3D" parent="." unique_id=1737464477]
+transform = Transform3D(0.8660254, -0.38857296, 0.31466022, 0, 0.62932044, 0.7771459, -0.5, -0.6730281, 0.54500747, 0, 0, 0)
+light_color = Color(1, 0.94509804, 0.8392157, 1)
+light_energy = 1.02
+shadow_enabled = true
+
+[node name="Fill" type="DirectionalLight3D" parent="." unique_id=1068902146]
+transform = Transform3D(-0.84804803, -0.21553761, 0.48410538, 0, 0.9135454, 0.40673664, -0.5299193, 0.3449322, -0.7747304, 0, 0, 0)
+light_color = Color(0.7764706, 0.89411765, 0.88235295, 1)
+light_energy = 0.5
+
+[node name="Stage" type="MeshInstance3D" parent="." unique_id=32347100]
+transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 0, -0.059, 0)
+mesh = SubResource("CylinderMesh_yb64g")
+
+[node name="Character" parent="." unique_id=255376847 instance=ExtResource("1_x3ilc")]
+SkinTexture = ExtResource("2_mk1yg")
+
+[node name="Body" parent="Character/Skeleton3D" parent_id_path=PackedInt32Array(255376847, 758505688) index="0" unique_id=426601228]
+surface_material_override/0 = SubResource("StandardMaterial3D_bxlex")
+surface_material_override/1 = SubResource("StandardMaterial3D_x3ilc")
+
+[node name="Camera" type="Camera3D" parent="." unique_id=1666863111]
+transform = Transform3D(-0.904575, -0.15134476, 0.39854595, 0, 0.93486357, 0.35500726, -0.42631456, 0.3211307, -0.8456542, 1.4900001, 2.9099998, -5.29)
+projection = 1
+current = true
+size = 2.97
+
+[node name="Interface" type="CanvasLayer" parent="." unique_id=828948006]
+
+[node name="Panel" type="PanelContainer" parent="Interface" unique_id=1749416727]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -442.0
+offset_top = -264.0
+offset_right = -34.0
+offset_bottom = 264.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = SubResource("Theme_dc0tj")
+
+[node name="Margins" type="MarginContainer" parent="Interface/Panel" unique_id=611299440]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Interface/Panel/Margins" unique_id=289181389]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Tabs" type="TabContainer" parent="Interface/Panel/Margins/Content" unique_id=684129518]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+use_hidden_tabs_for_min_size = true
+
+[node name="Движение" type="MarginContainer" parent="Interface/Panel/Margins/Content/Tabs" unique_id=407611043]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 0
+
+[node name="Grid" type="GridContainer" parent="Interface/Panel/Margins/Content/Tabs/Движение" unique_id=622316001]
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 2
+
+[node name="Idle" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=568599748]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Стойка"
+
+[node name="Walk" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=941311564]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ходьба"
+
+[node name="Run" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=1722828497]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Бег"
+
+[node name="Jump" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=366407219]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Прыжок"
+
+[node name="Left" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=1327304422]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Шаг влево"
+
+[node name="Right" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=1692625364]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Шаг вправо"
+
+[node name="Back" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=1778681118]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Шаг назад"
+
+[node name="Crouch" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=269881749]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Приседание"
+
+[node name="CrouchWalk" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=771882489]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Шаг в приседе"
+
+[node name="Sit" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=595997490]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Низкая стойка"
+
+[node name="SitMove" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=713806798]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Низкий шаг"
+
+[node name="Prone" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=2106619524]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Лёжа"
+
+[node name="Crawl" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Движение/Grid" unique_id=2127981048]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ползком"
+
+[node name="Действия" type="MarginContainer" parent="Interface/Panel/Margins/Content/Tabs" unique_id=767713897]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 1
+
+[node name="Grid" type="GridContainer" parent="Interface/Panel/Margins/Content/Tabs/Действия" unique_id=2139231601]
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 2
+
+[node name="Pickaxe" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=1652581839]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Взмах киркой"
+
+[node name="Axe" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=846350190]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Взмах топором"
+
+[node name="Drill" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=1385791579]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Электробур"
+
+[node name="Saw" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=1947475851]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Электропила"
+
+[node name="Pickup" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=493143350]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Подбор предмета"
+
+[node name="Drop" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=2107079751]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Выброс предмета"
+
+[node name="Place" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=1824394532]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Установка блока"
+
+[node name="ToolUse" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Действия/Grid" unique_id=1707537072]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Взмах инструментом"
+
+[node name="Снаряжение" type="MarginContainer" parent="Interface/Panel/Margins/Content/Tabs" unique_id=180540310]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 2
+
+[node name="Grid" type="GridContainer" parent="Interface/Panel/Margins/Content/Tabs/Снаряжение" unique_id=2140156373]
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 2
+
+[node name="Rifle" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid" unique_id=1629108583]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Автомат"
+
+[node name="Pistol" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid" unique_id=1164451276]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Пистолет"
+
+[node name="Launcher" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid" unique_id=2014308404]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Гранатомёт"
+
+[node name="Throw" type="Button" parent="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid" unique_id=282914425]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Бросок гранаты"
+
+[node name="Free" type="Button" parent="Interface/Panel/Margins/Content" unique_id=1519175436]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_pose")
+text = "Свободные руки"
+
+[node name="ProfileLabel" type="Label" parent="Interface/Panel/Margins/Content" unique_id=1553474606]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7294118, 0.7490196, 0.68235296, 1)
+theme_override_font_sizes/font_size = 15
+text = "Ширина рук"
+
+[node name="Widths" type="HBoxContainer" parent="Interface/Panel/Margins/Content" unique_id=709181686]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Classic" type="Button" parent="Interface/Panel/Margins/Content/Widths" unique_id=936246013]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ciiug")
+text = "Classic · 4 px"
+
+[node name="Slim" type="Button" parent="Interface/Panel/Margins/Content/Widths" unique_id=1181635850]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ciiug")
+text = "Slim · 3 px"
+
+[node name="Heading" type="Control" parent="Interface" unique_id=328179086]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 42.0
+offset_top = 30.0
+offset_right = 42.0
+offset_bottom = 30.0
+mouse_filter = 2
+theme = SubResource("Theme_dc0tj")
+
+[node name="Brand" type="Label" parent="Interface/Heading" unique_id=1582180598]
+layout_mode = 0
+theme_override_colors/font_color = Color(0.8862745, 0.62352943, 0.4627451, 1)
+theme_override_font_sizes/font_size = 19
+text = "ZCRAFT"
+
+[node name="Name" type="Label" parent="Interface/Heading" unique_id=1151742748]
+layout_mode = 0
+offset_top = 27.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(0.93333334, 0.9137255, 0.85490197, 1)
+theme_override_font_sizes/font_size = 41
+text = "Zxcvlad78"
+
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Idle" to="Character/AnimationPlayer" method="play" binds= [&"idle", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Walk" to="Character/AnimationPlayer" method="play" binds= [&"walk", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Run" to="Character/AnimationPlayer" method="play" binds= [&"run", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Jump" to="Character/AnimationPlayer" method="play" binds= [&"jump", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Left" to="Character/AnimationPlayer" method="play" binds= [&"strafe_left", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Right" to="Character/AnimationPlayer" method="play" binds= [&"strafe_right", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Back" to="Character/AnimationPlayer" method="play" binds= [&"walk_backward", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Crouch" to="Character/AnimationPlayer" method="play" binds= [&"crouch_idle", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/CrouchWalk" to="Character/AnimationPlayer" method="play" binds= [&"crouch_walk", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Sit" to="Character/AnimationPlayer" method="play" binds= [&"sit_idle", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/SitMove" to="Character/AnimationPlayer" method="play" binds= [&"sit_move", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Prone" to="Character/AnimationPlayer" method="play" binds= [&"prone_idle", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Движение/Grid/Crawl" to="Character/AnimationPlayer" method="play" binds= [&"prone_crawl", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Pickaxe" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"pickaxe_swing", 0.11]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Axe" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"axe_swing", 0.11]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Drill" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"drill_use", 0.14]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Saw" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"chainsaw_use", 0.14]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Pickup" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"pickup_item", 0.09]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Drop" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"drop_item", 0.09]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/Place" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"place_block", 0.1]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Действия/Grid/ToolUse" to="Character/AnimationPlayer" method="play" binds= [&"tool_use", 0.15, 1.0, false]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid/Rifle" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"rifle_hold", 0.16]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid/Pistol" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"pistol_hold", 0.16]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid/Launcher" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"launcher_hold", 0.16]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Tabs/Снаряжение/Grid/Throw" to="Character/Skeleton3D/UpperBodyPoseLayer" method="PlayClip" binds= [&"grenade_throw", 0.16]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Free" to="Character/Skeleton3D/UpperBodyPoseLayer" method="Clear" binds= [0.16]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Widths/Classic" to="Character" method="set" binds= [&"Arms", 0]]
+[connection signal="pressed" from="Interface/Panel/Margins/Content/Widths/Slim" to="Character" method="set" binds= [&"Arms", 1]]
+
+[editable path="Character"]

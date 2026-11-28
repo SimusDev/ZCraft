@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ca2xy5cpoqp7w"
+path="res://.godot/imported/shoot_pipe2.ogg-b87c83b2ed0aa47790c5f81248d0989b.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_pipe2.ogg"
+dest_files=["res://.godot/imported/shoot_pipe2.ogg-b87c83b2ed0aa47790c5f81248d0989b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

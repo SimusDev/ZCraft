@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="AudioStreamDistantBundle" format=3 uid="uid://i7bwx6ogocrg"]
+
+[ext_resource type="Script" uid="uid://cw16cp47fjoci" path="res://Source/World/Audio/AudioDistantPack.cs" id="1_i2uvj"]
+[ext_resource type="AudioStream" uid="uid://cxtte05tqcj6q" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small1.ogg" id="2_6se6r"]
+[ext_resource type="Script" uid="uid://b8sihfa3catks" path="res://Source/World/Audio/AudioStreamDistantBundle.cs" id="2_vppt7"]
+[ext_resource type="AudioStream" uid="uid://d1ndextkl6cv4" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small2.ogg" id="3_muaai"]
+[ext_resource type="AudioStream" uid="uid://b1o4iv4nd27jr" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small3.ogg" id="4_ec6er"]
+[ext_resource type="AudioStream" uid="uid://d0dtdtf47h78s" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_mid1.ogg" id="5_du66a"]
+[ext_resource type="AudioStream" uid="uid://cdknwiixxfmad" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_mid2.ogg" id="6_s53kp"]
+[ext_resource type="AudioStream" uid="uid://hi4fc3iivjk6" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_mid3.ogg" id="7_ppi0g"]
+[ext_resource type="AudioStream" uid="uid://c48674i0a0x70" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_far1.ogg" id="8_82hv5"]
+[ext_resource type="AudioStream" uid="uid://chy2g7yh0bsg1" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_far2.ogg" id="9_d530a"]
+[ext_resource type="AudioStream" uid="uid://db7ten5xee0j6" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_far3.ogg" id="10_rbnce"]
+[ext_resource type="AudioStream" uid="uid://dvmywmggcrg3m" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_superfar1.ogg" id="11_ja7nv"]
+[ext_resource type="AudioStream" uid="uid://b4binn5hayksr" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_superfar2.ogg" id="12_02yoq"]
+[ext_resource type="AudioStream" uid="uid://j6tgvo475oo5" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_small_superfar3.ogg" id="13_p1aar"]
+
+[sub_resource type="Resource" id="Resource_6se6r"]
+script = ExtResource("1_i2uvj")
+Streams = Array[AudioStream]([ExtResource("2_6se6r"), ExtResource("3_muaai"), ExtResource("4_ec6er")])
+MaxDistance = 50.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_muaai"]
+script = ExtResource("1_i2uvj")
+Streams = Array[AudioStream]([ExtResource("5_du66a"), ExtResource("6_s53kp"), ExtResource("7_ppi0g")])
+MaxDistance = 100.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_ec6er"]
+script = ExtResource("1_i2uvj")
+Streams = Array[AudioStream]([ExtResource("8_82hv5"), ExtResource("9_d530a"), ExtResource("10_rbnce")])
+MaxDistance = 150.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_du66a"]
+script = ExtResource("1_i2uvj")
+Streams = Array[AudioStream]([ExtResource("11_ja7nv"), ExtResource("12_02yoq"), ExtResource("13_p1aar")])
+MaxDistance = 200.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[resource]
+script = ExtResource("2_vppt7")
+_packs = Array[ExtResource("1_i2uvj")]([SubResource("Resource_6se6r"), SubResource("Resource_muaai"), SubResource("Resource_ec6er"), SubResource("Resource_du66a")])
+metadata/_custom_type_script = "uid://b8sihfa3catks"

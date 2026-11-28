@@ -7,5 +7,5 @@ namespace ZCraft.Content.Base.Items.Components;
 [GlobalClass]
 public partial class IBurnFuelItemComponent: ItemComponent
 {
-    [Export] int BurnTimeSeconds = 1;
+    [Export] public int BurnTimeSeconds = 1;
 }

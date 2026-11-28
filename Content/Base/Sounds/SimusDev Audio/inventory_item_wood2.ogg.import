@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://31drysu2t2y5"
+path="res://.godot/imported/inventory_item_wood2.ogg-268a7c1ea042bc7b1e764176b7eaed07.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/inventory_item_wood2.ogg"
+dest_files=["res://.godot/imported/inventory_item_wood2.ogg-268a7c1ea042bc7b1e764176b7eaed07.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

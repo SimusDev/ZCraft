@@ -1,30 +1,29 @@
-using System;
-using Godot;
+using ZCraft.Source.Entity;
+using ZCraft.Source.Networking;
 
 namespace ZCraft.Source.World.Item;
 
 public class ItemBehaviorContext
 {
-    private static ItemBehaviorContext _instance = new();
-    private object _source;
-    public Item _item;
-    public ItemStack _itemStack;
-
-    public object Source => _source;
-    public Item Item => _item;
+    public ItemHolderComponent ItemHolder => _itemHolder;
     public ItemStack ItemStack => _itemStack;
+    public Level Level => _level;
+    public NetworkId NetworkId => _networkId;
+    public NetworkRegion Network => _network;
 
-    public static ItemBehaviorContext Build(object source, Item item)
-    {
-        _instance._source = source;
-        _instance._item = item;
-        return _instance;
-    }
+    private ItemHolderComponent _itemHolder;
+    private ItemStack _itemStack;
+    private Level _level;
+    private NetworkId _networkId;
+    private NetworkRegion _network;
 
-    public ItemBehaviorContext WithItemStack(ItemStack itemStack)
+    public ItemBehaviorContext(ItemHolderComponent itemHolder, ItemStack itemStack, Level level, NetworkId networkId, NetworkRegion network)
     {
+        _itemHolder = itemHolder;
         _itemStack = itemStack;
-        return this;
+        _level = level;
+        _networkId = networkId;
+        _network = network;
     }
 
 }

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bnbkjl4n63sfb"
+path="res://.godot/imported/weapon_smg2.ogg-28d4eca6509343040181fe7dbab81190.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/weapon_smg2.ogg"
+dest_files=["res://.godot/imported/weapon_smg2.ogg-28d4eca6509343040181fe7dbab81190.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

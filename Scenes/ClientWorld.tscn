@@ -1,5 +1,27 @@
 [gd_scene format=3 uid="uid://dob8inx0besd2"]
 
 [ext_resource type="PackedScene" uid="uid://2pkvvlivom4o" path="res://Scenes/World.tscn" id="1_j4tov"]
+[ext_resource type="PackedScene" uid="uid://byy12aeulaf0a" path="res://Scenes/MainMenu.tscn" id="2_jyfe4"]
+[ext_resource type="Script" uid="uid://bcas4li8lf85e" path="res://Source/UI/CanvasLayerStack.cs" id="2_xc4rp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmafn"]
+bg_color = Color(0, 0, 0, 0.49019608)
 
 [node name="World" unique_id=912735876 instance=ExtResource("1_j4tov")]
+
+[node name="MainMenuLayer" type="CanvasLayer" parent="." index="0" unique_id=456884574]
+layer = 78
+visible = false
+script = ExtResource("2_xc4rp")
+
+[node name="Fade" type="Panel" parent="MainMenuLayer" index="0" unique_id=1961517436]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lmafn")
+
+[node name="MainMenu" parent="MainMenuLayer" index="1" unique_id=1107779522 node_paths=PackedStringArray("_continueButtonPressHide") instance=ExtResource("2_jyfe4")]
+InGame = true
+_continueButtonPressHide = NodePath("..")

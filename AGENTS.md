@@ -18,25 +18,6 @@
 | Контент | `Content/` (модели `.tscn`, `ART_STYLE.md`) |
 | GDScript | нет, всё на C# |
 
-## Карта кода
-
-- `Source/World/` — мир: `ZCraftWorld`, `Level`, `LevelData`, `Chunk`, `ChunkPos`, `ChunkSnapshot`,
-  `IChunkObject`, `ITickable`; сущности — `Player/`, `Entity/Camera/`, `Item/`, `Container/`, `View/`.
-- `Source/Networking/` — `NetworkManager` (фасад), `NetworkTransport` (батчинг/сжатие/потоки),
-  `NetworkReplicator` + `INetworkReplicationObject` (репликация), `PacketBatchPipeline`, `NetworkProfiler`.
-- `Source/Serialization/` — `BytePacker` и пул.
-- `Source/Content/` — `Content`, `Registry`.
-- `Source/UI/` — `InterfaceStack`.
-- `Source/Scenes/` — сборка мира и меню.
-- `Tests/NetworkTransport/` — консольный тест-раннер (не xunit) + `GodotHarness` для прогона в Godot.
-
-## Команды
-
-```powershell
-dotnet build ZCraft.csproj                 # сборка
-dotnet run --project Tests/NetworkTransport # тесты сети (консольный раннер)
-```
-
 Запуск игры — из редактора Godot (main scene задана uid в `project.godot`).
 
 ## Жёсткие правила

@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using System.Net.Mime;
 using Godot;
 using ZCraft.Source.World.Item;
 
@@ -9,6 +11,7 @@ namespace ZCraft.Source.Content
     {
         public string ID = "";
         public string FolderPath;
+        public static List<Content> All = new();
 
         [Export] public Godot.Collections.Array<Item> AutoloadItems = new();
 
@@ -23,10 +26,22 @@ namespace ZCraft.Source.Content
                     continue;
                 
                 string path = item.ResourcePath.GetBaseName().GetFile();
-                GD.Print(path);
                 Registry.Items.Add(item, path);
             }
         }
+
+        #nullable enable
+        public static T? FindContentInstance<T>() where T : Content
+        {
+            foreach(Content content in All)
+            {
+                if (content is T t)
+                    return t;
+            }
+
+            return null;
+        }
+        #nullable disable
 
         public void Enable()
         {

@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://s6he0ygukbfc"]
+
+[ext_resource type="Script" uid="uid://cle23il0l44e3" path="res://Source/World/Environment/Explosion/ServerExplosionScene.cs" id="1_mcoqh"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lmafn"]
+radius = 1.0
+
+[node name="ServerExplosionScene" type="Area3D" unique_id=826386502]
+input_ray_pickable = false
+monitorable = false
+script = ExtResource("1_mcoqh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=667477691]
+shape = SubResource("SphereShape3D_lmafn")

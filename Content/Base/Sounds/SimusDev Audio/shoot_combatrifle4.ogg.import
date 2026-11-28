@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://sojipto5v42n"
+path="res://.godot/imported/shoot_combatrifle4.ogg-80b96018d19f7c826df1e77d9ebd8967.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_combatrifle4.ogg"
+dest_files=["res://.godot/imported/shoot_combatrifle4.ogg-80b96018d19f7c826df1e77d9ebd8967.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

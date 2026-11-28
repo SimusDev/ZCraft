@@ -43,7 +43,7 @@ public partial class ZCraftWorld : Node
 
 		else
 		{
-			RpcId(NetworkManager.ServerId, MethodName.SendAuthDataToServer, "player");
+			RpcId(NetworkManager.ServerId, MethodName.SendAuthDataToServer, PlayerProfile.LocalConnectionNickName);
 		}
 
 
@@ -142,6 +142,8 @@ public partial class ZCraftWorld : Node
 			pickedPlayerTracker.ResetClient(remoteSender);
 		}
 
+		pickedPlayerLevel.OnlinePlayerPeers.Add(remoteSender);
+
 		BytePacker packer = BytePackerPool.Rent();
 		player.Serialize(packer);
 		packer.WriteString(pickedPlayerLevel.Name);
@@ -181,5 +183,7 @@ public partial class ZCraftWorld : Node
 
 		BytePackerPool.Return(packer);
 	}
+
+	
 
 }

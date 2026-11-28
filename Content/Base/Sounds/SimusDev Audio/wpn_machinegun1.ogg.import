@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://rsr1rrcsnmay"
+path="res://.godot/imported/wpn_machinegun1.ogg-b0fcc872f1127109361dfce40f555350.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_machinegun1.ogg"
+dest_files=["res://.godot/imported/wpn_machinegun1.ogg-b0fcc872f1127109361dfce40f555350.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

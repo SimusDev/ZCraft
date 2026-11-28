@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bk6ka4ixt37rv"
+path="res://.godot/imported/wpn_rpg5.ogg-2dee01a1b232b9424f9efb71557c548e.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_rpg5.ogg"
+dest_files=["res://.godot/imported/wpn_rpg5.ogg-2dee01a1b232b9424f9efb71557c548e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

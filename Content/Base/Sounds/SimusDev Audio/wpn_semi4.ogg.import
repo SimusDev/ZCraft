@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://rc805oysocet"
+path="res://.godot/imported/wpn_semi4.ogg-d4500419f854f41ecd7f3ff3348c1eb3.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_semi4.ogg"
+dest_files=["res://.godot/imported/wpn_semi4.ogg-d4500419f854f41ecd7f3ff3348c1eb3.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

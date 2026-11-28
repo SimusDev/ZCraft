@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://6sqj7aom64it"
+path="res://.godot/imported/wpn_glauncher2.ogg-eac35daf66b370ef3a491d7cba362b80.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_glauncher2.ogg"
+dest_files=["res://.godot/imported/wpn_glauncher2.ogg-eac35daf66b370ef3a491d7cba362b80.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
