@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://2wii7j6iaxiv"
+path="res://.godot/imported/explode_big.ogg-746d884a32918d834c5878a3831d0e00.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/explode_big.ogg"
+dest_files=["res://.godot/imported/explode_big.ogg-746d884a32918d834c5878a3831d0e00.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

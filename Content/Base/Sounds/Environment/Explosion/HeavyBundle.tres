@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="AudioStreamDistantBundle" format=3 uid="uid://d1j82dgecqyxh"]
+
+[ext_resource type="Script" uid="uid://cw16cp47fjoci" path="res://Source/World/Audio/AudioDistantPack.cs" id="1_62dvl"]
+[ext_resource type="AudioStream" uid="uid://c3j5qu4skhk7v" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_heavy1.ogg" id="2_sw2an"]
+[ext_resource type="Script" uid="uid://b8sihfa3catks" path="res://Source/World/Audio/AudioStreamDistantBundle.cs" id="2_trclh"]
+[ext_resource type="AudioStream" uid="uid://bdwbuxsmp26oy" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_heavy2.ogg" id="3_uplm3"]
+[ext_resource type="AudioStream" uid="uid://pmsisuvts8yq" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_heavy3.ogg" id="4_s218l"]
+[ext_resource type="AudioStream" uid="uid://dnql3vfdpp2pd" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_heavy4.ogg" id="5_ff8ws"]
+
+[sub_resource type="Resource" id="Resource_sajg3"]
+script = ExtResource("1_62dvl")
+Streams = Array[AudioStream]([ExtResource("2_sw2an")])
+MaxDistance = 150.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_x1lt7"]
+script = ExtResource("1_62dvl")
+Streams = Array[AudioStream]([ExtResource("3_uplm3")])
+MaxDistance = 300.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_slf23"]
+script = ExtResource("1_62dvl")
+Streams = Array[AudioStream]([ExtResource("4_s218l")])
+MaxDistance = 600.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_qxtbl"]
+script = ExtResource("1_62dvl")
+Streams = Array[AudioStream]([ExtResource("5_ff8ws")])
+MaxDistance = 900.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[resource]
+script = ExtResource("2_trclh")
+_packs = Array[ExtResource("1_62dvl")]([SubResource("Resource_sajg3"), SubResource("Resource_x1lt7"), SubResource("Resource_slf23"), SubResource("Resource_qxtbl")])
+metadata/_custom_type_script = "uid://b8sihfa3catks"

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bukgn4q56lae8"
+path="res://.godot/imported/shoot_db_shotgun1.ogg-aab9668445c1a5a9a306752879bb3c4b.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_db_shotgun1.ogg"
+dest_files=["res://.godot/imported/shoot_db_shotgun1.ogg-aab9668445c1a5a9a306752879bb3c4b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

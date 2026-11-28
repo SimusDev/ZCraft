@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using ZCraft.Source.Content;
 using ZCraft.Source.Networking;
@@ -9,15 +10,17 @@ using ZCraft.Source.World.Item;
 namespace ZCraft.Source.Entity;
 
 [GlobalClass]
-public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, ILevelObject
+public partial class ItemHolderComponent : Node, INetworkReplicationObject, ILevelObject
 {
-    public const string InputActionInteract = "hands.interact";
-    public const string InputActionInteractAlt = "hands.interact_alt";
     [Export] private string _initialItemName;
 
     private ItemStack _itemStackRef = null;
 
     private NetworkRegion _net;
+    private NetworkId _systemNetworkId;
+    private List<IItemBehaviorSystem> _behaviorSystems = new();
+
+    private ItemBehaviorContext _behaviorContext = null;
 
     public override void _Ready()
     {
@@ -34,6 +37,7 @@ public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, IL
 
     public void ServerReady()
     {
+        _systemNetworkId = new();
         Item item = Registry.Items.GetByName(_initialItemName);
         ItemStack itemStack = new ItemStack(item);
         _itemStackRef = itemStack;
@@ -42,6 +46,21 @@ public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, IL
 
     public void ClientReady()
     {
+        Item item = _itemStackRef.ResolveItem();
+
+        if (item.Behaviors == null)
+            return;
+        
+        foreach(ItemBehavior behavior in item.Behaviors)
+        {
+            IItemBehaviorSystem system = behavior.Build();
+            if (system == null)
+                continue;
+            
+
+
+        }
+
         SetProcessInput(IsMultiplayerAuthority());
     }
 
@@ -50,27 +69,31 @@ public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, IL
         
     }
 
+    public void SerializeFullState(BytePacker packer)
+    {
+        ItemStack.NetworkSerialize(_itemStackRef, packer);
+    }
+
+    public void DeserializeFullState(BytePacker packer)
+    {
+        _itemStackRef = ItemStack.NetworkDeserialize(packer);
+    }
+
+    public void CleanUpBehaviors()
+    {
+        foreach(IItemBehaviorSystem system in _behaviorSystems)
+        {
+            system.OnDestroy(_behaviorContext);
+        }
+
+        _behaviorSystems.Clear();
+
+        _behaviorContext = null;
+    }
+
     public override void _Input(InputEvent @event)
     {
-        if (Input.IsActionJustPressed(InputActionInteract))
-        {
-            GD.Print(_itemStackRef.ResolveItem().ResourcePath);
-        }
-
-        else if (Input.IsActionJustReleased(InputActionInteract))
-        {
-            
-        }
-
-        if (Input.IsActionJustPressed(InputActionInteractAlt))
-        {
-            
-        }
-
-        else if (Input.IsActionJustReleased(InputActionInteractAlt))
-        {
-            
-        }
+        
     }
 
     public void LevelObjectCreate(Level level, NetworkId id, NetworkRegion network)
@@ -82,6 +105,7 @@ public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, IL
     public void LevelObjectDestroy(Level level)
     {
         _net = null;
+        _itemStackRef = null;
         NetworkReplicator.RemoveObject(this);
     }
 
@@ -96,12 +120,14 @@ public partial class ItemHolderComponent : Node3D, INetworkReplicationObject, IL
 
     public void SnapshotNetworkRead(BytePacker packer)
     {
-        _itemStackRef = ItemStack.NetworkDeserialize(packer);
+        _systemNetworkId = packer.ReadNetworkId();
+        DeserializeFullState(packer);
     }
 
     public void SnapshotNetworkWrite(BytePacker packer)
     {
-        ItemStack.NetworkSerialize(_itemStackRef, packer);
+        packer.WriteNetworkId(_systemNetworkId);
+        SerializeFullState(packer);
     }
 
     public void SnapshotSave(TagCompound tagCompound)

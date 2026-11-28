@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bl344315334c1"
+path="res://.godot/imported/z_intro_music.ogg-819b34c9bf7aed8d9e109cddecef7b3f.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/z_intro_music.ogg"
+dest_files=["res://.godot/imported/z_intro_music.ogg-819b34c9bf7aed8d9e109cddecef7b3f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

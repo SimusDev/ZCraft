@@ -6,12 +6,15 @@ namespace ZCraft.Source.Content;
 
 public class AssetRegistry<T> where T: class
 {
+    public int Count => _names.Count;
     private Dictionary<int, T> _byId = new();
     private Dictionary<string, T> _byName = new();
     private Dictionary<T, int> _ids = new();
     private Dictionary<T, string> _names = new();
 
     private static int _nextId = 0;
+
+    public Dictionary<T, string> GetDictionaryByNames() => _names;
 
     public void Add(T asset, string name)
     {
@@ -60,5 +63,6 @@ public class AssetRegistry<T> where T: class
     {
         return _byName[name];
     }
+
 }
 

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cintpee3cf4qk"
+path="res://.godot/imported/wpn_silenced_pistol4.ogg-ee125570945eeae9b7b15616c92e82f1.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_silenced_pistol4.ogg"
+dest_files=["res://.godot/imported/wpn_silenced_pistol4.ogg-ee125570945eeae9b7b15616c92e82f1.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

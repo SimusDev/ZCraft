@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bd0bfgi8so211"
+path="res://.godot/imported/shoot_semirifle1.ogg-ef1900117ac93b98452f5a1a047d377a.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_semirifle1.ogg"
+dest_files=["res://.godot/imported/shoot_semirifle1.ogg-ef1900117ac93b98452f5a1a047d377a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

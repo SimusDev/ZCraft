@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bxxpwtxw1b6fy"
+path="res://.godot/imported/n_rocketlauncher2.ogg-07625568f121a52be2111a49bcaa5634.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/n_rocketlauncher2.ogg"
+dest_files=["res://.godot/imported/n_rocketlauncher2.ogg-07625568f121a52be2111a49bcaa5634.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

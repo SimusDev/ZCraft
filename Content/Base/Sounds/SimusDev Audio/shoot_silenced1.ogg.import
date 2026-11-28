@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://8v26j160mhqo"
+path="res://.godot/imported/shoot_silenced1.ogg-ff3c03b2d66d2c89aa118ca033b8854e.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_silenced1.ogg"
+dest_files=["res://.godot/imported/shoot_silenced1.ogg-ff3c03b2d66d2c89aa118ca033b8854e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

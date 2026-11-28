@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://daeah2h8hj4g7"]
-
-[ext_resource type="Script" uid="uid://caqkjninae7gr" path="res://Source/Scenes/SetupWorldAndContent.cs" id="1_4wvvg"]
-
-[node name="SetupWorldAndContent" type="CanvasLayer" unique_id=50720218]
-script = ExtResource("1_4wvvg")

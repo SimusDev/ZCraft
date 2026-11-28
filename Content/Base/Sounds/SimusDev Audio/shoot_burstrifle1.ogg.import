@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://csowgxqvhtcy8"
+path="res://.godot/imported/shoot_burstrifle1.ogg-52f015935517421e51896281669c3f10.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_burstrifle1.ogg"
+dest_files=["res://.godot/imported/shoot_burstrifle1.ogg-52f015935517421e51896281669c3f10.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

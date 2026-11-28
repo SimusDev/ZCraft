@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://camvi30mftirf" path="res://Source/World/ZCraftWorld.cs" id="1_45d1s"]
 [ext_resource type="PackedScene" uid="uid://crlvovts3e4oa" path="res://Resources/Interface/LevelDebug.tscn" id="2_gjpho"]
-[ext_resource type="PackedScene" uid="uid://ddwtld50ousep" path="res://Resources/Scenes/World/Player/Player.tscn" id="2_p70al"]
+[ext_resource type="PackedScene" uid="uid://ddwtld50ousep" path="res://Content/Base/ServerPlayer.tscn" id="2_p70al"]
 [ext_resource type="Texture2D" uid="uid://kcacwaxkcj3r" path="res://Resources/Textures/Prototyping/KenneyTextures/Orange/texture_05.png" id="3_gjpho"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5nsto"]

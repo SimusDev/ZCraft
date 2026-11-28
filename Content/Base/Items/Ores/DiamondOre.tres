@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="Item" format=3 uid="uid://sfhjeyu64suc"]
-
-[ext_resource type="Script" uid="uid://dsm3jqbh4tpeb" path="res://Source/World/Item/Item.cs" id="1_v4ry7"]
-
-[resource]
-script = ExtResource("1_v4ry7")
-Behaviors = null
-Components = null
-metadata/_custom_type_script = "uid://dsm3jqbh4tpeb"

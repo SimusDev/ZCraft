@@ -31,16 +31,19 @@ public partial class Level : Node3D, INetworkReplicationObject
 	private string _savePath;
 
 	private static List<Level> _all = new();
-
 	public static List<Level> All => _all;
+	public List<int> OnlinePlayerPeers => _onlinePlayersPeers;
 
 	private readonly List<Node> _childEnteredTreeUniqueRootsQueue = new();
 	private readonly Dictionary<string, long> _sceneFilePathCache = new();
 	private readonly Dictionary<long, PackedScene> _packedSceneCache = new();
 	private readonly Dictionary<Node, LevelUniqueTree> _rootUniqueIdenteriers = new();
 	private readonly Dictionary<ulong, Node> _clientRootUniqueNodes = new();
-
+	private List<int> _onlinePlayersPeers = new();
 	private readonly NetworkRegion _clientNetworkRegion = new();
+
+	public static Level ClientLocalLevel;
+
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public long CacheSceneFileAndGetUID(string sceneFilePath)
@@ -113,15 +116,23 @@ public partial class Level : Node3D, INetworkReplicationObject
 			ChildEnteredTree += OnChildEnteredTree;
 			ChildExitingTree += OnChildExitingTree;
 			GenerateMapServer();
+
+			Multiplayer.PeerDisconnected += OnPeerDisconnected;
 		}
 
 		else
 		{
+			ClientLocalLevel = this;
 			BytePacker packer = BytePackerPool.Rent();
 			packer.WriteByte((byte)PacketHeader.ObjectsRequest);
 			NetworkReplicator.SendMessageToServer(this, packer);
 		}
 	}
+
+    private void OnPeerDisconnected(long id)
+    {
+        _onlinePlayersPeers.Remove((int)id);
+    }
 
     private void GenerateMapServer()
 	{

@@ -136,7 +136,7 @@ public partial class MainMenu : Control
 
 	private void ChangeSceneToWorld()
 	{
-		GetTree().CallDeferred("change_scene_to_file", "res://Scenes/SetupWorldAndContent.tscn");
+		GetTree().CallDeferred("change_scene_to_file", "res://Scenes/ClientWorld.tscn");
 	}
 
 }

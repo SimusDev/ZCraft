@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cf5ybd7nypdtr"
+path="res://.godot/imported/explode_nuclear_superfar.ogg-70c753f492f5b3d3b22b201bebbfe58f.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/explode_nuclear_superfar.ogg"
+dest_files=["res://.godot/imported/explode_nuclear_superfar.ogg-70c753f492f5b3d3b22b201bebbfe58f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

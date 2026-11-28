@@ -1,0 +1,7 @@
+[gd_resource type="Resource" format=3 uid="uid://dylleb8g6dhe0"]
+
+[ext_resource type="Script" uid="uid://bhq2jcgvu20t8" path="res://Content/Base/Items/Behaivor/MeleeWeaponBehavior.cs" id="1_ee0jj"]
+
+[resource]
+script = ExtResource("1_ee0jj")
+metadata/_custom_type_script = "uid://dhsumtwwgo12p"

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dihx26clmyms4"
+path="res://.godot/imported/weapon_smg3.ogg-2be429bd32f5e384611926c0826fbbc5.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/weapon_smg3.ogg"
+dest_files=["res://.godot/imported/weapon_smg3.ogg-2be429bd32f5e384611926c0826fbbc5.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

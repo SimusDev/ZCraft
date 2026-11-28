@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="AudioStreamDistantBundle" format=3 uid="uid://bhq4chcj58t3p"]
+
+[ext_resource type="Script" uid="uid://cw16cp47fjoci" path="res://Source/World/Audio/AudioDistantPack.cs" id="1_dda3j"]
+[ext_resource type="AudioStream" uid="uid://5upi3uqnxiaj" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium1.ogg" id="2_4qmhh"]
+[ext_resource type="Script" uid="uid://b8sihfa3catks" path="res://Source/World/Audio/AudioStreamDistantBundle.cs" id="2_bgd8s"]
+[ext_resource type="AudioStream" uid="uid://c5dk5ajpauurd" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium2.ogg" id="3_jokhx"]
+[ext_resource type="AudioStream" uid="uid://b2uq4r33ype6l" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium3.ogg" id="4_ngopr"]
+[ext_resource type="AudioStream" uid="uid://0rl7c26kt3a2" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium4.ogg" id="5_l7gaa"]
+[ext_resource type="AudioStream" uid="uid://cjikhbe214gj3" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_mid1.ogg" id="6_kuduk"]
+[ext_resource type="AudioStream" uid="uid://b0u686qyrkgpf" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_mid2.ogg" id="7_d5yru"]
+[ext_resource type="AudioStream" uid="uid://dqp540r2vwmv" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_mid3.ogg" id="8_altn0"]
+[ext_resource type="AudioStream" uid="uid://20txr6riebmj" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_mid4.ogg" id="9_rxpwo"]
+[ext_resource type="AudioStream" uid="uid://bvnc2nr6re78a" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_far1.ogg" id="10_cudnb"]
+[ext_resource type="AudioStream" uid="uid://c24ic8u2u5d7x" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_far2.ogg" id="11_ypoua"]
+[ext_resource type="AudioStream" uid="uid://f1d8hvw0xpg7" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_far3.ogg" id="12_vxhsr"]
+[ext_resource type="AudioStream" uid="uid://dpe35gl4wc7ox" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_far4.ogg" id="13_op3ci"]
+[ext_resource type="AudioStream" uid="uid://cm3d1ruudxc45" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_superfar1.ogg" id="14_nfxw2"]
+[ext_resource type="AudioStream" uid="uid://dmggn7ki58kem" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_superfar2.ogg" id="15_pv1uo"]
+[ext_resource type="AudioStream" uid="uid://cist41bml8hmx" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_superfar3.ogg" id="16_te43k"]
+[ext_resource type="AudioStream" uid="uid://c8uhi8231gqt3" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_medium_superfar4.ogg" id="17_2wj4w"]
+
+[sub_resource type="Resource" id="Resource_5vnog"]
+script = ExtResource("1_dda3j")
+Streams = Array[AudioStream]([ExtResource("2_4qmhh"), ExtResource("3_jokhx"), ExtResource("4_ngopr"), ExtResource("5_l7gaa")])
+MaxDistance = 100.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_lr1v1"]
+script = ExtResource("1_dda3j")
+Streams = Array[AudioStream]([ExtResource("6_kuduk"), ExtResource("7_d5yru"), ExtResource("8_altn0"), ExtResource("9_rxpwo")])
+MaxDistance = 200.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_qxs8r"]
+script = ExtResource("1_dda3j")
+Streams = Array[AudioStream]([ExtResource("10_cudnb"), ExtResource("11_ypoua"), ExtResource("12_vxhsr"), ExtResource("13_op3ci")])
+MaxDistance = 300.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_5xb6d"]
+script = ExtResource("1_dda3j")
+Streams = Array[AudioStream]([ExtResource("14_nfxw2"), ExtResource("15_pv1uo"), ExtResource("16_te43k"), ExtResource("17_2wj4w")])
+MaxDistance = 400.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[resource]
+script = ExtResource("2_bgd8s")
+_packs = Array[ExtResource("1_dda3j")]([SubResource("Resource_5vnog"), SubResource("Resource_lr1v1"), SubResource("Resource_qxs8r"), SubResource("Resource_5xb6d")])
+metadata/_custom_type_script = "uid://b8sihfa3catks"

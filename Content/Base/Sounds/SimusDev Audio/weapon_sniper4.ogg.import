@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cwofytf2w2a5s"
+path="res://.godot/imported/weapon_sniper4.ogg-1389ded8dce798a9e13b29f33e7891ba.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/weapon_sniper4.ogg"
+dest_files=["res://.godot/imported/weapon_sniper4.ogg-1389ded8dce798a9e13b29f33e7891ba.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

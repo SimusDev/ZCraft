@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dd6l0mwdqvihd"
+path="res://.godot/imported/wpn_shotgun2.ogg-7e11904a6c1ef1e55c3b481614ddd481.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/wpn_shotgun2.ogg"
+dest_files=["res://.godot/imported/wpn_shotgun2.ogg-7e11904a6c1ef1e55c3b481614ddd481.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

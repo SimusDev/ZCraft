@@ -10,7 +10,7 @@ namespace ZCraft.Source.World.Item;
 [GlobalClass]
 public sealed partial class Item : Resource
 {
-    [Export] public Godot.Collections.Array<ItemBehaivor> Behaviors = null;
+    [Export] public Godot.Collections.Array<ItemBehavior> Behaviors = null;
     [Export] public Godot.Collections.Array<ItemComponent> Components = null;
     [Export] public Godot.Collections.Array<ClientItemComponent> ClientComponents = null;
 

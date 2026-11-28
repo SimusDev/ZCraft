@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dmvpctojr45yo"
+path="res://.godot/imported/explode_small2_far.ogg-00cb3844e54bd688d5be7745b86ca796.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/explode_small2_far.ogg"
+dest_files=["res://.godot/imported/explode_small2_far.ogg-00cb3844e54bd688d5be7745b86ca796.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://8icpcritsshl"
+path="res://.godot/imported/inventory_item_furnace_smelted2.ogg-13a264e01fa935583cad64efcb6a740b.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/inventory_item_furnace_smelted2.ogg"
+dest_files=["res://.godot/imported/inventory_item_furnace_smelted2.ogg-13a264e01fa935583cad64efcb6a740b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="AudioStreamDistantBundle" format=3 uid="uid://bfu6t27u44hul"]
+
+[ext_resource type="Script" uid="uid://cw16cp47fjoci" path="res://Source/World/Audio/AudioDistantPack.cs" id="1_ltoo8"]
+[ext_resource type="Script" uid="uid://b8sihfa3catks" path="res://Source/World/Audio/AudioStreamDistantBundle.cs" id="2_fmnwg"]
+[ext_resource type="AudioStream" uid="uid://x6v8vtxhf6wj" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_explosive1.ogg" id="2_oby8k"]
+[ext_resource type="AudioStream" uid="uid://c7jsgg7177wp1" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_explosive2.ogg" id="3_32jup"]
+[ext_resource type="AudioStream" uid="uid://cn7m6cmy7tshp" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_explosive3.ogg" id="4_xqurk"]
+[ext_resource type="AudioStream" uid="uid://bkfdhb10rs34e" path="res://Content/Base/Sounds/SimusDev Audio/n_explosion_explosive4.ogg" id="5_orrig"]
+
+[sub_resource type="Resource" id="Resource_41ae8"]
+script = ExtResource("1_ltoo8")
+Streams = Array[AudioStream]([ExtResource("2_oby8k")])
+MaxDistance = 50.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_lmkh3"]
+script = ExtResource("1_ltoo8")
+Streams = Array[AudioStream]([ExtResource("3_32jup")])
+MaxDistance = 100.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_oby8k"]
+script = ExtResource("1_ltoo8")
+Streams = Array[AudioStream]([ExtResource("4_xqurk")])
+MaxDistance = 150.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[sub_resource type="Resource" id="Resource_32jup"]
+script = ExtResource("1_ltoo8")
+Streams = Array[AudioStream]([ExtResource("5_orrig")])
+MaxDistance = 200.0
+metadata/_custom_type_script = "uid://cw16cp47fjoci"
+
+[resource]
+script = ExtResource("2_fmnwg")
+_packs = Array[ExtResource("1_ltoo8")]([SubResource("Resource_41ae8"), SubResource("Resource_lmkh3"), SubResource("Resource_oby8k"), SubResource("Resource_32jup")])
+metadata/_custom_type_script = "uid://b8sihfa3catks"

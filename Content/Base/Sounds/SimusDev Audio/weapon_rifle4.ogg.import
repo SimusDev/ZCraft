@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bl6dshhr5khc3"
+path="res://.godot/imported/weapon_rifle4.ogg-4c2ba583c9f9f1675dba8ab778e6baa1.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/weapon_rifle4.ogg"
+dest_files=["res://.godot/imported/weapon_rifle4.ogg-4c2ba583c9f9f1675dba8ab778e6baa1.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

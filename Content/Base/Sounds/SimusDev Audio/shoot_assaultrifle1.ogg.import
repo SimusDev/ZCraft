@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cvh1h7olrbe0y"
+path="res://.godot/imported/shoot_assaultrifle1.ogg-56599779c9ec3e3030996c249d7be044.oggvorbisstr"
+
+[deps]
+
+source_file="res://Content/Base/Sounds/SimusDev Audio/shoot_assaultrifle1.ogg"
+dest_files=["res://.godot/imported/shoot_assaultrifle1.ogg-56599779c9ec3e3030996c249d7be044.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
